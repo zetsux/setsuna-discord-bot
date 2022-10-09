@@ -2,7 +2,8 @@
 
 A multifunction discord bot created for personal or own group use.
 Connected with a database so that every user can register and have
-their own profile. Currently include features such as,
+their own profile. Also hosted almost 24/7 using Uptime.
+Currently include features such as,
 
 [Anime Characters]
 - Collect Anime Characters from Gacha

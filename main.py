@@ -186,14 +186,21 @@ async def on_voice_state_update(member, before, after):
 @bot.slash_command(name='reloadcogs', description='Reload Cogs')
 @commands.has_any_role('Encoder Magang', 'Owner')
 async def reload(ctx):
+  await ctx.defer()
   str = ""
-  for filename in os.listdir("./cogs/") :
-    if filename.endswith(".py") :
-      try :
-        bot.reload_extension(f"cogs.{filename[:-3]}")
-        str += f"cogs.{filename[:-3]}\n"
-      except Exception as error :
-        print(error)
+  for folder in os.listdir("./") :
+    path = f"./{folder}"
+    
+    if not os.path.isdir(path) :
+      continue
+      
+    for filename in os.listdir(f"./{folder}") :
+      if filename.endswith(".py") :
+        try : 
+          bot.load_extension(f"{folder}.{filename[:-3]}")
+          str += f"{folder}.{filename[:-3]}"
+        except Exception as error :
+          print(error)
 
   await ctx.respond(f"{str}")
 

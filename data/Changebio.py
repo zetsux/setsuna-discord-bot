@@ -3,6 +3,7 @@ import os
 import pymongo
 import datetime
 from discord.ext import commands
+from discord.commands import Option
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 

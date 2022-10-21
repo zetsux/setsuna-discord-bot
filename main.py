@@ -65,8 +65,7 @@ async def connect_nodes():
 
 
 @bot.event
-async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track,
-                                reason):
+async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, reason):
     ctx = player.ctx
     vc: player = ctx.voice_client
 
@@ -77,7 +76,12 @@ async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track,
     try:
         next_track = vc.queue.get()
         await vc.play(next_track)
-        await ctx.channel.send(f'Now Playing : `{next_track.title}`')
+        embedVar = discord.Embed(
+            title=f'[ Now Playing ]',
+            description=f"Title : {next_track.title}\nBy : {next_track.author}\nDuration : {next_track.length}\n\nRequested by : {ctx.author.name}",
+            color=0x1DB954)
+        embedVar.set_thumbnail(url= 'https://cdn.discordapp.com/attachments/995337235211763722/1033043139310649406/XiPx.gif')
+        await ctx.channel.send(embed=embedVar)
     except:
         await vc.stop()
 

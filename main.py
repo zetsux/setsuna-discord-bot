@@ -77,10 +77,11 @@ async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, 
         next_track = vc.queue.get()
         await vc.play(next_track)
         embedVar = discord.Embed(
-            title=f'[ Now Playing ]',
-            description=f"Title : {next_track.title}\nBy : {next_track.author}\nDuration : {next_track.length}\n\nRequested by : {ctx.author.name}",
-            color=0x1DB954)
-        embedVar.set_thumbnail(url= 'https://cdn.discordapp.com/attachments/995337235211763722/1033043139310649406/XiPx.gif')
+                    title=f'[ Now Playing ]',
+                    description=f"```{next_track.title}\n\nBy : {next_track.author}\nDuration : ({str(datetime.timedelta(seconds=next_track.length))})```",
+                    color=0x1DB954)
+        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+        embedVar.set_thumbnail(url='https://cdn.discordapp.com/attachments/995337235211763722/1033079306143940709/milk-and-mocha-cute.gif')
         await ctx.channel.send(embed=embedVar)
     except:
         await vc.stop()

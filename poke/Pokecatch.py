@@ -132,7 +132,7 @@ class Pokecatch(commands.Cog):
                             f'https://some-random-api.ml/pokedex?pokemon={result.lower()}'
                         )
                     except:
-                        guild = bot.get_guild(GUILDID)
+                        guild = self.bot.get_guild(GUILDID)
                         channel = guild.get_channel(LOGCH)
                         await channel.send(
                             f"Pokemon error : {result} | index : {randomValue}"
@@ -194,7 +194,7 @@ class Pokecatch(commands.Cog):
                                             f'https://some-random-api.ml/pokedex?pokemon={evolved.lower()}'
                                         )
                                     except:
-                                        guild = bot.get_guild(GUILDID)
+                                        guild = self.bot.get_guild(GUILDID)
                                         channel = guild.get_channel(LOGCH)
                                         await channel.send(
                                             f"Pokemon error : {evolved}")
@@ -350,7 +350,7 @@ class Pokecatch(commands.Cog):
                                     f'https://some-random-api.ml/pokedex?pokemon={evolved.lower()}'
                                 )
                             except:
-                                guild = bot.get_guild(GUILDID)
+                                guild = self.bot.get_guild(GUILDID)
                                 channel = guild.get_channel(LOGCH)
                                 await channel.send(f"Pokemon error : {evolved}"
                                                    )
@@ -481,7 +481,7 @@ class Pokecatch(commands.Cog):
                                             f'https://some-random-api.ml/pokedex?pokemon={nexted.lower()}'
                                         )
                                     except:
-                                        guild = bot.get_guild(GUILDID)
+                                        guild = self.bot.get_guild(GUILDID)
                                         channel = guild.get_channel(LOGCH)
                                         await channel.send(
                                             f"Pokemon error : {nexted}")

@@ -74,7 +74,7 @@ class Songpanel(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                    color=0xffff00)
+                    color=0x1DB954)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
                 await interaction.followup.send(
@@ -114,7 +114,7 @@ class Songpanel(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                    color=0xffff00)
+                    color=0x1DB954)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
             elif not interaction.user.voice:
@@ -171,7 +171,7 @@ class Songpanel(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                    color=0xffff00)
+                    color=0x1DB954)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
             elif not interaction.user.voice:
@@ -211,7 +211,7 @@ class Songpanel(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                    color=0x9acd32)
+                    color=0x1DB954)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
             elif not interaction.user.voice:
@@ -258,7 +258,7 @@ class Songpanel(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                    color=0x9acd32)
+                    color=0x1DB954)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
             elif not interaction.user.voice:
@@ -335,7 +335,7 @@ class Songpanel(commands.Cog):
                             title=
                             f"Queue requested by {interaction.user.name}-nyan | {queueIndex} songs waiting to be played",
                             description='```' + queueList[index] + '```',
-                            color=0x9acd32)
+                            color=0x1DB954)
                         await interaction.response.edit_message(embed=embedVar)
 
                     async def np_callback(interaction):
@@ -351,7 +351,7 @@ class Songpanel(commands.Cog):
                             title=
                             f"Queue requested by {interaction.user.name}-nyan | {queueIndex} songs waiting to be played",
                             description='```' + queueList[index] + '```',
-                            color=0x9acd32)
+                            color=0x1DB954)
                         await interaction.response.edit_message(embed=embedVar)
 
                     buttonPP.callback = pp_callback
@@ -364,7 +364,7 @@ class Songpanel(commands.Cog):
                         title=
                         f"Queue requested by {interaction.user.name}-nyan | {queueIndex} songs waiting to be played",
                         description='```' + queueList[index] + '```',
-                        color=0x9acd32)
+                        color=0x1DB954)
                     await interaction.response.send_message(embed=embedVar,
                                                             view=inView,
                                                             ephemeral=True)
@@ -374,7 +374,7 @@ class Songpanel(commands.Cog):
                         title=
                         f"Queue requested by {interaction.user.name}-nyan | {queueIndex} songs waiting to be played",
                         description='```' + queueList[0] + '```',
-                        color=0x9acd32)
+                        color=0x1DB954)
                     await interaction.response.send_message(embed=embedVar,
                                                             ephemeral=True)
 
@@ -386,7 +386,7 @@ class Songpanel(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                    color=0x9acd32)
+                    color=0x1DB954)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
             elif not interaction.user.voice:
@@ -407,7 +407,7 @@ class Songpanel(commands.Cog):
                 embedVar = discord.Embed(
                     title=f"Now Playing : {vc.track.title}",
                     description=f"By : {vc.track.author}",
-                    color=0x9acd32)
+                    color=0x1DB954)
                 embedVar.add_field(
                     name="Duration",
                     value=
@@ -425,7 +425,7 @@ class Songpanel(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                    color=0x9acd32)
+                    color=0x1DB954)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
             elif not interaction.user.voice:
@@ -443,7 +443,7 @@ class Songpanel(commands.Cog):
                         f"Song Panelnya ditutup karena watashi udah keluar..",
                         description=
                         "Tulis /songpanel lagi kalau mau pakai yaa~",
-                        color=0x9acd32)
+                        color=0x1DB954)
                     await interaction.response.edit_message(embed=embedEdit,
                                                             view=None)
                     await interaction.followup.send(
@@ -457,7 +457,7 @@ class Songpanel(commands.Cog):
                         f"Song Panelnya ditutup karena watashi udah keluar..",
                         description=
                         "Tulis /songpanel lagi kalau mau pakai yaa~",
-                        color=0x9acd32)
+                        color=0x1DB954)
                     await interaction.response.edit_message(embed=embedEdit,
                                                             view=None)
                     await interaction.followup.send(
@@ -490,7 +490,7 @@ class Songpanel(commands.Cog):
         embedVar = discord.Embed(
             title=f'[ Song Panel ]',
             description="Control by pressing the buttons below",
-            color=0x9acd32)
+            color=0x1DB954)
         panelMsg = await ctx.respond(embed=embedVar, view=view)
         checkView = await view.wait()
 
@@ -498,7 +498,7 @@ class Songpanel(commands.Cog):
             embedEdit = discord.Embed(
                 title=f"Song Panelnya sudah ditutup karena lama ngga dipakai..",
                 description="Tulis /songpanel lagi kalau mau pakai yaa~",
-                color=0x9acd32)
+                color=0x1DB954)
             await panelMsg.edit_original_message(embed=embedEdit, view=None)
 
 def setup(bot):

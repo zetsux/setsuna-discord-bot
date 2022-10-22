@@ -77,8 +77,8 @@ async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, 
         next_track = vc.queue.get()
         await vc.play(next_track)
         embedVar = discord.Embed(
-                    title=f'[ Now Playing ]',
-                    description=f"```{next_track.title}```",
+                    title=f'Now Playing :',
+                    description=f"{next_track.title}",
                     color=0x1DB954)
         embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
         embedVar.set_thumbnail(url='https://cdn.discordapp.com/attachments/995337235211763722/1033079306143940709/milk-and-mocha-cute.gif')

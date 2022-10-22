@@ -44,7 +44,7 @@ class Songinsert(commands.Cog):
                 setattr(vc, "loop", False)
                 await vc.play(track)
                 embedVar = discord.Embed(
-                            title=f'[ Now Playing ]',
+                            title=f'Now Playing :',
                             description=f"{track.title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -53,7 +53,7 @@ class Songinsert(commands.Cog):
             else:
                 await vc.queue.put_wait(track)
                 embedVar = discord.Embed(
-                    title=f'[ Queueing ]',
+                    title=f'Queueing :',
                     description=f"{track.title}",
                     color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -62,7 +62,7 @@ class Songinsert(commands.Cog):
 
         elif decoded['type'] is spotify.SpotifySearchType.album:
             embedVar = discord.Embed(
-                title=f'[ Queueing ]',
+                title=f'Queueing :',
                 description=f"[Spotify Album]({str(search)})\n",
                 color=0x1DB954)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -80,7 +80,7 @@ class Songinsert(commands.Cog):
 
                 await vc.play(tracks[0])
                 embedVar = discord.Embed(
-                            title=f'[ Now Playing ]',
+                            title=f'Now Playing :',
                             description=f"{tracks[0].title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -93,7 +93,7 @@ class Songinsert(commands.Cog):
 
         elif decoded['type'] is spotify.SpotifySearchType.playlist:
             embedVar = discord.Embed(
-                title=f'[ Queueing ]',
+                title=f'Queueing :',
                 description=f"[Spotify Playlist]({str(search)})\n",
                 color=0x1DB954)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -108,7 +108,7 @@ class Songinsert(commands.Cog):
                     if index == 1:
                         await vc.play(partial)
                         embedVar = discord.Embed(
-                                    title=f'[ Now Playing ]',
+                                    title=f'Now Playing :',
                                     description=f"{partial.title}",
                                     color=0x1DB954)
                         embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -125,7 +125,7 @@ class Songinsert(commands.Cog):
     else:
         if 'youtube.com/playlist' in search:
             embedVar = discord.Embed(
-                title=f'[ Queueing ]',
+                title=f'Queueing :',
                 description=f"[Youtube Playlist]({str(search)})\n",
                 color=0x1DB954)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -140,7 +140,7 @@ class Songinsert(commands.Cog):
                     if tempIndex == 1:
                         await vc.play(track)
                         embedVar = discord.Embed(
-                                    title=f'[ Now Playing ]',
+                                    title=f'Now Playing :',
                                     description=f"{track.title}",
                                     color=0x1DB954)
                         embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -160,7 +160,7 @@ class Songinsert(commands.Cog):
                 setattr(vc, "loop", False)
                 await vc.play(search)
                 embedVar = discord.Embed(
-                            title=f'[ Now Playing ]',
+                            title=f'Now Playing :',
                             description=f"{search.title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
@@ -170,7 +170,7 @@ class Songinsert(commands.Cog):
             else:
                 await vc.queue.put_wait(search)
                 embedVar = discord.Embed(
-                    title=f'[ Queueing ]',
+                    title=f'Queueing :',
                     description=f"{search.title}",
                     color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)

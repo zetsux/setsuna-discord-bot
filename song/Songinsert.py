@@ -45,7 +45,7 @@ class Songinsert(commands.Cog):
                 await vc.play(track)
                 embedVar = discord.Embed(
                             title=f'[ Now Playing ]',
-                            description=f"```{track.title}\n\nBy : {track.author}\nDuration : ({str(datetime.timedelta(seconds=track.length))})```",
+                            description=f"{track.title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
@@ -54,7 +54,7 @@ class Songinsert(commands.Cog):
                 await vc.queue.put_wait(track)
                 embedVar = discord.Embed(
                     title=f'[ Queueing ]',
-                    description=f"```{str(track)}\n```",
+                    description=f"{track.title}",
                     color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
@@ -63,7 +63,7 @@ class Songinsert(commands.Cog):
         elif decoded['type'] is spotify.SpotifySearchType.album:
             embedVar = discord.Embed(
                 title=f'[ Queueing ]',
-                description=f"```{str(search)}\n```",
+                description=f"[Spotify Album]({str(search)})\n",
                 color=0x1DB954)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
             embedVar.set_thumbnail(url=mgif)
@@ -81,7 +81,7 @@ class Songinsert(commands.Cog):
                 await vc.play(tracks[0])
                 embedVar = discord.Embed(
                             title=f'[ Now Playing ]',
-                            description=f"```{tracks[0].title}\n\nBy : {tracks[0].author}\nDuration : ({str(datetime.timedelta(seconds=tracks[0].length))})```",
+                            description=f"{tracks[0].title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
@@ -94,7 +94,7 @@ class Songinsert(commands.Cog):
         elif decoded['type'] is spotify.SpotifySearchType.playlist:
             embedVar = discord.Embed(
                 title=f'[ Queueing ]',
-                description=f"```{str(search)}\n```",
+                description=f"[Spotify Playlist]({str(search)})\n",
                 color=0x1DB954)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
             embedVar.set_thumbnail(url=mgif)
@@ -109,7 +109,7 @@ class Songinsert(commands.Cog):
                         await vc.play(partial)
                         embedVar = discord.Embed(
                                     title=f'[ Now Playing ]',
-                                    description=f"```{partial.title}\n\nBy : {partial.author}\nDuration : ({str(datetime.timedelta(seconds=partial.length))})```",
+                                    description=f"{partial.title}",
                                     color=0x1DB954)
                         embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
@@ -126,7 +126,7 @@ class Songinsert(commands.Cog):
         if 'youtube.com/playlist' in search:
             embedVar = discord.Embed(
                 title=f'[ Queueing ]',
-                description=f"```{str(search)}\n```",
+                description=f"[Youtube Playlist]({str(search)})\n",
                 color=0x1DB954)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
             embedVar.set_thumbnail(url=mgif)
@@ -141,7 +141,7 @@ class Songinsert(commands.Cog):
                         await vc.play(track)
                         embedVar = discord.Embed(
                                     title=f'[ Now Playing ]',
-                                    description=f"```{track.title}\n\nBy : {track.author}\nDuration : ({str(datetime.timedelta(seconds=track.length))})```",
+                                    description=f"{track.title}",
                                     color=0x1DB954)
                         embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
@@ -161,7 +161,7 @@ class Songinsert(commands.Cog):
                 await vc.play(search)
                 embedVar = discord.Embed(
                             title=f'[ Now Playing ]',
-                            description=f"```{search.title}\n\nBy : {search.author}\nDuration : ({str(datetime.timedelta(seconds=search.length))})```",
+                            description=f"{search.title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
@@ -171,7 +171,7 @@ class Songinsert(commands.Cog):
                 await vc.queue.put_wait(search)
                 embedVar = discord.Embed(
                     title=f'[ Queueing ]',
-                    description=f"```{str(search)}\n```",
+                    description=f"{search.title}",
                     color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)

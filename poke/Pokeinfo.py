@@ -37,7 +37,7 @@ class Pokeinfo(commands.Cog):
 
     if poke in pokeBasic or poke in pokeElite or poke in pokeEpic or poke in pokeLegend:
         response = urllib2.urlopen(
-            f'https://some-random-api.ml/pokedex?pokemon={poke.lower()}')
+            f'https://some-random-api.ml/pokemon/pokedex?pokemon={poke.lower()}')
         data = json.loads(response.read())
         embedVar = discord.Embed(
             title=f"PokeInfo!",

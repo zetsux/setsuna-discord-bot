@@ -22,6 +22,34 @@ client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
 
+def arrangelb(idUser) :
+  inFind = mycol.find_one({'userid' : str(idUser)})
+
+  lbFind = mycol.find_one({'func' : "duellb"})
+  newvalues = {'$pull': {'board': str(idUser)}}
+  mycol.update_one(lbFind, newvalues)
+  
+  index = 0
+  lbFind = mycol.find_one({'func' : "duellb"})
+  lbBoard = lbFind['board']
+  dWin = inFind['win']
+  dLose = inFind['lose']
+  dDraw = inFind['draw']
+  
+  for i in lbBoard:
+      iUser = mycol.find_one({"userid": i})
+  
+      if dWin > iUser["win"] or (dWin == iUser["win"] and dLose < iUser["lose"]) or (
+              dWin == iUser["win"] and dLose == iUser["lose"] and dDraw > iUser["lose"]):
+          break
+  
+      index += 1
+  
+  lbFind = mycol.find_one({'func' : "duellb"})
+  print(index)
+  newvalues = {"$push": {'board' : {'$each': [str(idUser)], "$position": index}}}
+  mycol.update_one(lbFind, newvalues)
+
 class Pokeduel(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
@@ -183,10 +211,10 @@ class Pokeduel(commands.Cog):
         partLevel0 = player0["pokemonlv"]
         partLevel1 = player1["pokemonlv"]
         response0 = urllib2.urlopen(
-            f'https://some-random-api.ml/pokedex?pokemon={poke0.lower()}')
+            f'https://some-random-api.ml/pokemon/pokedex?pokemon={poke0.lower()}')
         data0 = json.loads(response0.read())
         response1 = urllib2.urlopen(
-            f'https://some-random-api.ml/pokedex?pokemon={poke1.lower()}')
+            f'https://some-random-api.ml/pokemon/pokedex?pokemon={poke1.lower()}')
         data1 = json.loads(response1.read())
         hp = [
             int(
@@ -379,6 +407,9 @@ class Pokeduel(commands.Cog):
 
                         viewGame.stop()
 
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
+
                     elif dinteraction.user.id == player[0]:
                         loseFind = mycol.find_one({"userid": str(player[1])})
                         newvalues = {
@@ -420,6 +451,9 @@ class Pokeduel(commands.Cog):
                                 f"Duel telah berakhir karena {logPoke} milik {logPlay}-nyan berhasil mengalahkan lawannya dengan {damageDealt} damage menggunakan {atkElement}-type Attack yang super efektif."
                             )
                         viewGame.stop()
+
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
 
                 else:
                     embedChange = discord.Embed(
@@ -619,6 +653,9 @@ class Pokeduel(commands.Cog):
                             )
 
                         viewGame.stop()
+                      
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
 
                     elif dinteraction.user.id == player[0]:
                         loseFind = mycol.find_one({"userid": str(player[1])})
@@ -662,6 +699,9 @@ class Pokeduel(commands.Cog):
                             )
 
                         viewGame.stop()
+                      
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
 
                 else:
                     embedChange = discord.Embed(
@@ -796,6 +836,8 @@ class Pokeduel(commands.Cog):
                             f"Duel telah berakhir karena pokemon {dinteraction.user.name}-nyan berhasil mengalahkan lawannya dengan {damageDealt} menggunakan Alt. Attack!"
                         )
                         viewGame.stop()
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
 
                     elif dinteraction.user.id == player[0]:
                         loseFind = mycol.find_one({"userid": str(player[1])})
@@ -829,6 +871,8 @@ class Pokeduel(commands.Cog):
                             f"Duel telah berakhir karena pokemon {dinteraction.user.name}-nyan berhasil mengalahkan lawannya dengan {damageDealt} menggunakan Alt. Attack!"
                         )
                         viewGame.stop()
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
 
                 else:
                     embedChange = discord.Embed(
@@ -949,6 +993,8 @@ class Pokeduel(commands.Cog):
                             f"Duel telah berakhir karena pokemon {dinteraction.user.name}-nyan berhasil mengalahkan lawannya dengan {damageDealt} menggunakan Alt. Special!"
                         )
                         viewGame.stop()
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
 
                     elif dinteraction.user.id == player[0]:
                         loseFind = mycol.find_one({"userid": str(player[1])})
@@ -982,6 +1028,8 @@ class Pokeduel(commands.Cog):
                             f"Duel telah berakhir karena pokemon {dinteraction.user.name}-nyan berhasil mengalahkan lawannya dengan {damageDealt} menggunakan Alt. Special!"
                         )
                         viewGame.stop()
+                        arrangelb(str(player[0]))
+                        arrangelb(str(player[1]))
 
                 else:
                     embedChange = discord.Embed(
@@ -1230,6 +1278,8 @@ class Pokeduel(commands.Cog):
                     f"Duel telah berakhir karena {dinteraction.user.name}-nyan menyerah!"
                 )
                 viewGame.stop()
+                arrangelb(str(player[0]))
+                arrangelb(str(player[1]))
 
             elif dinteraction.user.id == player[1]:
                 loseFind = mycol.find_one({"userid": str(player[1])})
@@ -1263,6 +1313,8 @@ class Pokeduel(commands.Cog):
                     f"Duel telah berakhir karena {dinteraction.user.name}-nyan menyerah!"
                 )
                 viewGame.stop()
+                arrangelb(str(player[0]))
+                arrangelb(str(player[1]))
 
         async def draw_callback(dinteraction):
             if dinteraction.user.id != player[
@@ -1317,6 +1369,8 @@ class Pokeduel(commands.Cog):
                 }
                 mycol.update_one(secondFind, newvalues)
                 viewGame.stop()
+                arrangelb(str(player[0]))
+                arrangelb(str(player[1]))
 
             elif draw[0]:
                 await dinteraction.response.send_message(
@@ -1410,9 +1464,9 @@ class Pokeduel(commands.Cog):
                     f"Result : <@{str(player[0])}> wins due to enemy not playing for too long!",
                     color=0xee1515)
                 await gameMsg.edit_original_message(embed=embedRes, view=None)
-                await gameMsg.channel.send(
-                    f"Duel telah berakhir karena <@{str(player[1])}> kehabisan waktu!"
-                )
+                await gameMsg.channel.send(f"Duel telah berakhir karena <@{str(player[1])}> kehabisan waktu!")
+                arrangelb(str(player[0]))
+                arrangelb(str(player[1]))
 
             else:
                 loseFind = mycol.find_one({"userid": str(player[0])})
@@ -1441,9 +1495,10 @@ class Pokeduel(commands.Cog):
                     f"Result : <@{str(player[1])}> wins due to enemy not playing for too long!",
                     color=0xee1515)
                 await gameMsg.edit_original_message(embed=embedRes, view=None)
-                await gameMsg.channel.send(
-                    f"Duel telah berakhir karena <@{str(player[0])}> kehabisan waktu!"
-                )
+                await gameMsg.channel.send(f"Duel telah berakhir karena <@{str(player[0])}> kehabisan waktu!")
+
+                arrangelb(str(player[0]))
+                arrangelb(str(player[1]))
 
     buttonB.callback = battle_callback
     buttonC.callback = cancel_callback

@@ -15,6 +15,33 @@ client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
 
+def arrangelb(idUser) :
+  inFind = mycol.find_one({'userid' : str(idUser)})
+
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {'$pull': {'board': str(idUser)}}
+  mycol.update_one(lbFind, newvalues)
+  
+  index = 0
+  lbFind = mycol.find_one({'func' : "anilb"})
+  lbBoard = lbFind['board']
+  dUni = inFind["uniAni"]
+  dAll = inFind["allAni"]
+  
+  for i in lbBoard:
+    iUser = mycol.find_one({"userid": i})
+    iUni = iUser["uniAni"]
+    iAll = iUser["allAni"]
+
+    if dUni > iUni or (dUni == iUni and dAll > iAll):
+      break
+
+    index += 1
+  
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {"$push": {'board' : {'$each': [str(idUser)], "$position": index}}}
+  mycol.update_one(lbFind, newvalues)
+
 class Anitrade(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
@@ -422,7 +449,10 @@ class Anitrade(commands.Cog):
 
             async def giveAni(usera, namea, numbera):
                 giveFind = mycol.find_one({"userid": str(usera)})
+                mUni = giveFind["uniAni"]
+                mAll = giveFind["allAni"]
                 animeInven = giveFind["animeName"]
+                animeCounting = giveFind["animeCount"]
                 if namea in animeInven:
                     animeIndex = 0
 
@@ -431,27 +461,34 @@ class Anitrade(commands.Cog):
                             break
                         animeIndex += 1
 
+                    if animeCounting[animeIndex] == numbera :
+                      mUni += 1
+
                     stringIndex = "animeCount." + str(animeIndex)
-                    newValues = {
-                        "$set": {
-                            stringIndex:
-                            giveFind["animeCount"][animeIndex] + numbera
-                        }
-                    }
+                    newValues = {"$set": { "uniAni" : mUni, "allAni" : mAll + 1, stringIndex : animeCounting[animeIndex] + numbera}}
                     mycol.update_one(giveFind, newValues)
 
                 else:
                     newValues = {
-                        "$push": {
-                            "animeName": namea,
-                            "animeCount": numbera
-                        }
+                      "$set": {
+                        "uniAni" : mUni + 1, 
+                        "allAni" : mAll + 1
+                      }, 
+                      
+                      "$push": {
+                        "animeName": namea, 
+                        "animeCount": numbera 
+                      }
                     }
+                  
                     mycol.update_one(giveFind, newValues)
 
             async def takeAni(usera, namea, numbera):
                 takeFind = mycol.find_one({"userid": str(usera)})
                 animeInven = takeFind["animeName"]
+                mUni = takeFind["uniAni"]
+                mAll = takeFind["allAni"]
+                animeCounting = takeFind["animeCount"]
                 animeIndex = 0
 
                 for x in animeInven:
@@ -461,29 +498,26 @@ class Anitrade(commands.Cog):
 
                 if takeFind["animeCount"][animeIndex] == numbera:
                     stringIndex = "animeCount." + str(animeIndex)
-                    mycol.update_one(takeFind, {"$set": {stringIndex: 0}})
+                    mycol.update_one(takeFind, {"$set": {"uniAni" : mUni - 1, "allAni" : mAll - 1, stringIndex: 0}})
 
                 elif takeFind["animeCount"][animeIndex] > numbera:
                     stringIndex = "animeCount." + str(animeIndex)
-                    newvalues = {
-                        "$set": {
-                            stringIndex:
-                            takeFind["animeCount"][animeIndex] - numbera
-                        }
-                    }
-                    mycol.update_one(takeFind, newvalues)
+                    mycol.update_one(takeFind, { "$set": { "allAni" : mAll - 1, stringIndex: animeCounting[animeIndex] - numbera }})
 
             tempIndex = 0
             for char in anime1:
-                await takeAni(ctx.user.id, char, count1[tempIndex])
+                await takeAni(ctx.author.id, char, count1[tempIndex])
                 await giveAni(member.id, char, count1[tempIndex])
                 tempIndex += 1
 
             tempIndex = 0
             for char in anime2:
                 await takeAni(member.id, char, count2[tempIndex])
-                await giveAni(ctx.user.id, char, count2[tempIndex])
+                await giveAni(ctx.author.id, char, count2[tempIndex])
                 tempIndex += 1
+
+            arrangelb(ctx.author.id)
+            arrangelb(member.id)
 
         elif deal1:
             edString1 = ""

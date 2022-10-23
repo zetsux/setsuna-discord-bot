@@ -17,6 +17,33 @@ client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
 
+def arrangelb(idUser) :
+  inFind = mycol.find_one({'userid' : str(idUser)})
+
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {'$pull': {'board': idUser}}
+  mycol.update_one(lbFind, newvalues)
+  
+  index = 0
+  lbFind = mycol.find_one({'func' : "anilb"})
+  lbBoard = lbFind['board']
+  dUni = inFind["uniAni"]
+  dAll = inFind["allAni"]
+  
+  for i in lbBoard:
+    iUser = mycol.find_one({"userid": i})
+    iUni = iUser["uniAni"]
+    iAll = iUser["allAni"]
+
+    if dUni > iUni or (dUni == iUni and dAll > iAll):
+        break
+
+    index += 1
+  
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {"$push": {'board' : {'$each': [idUser], "$position": index}}}
+  mycol.update_one(lbFind, newvalues)
+
 class Anigacha(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
@@ -45,6 +72,8 @@ class Anigacha(commands.Cog):
                 time.sleep(2)
                 platFind = mycol.find_one({"userid": str(interaction.user.id)})
                 platinaCount = platFind["platina"]
+                mUni = platFind["uniAni"]
+                mAll = platFind["allAni"]
                 if platinaCount < 1:
                     await interaction.followup.send(
                         f'Platina anata kurang, {interaction.user.name}-nyan...',
@@ -53,6 +82,7 @@ class Anigacha(commands.Cog):
                     randomValue = random.randint(0, len(animeFind["male"]) - 1)
                     result = animeFind["male"][randomValue]
                     animeInven = platFind["animeName"]
+                    animeCounting = platFind["animeCount"]
 
                     if result in animeInven:
                         animeIndex = 0
@@ -62,10 +92,15 @@ class Anigacha(commands.Cog):
                                 break
                             animeIndex += 1
 
+                        if animeCounting[animeIndex] == 0 :
+                          mUni += 1
+
                         aniCount = platFind["animeCount"][animeIndex] + 1
                         stringIndex = "animeCount." + str(animeIndex)
                         newvalues = {
                             "$set": {
+                                "uniAni" : mUni, 
+                                "allUni" : mAll + 1,
                                 "platina": platinaCount - 1,
                                 stringIndex: aniCount
                             }
@@ -80,10 +115,13 @@ class Anigacha(commands.Cog):
                             color=0x2E99A5)
                         embedVar.set_thumbnail(url=gashaGif)
                         await interaction.followup.send(embed=embedVar)
+                        arrangelb(interaction.user.id)
 
                     else:
                         newvalues = {
                             "$set": {
+                                "uniAni" : mUni + 1, 
+                                "allAni" : mAll + 1, 
                                 "platina": platinaCount - 1
                             },
                             "$push": {
@@ -100,6 +138,7 @@ class Anigacha(commands.Cog):
                             color=0x2E99A5)
                         embedVar.set_thumbnail(url=gashaGif)
                         await interaction.followup.send(embed=embedVar)
+                        arrangelb(interaction.user.id)
 
         button2 = Button(label="Female 1x", style=discord.ButtonStyle.danger)
 
@@ -114,12 +153,15 @@ class Anigacha(commands.Cog):
                 time.sleep(2)
                 platFind = mycol.find_one({"userid": str(interaction.user.id)})
                 platinaCount = platFind["platina"]
+                mUni = platFind["uniAni"]
+                mAll = platFind["allAni"]
                 if platinaCount < 1:
                     await interaction.followup.send(
                         f'Platina anata kurang, {interaction.user.name}-nyan...',
                         ephemeral=True)
                 else:
                     animeInven = platFind["animeName"]
+                    animeCounting = platFind["animeCount"]
                     randomValue = random.randint(0,
                                                  len(animeFind["female"]) - 1)
                     result = animeFind["female"][randomValue]
@@ -132,10 +174,15 @@ class Anigacha(commands.Cog):
                                 break
                             animeIndex += 1
 
+                        if animeCounting[animeIndex] == 0 :
+                          mUni += 1
+
                         aniCount = platFind["animeCount"][animeIndex] + 1
                         stringIndex = "animeCount." + str(animeIndex)
                         newvalues = {
                             "$set": {
+                                "uniAni" : mUni, 
+                                "allAni" : mAll + 1,
                                 "platina": platinaCount - 1,
                                 stringIndex: aniCount
                             }
@@ -150,10 +197,13 @@ class Anigacha(commands.Cog):
                             color=0xee1515)
                         embedVar.set_thumbnail(url=gashaGif)
                         await interaction.followup.send(embed=embedVar)
+                        arrangelb(interaction.user.id)
 
                     else:
                         newvalues = {
                             "$set": {
+                                "uniAni" : mUni + 1, 
+                                "allAni" : mAll + 1,
                                 "platina": platinaCount - 1
                             },
                             "$push": {
@@ -170,6 +220,7 @@ class Anigacha(commands.Cog):
                             color=0xee1515)
                         embedVar.set_thumbnail(url=gashaGif)
                         await interaction.followup.send(embed=embedVar)
+                        arrangelb(interaction.user.id)
 
         button1.callback = button1_callback
         button2.callback = button2_callback

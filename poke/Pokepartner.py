@@ -71,7 +71,7 @@ class Pokepartner(commands.Cog):
                 newvalues = {"$set": {"pokemon": name, "pokemonlv": level}}
                 mycol.update_one(tempFind, newvalues)
                 tempResponse = urllib2.urlopen(
-                    f'https://some-random-api.ml/pokedex?pokemon={name.lower()}'
+                    f'https://some-random-api.ml/pokemon/pokedex?pokemon={name.lower()}'
                 )
                 tempData = json.loads(tempResponse.read())
                 eleTemp = ', '.join(tempData["type"])
@@ -145,7 +145,7 @@ class Pokepartner(commands.Cog):
             partIndex += 1
 
         response = urllib2.urlopen(
-            f'https://some-random-api.ml/pokedex?pokemon={partName.lower()}')
+            f'https://some-random-api.ml/pokemon/pokedex?pokemon={partName.lower()}')
         data = json.loads(response.read())
         eleString = ', '.join(data["type"])
         embedVar = discord.Embed(

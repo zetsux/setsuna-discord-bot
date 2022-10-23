@@ -16,6 +16,8 @@ import random
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 
+GUILDID = int(os.environ['GUILDID'])
+LOGCH = int(os.environ['LOGCHID'])
 MONGODB = os.environ['MONGODB']
 
 client = pymongo.MongoClient(MONGODB)
@@ -128,15 +130,15 @@ class Pokecatch(commands.Cog):
 
                     result = pokeArr[randomValue]
                     try:
-                        response = urllib2.urlopen(
-                            f'https://some-random-api.ml/pokedex?pokemon={result.lower()}'
-                        )
+                      response = urllib2.urlopen(
+                          f'https://some-random-api.ml/pokemon/pokedex?pokemon={result.lower()}'
+                      )
                     except:
-                        guild = self.bot.get_guild(GUILDID)
-                        channel = guild.get_channel(LOGCH)
-                        await channel.send(
-                            f"Pokemon error : {result} | index : {randomValue}"
-                        )
+                      guild = self.bot.get_guild(GUILDID)
+                      channel = guild.get_channel(LOGCH)
+                      await channel.send(
+                          f"Pokemon error : {result} | index : {randomValue}"
+                      )
 
                     data = json.loads(response.read())
                     resultGif = data["sprites"]["animated"]
@@ -191,7 +193,7 @@ class Pokecatch(commands.Cog):
                                         len(evoPath) - 1)]
                                     try:
                                         response2 = urllib2.urlopen(
-                                            f'https://some-random-api.ml/pokedex?pokemon={evolved.lower()}'
+                                            f'https://some-random-api.ml/pokemon/pokedex?pokemon={evolved.lower()}'
                                         )
                                     except:
                                         guild = self.bot.get_guild(GUILDID)
@@ -347,7 +349,7 @@ class Pokecatch(commands.Cog):
 
                             try:
                                 response2 = urllib2.urlopen(
-                                    f'https://some-random-api.ml/pokedex?pokemon={evolved.lower()}'
+                                    f'https://some-random-api.ml/pokemon/pokedex?pokemon={evolved.lower()}'
                                 )
                             except:
                                 guild = self.bot.get_guild(GUILDID)
@@ -478,7 +480,7 @@ class Pokecatch(commands.Cog):
 
                                     try:
                                         response3 = urllib2.urlopen(
-                                            f'https://some-random-api.ml/pokedex?pokemon={nexted.lower()}'
+                                            f'https://some-random-api.ml/pokemon/pokedex?pokemon={nexted.lower()}'
                                         )
                                     except:
                                         guild = self.bot.get_guild(GUILDID)

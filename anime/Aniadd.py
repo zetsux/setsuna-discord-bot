@@ -15,6 +15,33 @@ client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
 
+def arrangelb(idUser) :
+  inFind = mycol.find_one({'userid' : str(idUser)})
+
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {'$pull': {'board': str(idUser)}}
+  mycol.update_one(lbFind, newvalues)
+  
+  index = 0
+  lbFind = mycol.find_one({'func' : "anilb"})
+  lbBoard = lbFind['board']
+  dUni = inFind["uniAni"]
+  dAll = inFind["allAni"]
+  
+  for i in lbBoard:
+    iUser = mycol.find_one({"userid": i})
+    iUni = iUser["uniAni"]
+    iAll = iUser["allAni"]
+
+    if dUni > iUni or (dUni == iUni and dAll > iAll):
+      break
+
+    index += 1
+  
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {"$push": {'board' : {'$each': [str(idUser)], "$position": index}}}
+  mycol.update_one(lbFind, newvalues)
+
 class Aniadd(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
@@ -34,25 +61,32 @@ class Aniadd(commands.Cog):
             f'Omedetou {mentionTarget}-nyan! Anata mendapatkan {number} {name}!!'
         )
         animeInven = targetFind["animeName"]
+        animeCounting = targetFind["animeCount"]
+        mUni = targetFind["uniAni"]
+        mAll = targetFind["allAni"]
         if name in animeInven:
-            animeIndex = 0
+          animeIndex = 0
 
-            for x in animeInven:
-                if x == name:
-                    break
-                animeIndex += 1
+          for x in animeInven:
+              if x == name:
+                  break
+              animeIndex += 1
 
-            stringIndex = "animeCount." + str(animeIndex)
-            newvalues = {
-                "$set": {
-                    stringIndex: targetFind["animeCount"][animeIndex] + number
-                }
-            }
-            mycol.update_one(targetFind, newvalues)
+          if animeCounting[animeIndex] == 0 :
+            mUni += 1
+
+          stringIndex = "animeCount." + str(animeIndex)
+          newvalues = {"$set" : {"uniAni" : mUni, "allAni" : mAll + 1, stringIndex: targetFind["animeCount"][animeIndex] + number}}
+          mycol.update_one(targetFind, newvalues)
+          arrangelb(member.id)
 
         else:
-            newvalues = {"$push": {"animeName": name, "animeCount": number}}
-            mycol.update_one(targetFind, newvalues)
+          print('a')
+          newvalues = {"$push": {"animeName": name, "animeCount": number}, "$set": {"uniAni" : mUni + 1, "allAni" : mAll + 1}}
+          mycol.update_one(targetFind, newvalues)
+          print('b')
+          arrangelb(member.id)
+          
 
 def setup(bot):
   bot.add_cog(Aniadd(bot))

@@ -15,6 +15,33 @@ client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
 
+def arrangelb(idUser) :
+  inFind = mycol.find_one({'userid' : str(idUser)})
+
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {'$pull': {'board': str(idUser)}}
+  mycol.update_one(lbFind, newvalues)
+  
+  index = 0
+  lbFind = mycol.find_one({'func' : "anilb"})
+  lbBoard = lbFind['board']
+  dUni = inFind["uniAni"]
+  dAll = inFind["allAni"]
+  
+  for i in lbBoard:
+    iUser = mycol.find_one({"userid": i})
+    iUni = iUser["uniAni"]
+    iAll = iUser["allAni"]
+
+    if dUni > iUni or (dUni == iUni and dAll > iAll):
+        break
+
+    index += 1
+  
+  lbFind = mycol.find_one({'func' : "anilb"})
+  newvalues = {"$push": {'board' : {'$each': [str(idUser)], "$position": index}}}
+  mycol.update_one(lbFind, newvalues)
+
 class Anigive(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
@@ -51,6 +78,8 @@ class Anigive(commands.Cog):
 
             else:
                 animeInven = userFind["animeName"]
+                mUni = userFind["uniAni"]
+                mAll = userFind["allAni"]
                 if name in animeInven:
                     animeIndex = 0
 
@@ -71,7 +100,7 @@ class Anigive(commands.Cog):
                         await ctx.respond(
                             f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian seluruh koleksi {name} dari {ctx.author.name}-nyan sejumlah {number}'
                         )
-                        mycol.update_one(userFind, {"$set": {stringIndex: 0}})
+                        mycol.update_one(userFind, {"$set": {"uniAni" : mUni - 1, "allAni" : mAll - 1, stringIndex: 0}})
 
                     elif userFind["animeCount"][animeIndex] > number:
                         await ctx.respond(
@@ -79,13 +108,16 @@ class Anigive(commands.Cog):
                         )
                         newvalues = {
                             "$set": {
-                                stringIndex:
-                                userFind["animeCount"][animeIndex] - number
+                                "allAni" : mAll - 1,
+                                stringIndex: userFind["animeCount"][animeIndex] - number
                             }
                         }
                         mycol.update_one(userFind, newvalues)
 
                     animeInven = targetFind["animeName"]
+                    animeCounting = targetFind["animeCount"]
+                    mUni = targetFind["uniAni"]
+                    mAll = targetFind["allAni"]
                     if name in animeInven:
                         animeIndex = 0
 
@@ -94,23 +126,34 @@ class Anigive(commands.Cog):
                                 break
                             animeIndex += 1
 
+                        if animeCounting[animeIndex] == 0 :
+                          mUni += 1
+
                         stringIndex = "animeCount." + str(animeIndex)
                         newvalues = {
                             "$set": {
-                                stringIndex:
-                                targetFind["animeCount"][animeIndex] + number
+                                "uniAni" : mUni, 
+                                "allAni" : mAll + 1,
+                                stringIndex : targetFind["animeCount"][animeIndex] + number
                             }
                         }
                         mycol.update_one(targetFind, newvalues)
 
                     else:
                         newvalues = {
+                            "$set" : {
+                                "uniAni" : mUni + 1, 
+                                "allAni" : mAll + 1,
+                            },
                             "$push": {
                                 "animeName": name,
                                 "animeCount": number
                             }
                         }
                         mycol.update_one(targetFind, newvalues)
+
+                    arrangelb(ctx.author.id)
+                    arrangelb(member.id)
 
                 else:
                     await ctx.respond(

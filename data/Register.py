@@ -4,20 +4,18 @@ import pymongo
 import datetime
 from discord.ext import commands
 
-guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
-
 MONGODB = os.environ['MONGODB']
 
 client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
 
-class Regist(commands.Cog):
+class Register(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='regist', description='Register your account and create a profile', guild_ids=guilds)
-  async def regist(self, ctx):
+  @commands.slash_command(name='regist', description='Register your account and create a profile')
+  async def register_account(self, ctx):
     checkRegist = mycol.find_one({"userid": str(ctx.author.id)})
     if checkRegist != None:
         await ctx.respond(
@@ -50,7 +48,9 @@ class Regist(commands.Cog):
             "pokeLevel": [],
             "hunt": d,
             "epicpity" : 0,
-            "legendpity" : 0
+            "legendpity" : 0,
+            "allAni" : 0,
+            "uniAni" : 0
         }
         mycol.insert_one(newMem)
         userCounterFind = {"func": "counter"}
@@ -60,4 +60,4 @@ class Regist(commands.Cog):
         mycol.update_one(userCounterFind, newvalues)
 
 def setup(bot):
-  bot.add_cog(Regist(bot))
+  bot.add_cog(Register(bot))

@@ -61,7 +61,9 @@ class Registfor(commands.Cog):
             "pokeLevel": [],
             "hunt": d,
             "epicpity" : 0,
-            "legendpity" : 0
+            "legendpity" : 0,
+            "allAni" : 0,
+            "uniAni" : 0
         }
         mycol.insert_one(newMem)
         userCounterFind = {"func": "counter"}

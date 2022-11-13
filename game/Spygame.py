@@ -102,7 +102,7 @@ class Spygame(commands.Cog):
         ]
         location = random.choice(locationList)
         for player in playersID:
-            tempPlayer = await bot.fetch_user(int(player))
+            tempPlayer = await self.bot.fetch_user(int(player))
             await tempPlayer.create_dm()
             if player == playersID[spyIndex]:
                 embedMem = discord.Embed(

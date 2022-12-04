@@ -40,7 +40,7 @@ class Songremove(commands.Cog):
       for song in vc.queue :
         if i == remove :
           await ctx.respond(
-              f'`{song.title}` berhasil diskip paksa oleh {ctx.author.name}-nyan')
+              f'`{song.title}` di urutan ke-{remove} pada antrian berhasil diskip paksa oleh {ctx.author.name}-nyan')
         else :
           arr.append(song)
       
@@ -51,7 +51,7 @@ class Songremove(commands.Cog):
         
     else :
       await ctx.respond(
-          f'`Lagu di queue aja cuma {vc.queue.count}, masa mau hapus lagu ke-{remove} sih, {ctx.user}-nyan..'
+          f'Lagu di queue aja cuma {vc.queue.count}, masa mau hapus lagu ke-{remove} sih, {ctx.user}-nyan..'
       )
       
 def setup(bot):

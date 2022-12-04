@@ -14,7 +14,7 @@ class Songremove(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(description='Force skip the current song playing')
+  @commands.slash_command(description='Force remove a song from queue')
   @commands.has_any_role('Encoder Magang', 'Owner')
   async def songremove(self, ctx, remove: Option(int, "The position of song in queue", required=True)):
     if not ctx.voice_client:

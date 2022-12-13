@@ -54,6 +54,11 @@ class Spygame(commands.Cog):
         await interaction.response.edit_message(embed=embedEdit)
 
     async def start_callback(interaction):
+        if interaction.user.id not in playersID :
+            await interaction.response.send_message(
+                f"Minimal join dulu dek {interaction.user.name}-nyan", ephemeral=True)
+            return
+      
         if playerCount < 3:
             await interaction.response.send_message(
                 f"Neee masih kurang {3 - playerCount} player buat distart nih, ajak yang lain dulu gih {interaction.user.name}-nyan",
@@ -575,12 +580,20 @@ class Spygame(commands.Cog):
         inView.add_item(buttonSV)
         inView.add_item(buttonCG)
 
+        playerString = ""
+        tempNames = playersName
+        random.shuffle(tempNames)
+        tmpIdx = 1
+        for i in tempNames :
+          playerString += f"{tmpIdx}) {i}\n"
+          tmpIdx += 1
+
         embedEdit = discord.Embed(
             title=f"[ SpyGame ]",
             description=
             f"Game telah dimulai! Silahkan saling menanyakan pertanyaan bergantian sesuai dengan urutan member yang telah disediakan. Waktu sebelum babak voting : {playerCount*3} Menit, bisa juga memulai lebih cepat dengan menekan tombol di bawah",
             color=0x330066)
-        embedEdit.add_field(name=f"Player List | Count : {playerCount}",
+        embedEdit.add_field(name=f"Player Order | Count : {playerCount}",
                             value='```' + playerString + '```',
                             inline=False)
         embedDel = discord.Embed(

@@ -47,7 +47,7 @@ class Songinsert(commands.Cog):
                             title=f'Now Playing :',
                             description=f"{track.title}",
                             color=0x1DB954)
-                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.respond(embed=embedVar)
             else:
@@ -83,7 +83,7 @@ class Songinsert(commands.Cog):
                             title=f'Now Playing :',
                             description=f"{tracks[0].title}",
                             color=0x1DB954)
-                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.send(embed=embedVar)
 
@@ -111,7 +111,7 @@ class Songinsert(commands.Cog):
                                     title=f'Now Playing :',
                                     description=f"{partial.title}",
                                     color=0x1DB954)
-                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                        # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
                         await ctx.send(embed=embedVar)
                     else:
@@ -143,7 +143,7 @@ class Songinsert(commands.Cog):
                                     title=f'Now Playing :',
                                     description=f"{track.title}",
                                     color=0x1DB954)
-                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                        # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
                         await ctx.send(embed=embedVar)
                     else:
@@ -163,7 +163,7 @@ class Songinsert(commands.Cog):
                             title=f'Now Playing :',
                             description=f"{search.title}",
                             color=0x1DB954)
-                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.respond(embed=embedVar)
 

@@ -27,6 +27,22 @@ GUILDID = int(os.environ['GUILDID'])
 CSGUILDID = int(os.environ['CSGUILDID'])
 CSSONGCH = int(os.environ['SONGCSID'])
 LOGCH = int(os.environ['LOGCHID'])
+SPBGUILDID = int(os.environ['SPBGUILDID'])
+SPBSONGCH = int(os.environ['SPBCHID'])
+NGGUILDID = int(os.environ['NGGUILDID'])
+NGSONGCH = int(os.environ['NGCHID'])
+
+guildList = []
+guildList.append(GUILDID)
+guildList.append(CSGUILDID)
+guildList.append(SPBGUILDID)
+guildList.append(NGGUILDID)
+
+songchList = []
+songchList.append(SONGCH)
+songchList.append(CSSONGCH)
+songchList.append(SPBSONGCH)
+songchList.append(NGSONGCH)
 
 client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
@@ -90,9 +106,29 @@ async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, 
 @bot.event
 async def on_voice_state_update(member, before, after):
     if member.id == bot.user.id:
-        return
+        if before.channel is None:
+          voice = after.channel.guild.voice_client
+          time = 0
+          while True:
+              await asyncio.sleep(1)
+              time = time + 1
+              if voice.is_playing() and not voice.is_paused():
+                  time = 0
+              if time >= 180:
+                  if after.channel.guild.id in guildList :
+                      idx = guildList.index(after.channel.guild.id)
+                      channel = after.channel.guild.get_channel(songchList[idx])
+                      embedVar = discord.Embed(
+                        description=f"Watashi leave dari {after.channel.name} dulu deh ya, bosen nich udah 3 menit ga ngapa-ngapain, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~",
+                        color=0x800000)
+                      await channel.send(embed=embedVar)
+                
+                  return await voice.disconnect()
+                
+              if not voice.is_connected():
+                  break
 
-    if after.channel is None or before.channel is not None:
+    elif after.channel is None or before.channel is not None:
         voice = before.channel.guild.voice_client
         if len(before.channel.members) >= 1:
             setexist = False
@@ -113,36 +149,26 @@ async def on_voice_state_update(member, before, after):
                 time = time + 1
                 # print(time)
                 if voice.is_playing() and not voice.is_paused():
-                    if time >= 900:
-                        if before.channel.guild.id == CSGUILDID:
-                            channel = before.channel.guild.get_channel(
-                                CSSONGCH)
-                            await channel.send(
-                                f"Watashi leave dari {before.channel.name} dulu deh ya, mendokusai ah muter lagu gada yg dengerin, jahat banget ga di-disconnect, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~"
-                            )
-
-                        elif before.channel.guild.id == GUILDID:
-                            channel = before.channel.guild.get_channel(SONGCH)
-                            await channel.send(
-                                f"Watashi leave dari {before.channel.name} dulu deh ya, mendokusai ah muter lagu gada yg dengerin, jahat banget ga di-disconnect, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~"
-                            )
-
+                    if time >= 300:
+                        if before.channel.guild.id in guildList :
+                          idx = guildList.index(before.channel.guild.id)
+                          channel = before.channel.guild.get_channel(songchList[idx])
+                          embedVar = discord.Embed(
+                            description=f"Watashi leave dari {before.channel.name} dulu deh ya, mendokusai ah muter lagu gada yg dengerin, parah banget ga di-disconnect, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~",
+                            color=0x800000)
+                          await channel.send(embed=embedVar)
+                          
                         return await voice.disconnect()
 
                 else:
-                    if time >= 300:
-                        if before.channel.guild.id == CSGUILDID:
-                            channel = before.channel.guild.get_channel(
-                                CSSONGCH)
-                            await channel.send(
-                                f"Watashi leave dari {before.channel.name} dulu deh ya, sabishii ah ditinggal sendiri, mana ngga di-disconnect pula, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~"
-                            )
-
-                        elif before.channel.guild.id == GUILDID:
-                            channel = before.channel.guild.get_channel(SONGCH)
-                            await channel.send(
-                                f"Watashi leave dari {before.channel.name} dulu deh ya, sabishii ah ditinggal sendiri, mana ngga di-disconnect pula, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~"
-                            )
+                    if time >= 120:                        
+                        if before.channel.guild.id in guildList :
+                          idx = guildList.index(before.channel.guild.id)
+                          channel = before.channel.guild.get_channel(songchList[idx])
+                          embedVar = discord.Embed(
+                            description=f"Watashi leave dari {before.channel.name} dulu deh ya, sabishii ditinggal sendiri, mana ngga di-disconnect pula, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~",
+                            color=0x800000)
+                          await channel.send(embed=embedVar)
 
                         return await voice.disconnect()
 

@@ -478,7 +478,7 @@ class Songpanel(commands.Cog):
         buttonQ.callback = q_callback
         buttonC.callback = c_callback
         buttonD.callback = d_callback
-        view = View(timeout=750)
+        view = View(timeout=180)
         view.add_item(buttonRP)
         view.add_item(buttonS)
         view.add_item(buttonC)

@@ -5,6 +5,7 @@ from wavelink.ext import spotify
 from discord.ui import Select, Button, Modal, InputText, View
 from discord.ext import commands
 from discord.commands import Option
+from StaticVars import Songlist
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
@@ -34,6 +35,7 @@ class Songbye(commands.Cog):
         vc: wavelink.Player = ctx.voice_client
 
     await vc.disconnect()
+    Songlist.songList.clear()
     await ctx.respond(
         f'Hmph, watashi dipaksa keluar sama {ctx.author.name}-nyan, yauda deh sayonara'
     )

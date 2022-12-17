@@ -11,6 +11,7 @@ import numpy as np
 import asyncio
 import time
 import random
+from StaticVars import Songlist
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
@@ -236,10 +237,10 @@ class Songpanel(commands.Cog):
                     return
 
                 try:
+                    random.shuffle(Songlist.songList)
                     arr = []
-                    for song in vc.queue:
-                        arr.append(song)
-                    random.shuffle(arr)
+                    for song in Songlist.songList:
+                        arr.append(song[0])
                     vc.queue.clear()
                     vc.queue.extend(arr)
                     await interaction.response.send_message(
@@ -450,6 +451,7 @@ class Songpanel(commands.Cog):
                         f"Watashi disuruh keluar vc sama {ctx.author}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
                     )
                     await vc.disconnect()
+                    Songlist.songList.clear()
 
                 elif len(vc.channel.members) == 2:
                     embedEdit = discord.Embed(
@@ -465,6 +467,7 @@ class Songpanel(commands.Cog):
                     )
                     view.stop()
                     await vc.disconnect()
+                    Songlist.songList.clear()
 
                 else:
                     await interaction.response.send_message(

@@ -15,6 +15,7 @@ import pytz
 import numpy as np
 import asyncio
 import time
+from StaticVars import Songlist
 
 TOKEN = os.environ['TOKEN']
 ROLECLAIM = int(os.environ['ROLEMSGID'])
@@ -31,18 +32,22 @@ SPBGUILDID = int(os.environ['SPBGUILDID'])
 SPBSONGCH = int(os.environ['SPBCHID'])
 NGGUILDID = int(os.environ['NGGUILDID'])
 NGSONGCH = int(os.environ['NGCHID'])
+ZSGUILDID = int(os.environ['ZSGUILDID'])
+ZSSONGCH = int(os.environ['ZSCHID'])
 
 guildList = []
 guildList.append(GUILDID)
 guildList.append(CSGUILDID)
 guildList.append(SPBGUILDID)
 guildList.append(NGGUILDID)
+guildList.append(ZSGUILDID)
 
 songchList = []
 songchList.append(SONGCH)
 songchList.append(CSSONGCH)
 songchList.append(SPBSONGCH)
 songchList.append(NGSONGCH)
+songchList.append(ZSSONGCH)
 
 client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
@@ -96,7 +101,8 @@ async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, 
                     title=f'Now Playing :',
                     description=f"{next_track.title}",
                     color=0x1DB954)
-        # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+        songL = Songlist.songList.pop(0)
+        embedVar.set_footer(text=f"Requested by : {songL[1].name}", icon_url=songL[1].avatar.url)
         embedVar.set_thumbnail(url='https://cdn.discordapp.com/attachments/995337235211763722/1033079306143940709/milk-and-mocha-cute.gif')
         await ctx.channel.send(embed=embedVar)
     except:

@@ -5,6 +5,7 @@ from wavelink.ext import spotify
 from discord.ui import Select, Button, Modal, InputText, View
 from discord.ext import commands
 from discord.commands import Option
+from StaticVars import Songlist
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
@@ -38,6 +39,7 @@ class Songstop(commands.Cog):
         f'Seluruh musik berhasil dihentikan dan dikosongkan secara paksa oleh {ctx.author.name}-nyan')
     await vc.stop()
     await vc.queue.clear()
+    Songlist.songList.clear()
 
 def setup(bot):
   bot.add_cog(Songstop(bot))

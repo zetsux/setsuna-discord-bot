@@ -5,6 +5,7 @@ from wavelink.ext import spotify
 from discord.ui import Select, Button, Modal, InputText, View
 from discord.ext import commands
 from discord.commands import Option
+from StaticVars import Songlist
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
@@ -41,6 +42,7 @@ class Songremove(commands.Cog):
         if i == remove :
           await ctx.respond(
               f'`{song.title}` di urutan ke-{remove} pada antrian berhasil diskip paksa oleh {ctx.author.name}-nyan')
+          Songlist.songList.pop(remove - 1)
         else :
           arr.append(song)
       

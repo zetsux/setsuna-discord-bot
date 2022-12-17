@@ -6,6 +6,7 @@ from discord.ui import Select, Button, Modal, InputText, View
 from discord.ext import commands
 from discord.commands import Option
 import datetime
+from StaticVars import Songlist
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
@@ -48,11 +49,12 @@ class Songtopinsert(commands.Cog):
                             title=f'Now Playing :',
                             description=f"{track.title}",
                             color=0x1DB954)
-                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.respond(embed=embedVar)
             else:
                 vc.queue.put_at_front(track)
+                Songlist.songList.insert(0, [track, ctx.author])
                 embedVar = discord.Embed(
                     title=f'Top Queueing :',
                     description=f"{track.title}",
@@ -75,22 +77,29 @@ class Songtopinsert(commands.Cog):
                 index = 0
                 for track in tracks:
                     if index == 0:
-                        continue
-                    vc.queue.put_at_index(index, track)
+                        await vc.play(tracks[0])
+                        embedVar = discord.Embed(
+                                    title=f'Now Playing :',
+                                    description=f"{tracks[0].title}",
+                                    color=0x1DB954)
+                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                        embedVar.set_thumbnail(url=mgif)
+                        await ctx.send(embed=embedVar)
+
+                    else :
+                      vc.queue.put_at_index(index - 1, track)
+                      Songlist.songList.insert(index - 1, [track, ctx.author])
+
                     index += 1
 
-                await vc.play(tracks[0])
-                embedVar = discord.Embed(
-                            title=f'Now Playing :',
-                            description=f"{tracks[0].title}",
-                            color=0x1DB954)
-                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                embedVar.set_thumbnail(url=mgif)
-                await ctx.send(embed=embedVar)
+                
 
             else:
+                index = 0
                 for track in tracks:
-                    vc.queue.put_at_front(track)
+                  vc.queue.put_at_index(index, track)
+                  Songlist.songList.insert(index, [track, ctx.author])
+                  index += 1
 
         elif decoded['type'] is spotify.SpotifySearchType.playlist:
             embedVar = discord.Embed(
@@ -105,23 +114,28 @@ class Songtopinsert(commands.Cog):
                 setattr(vc, "loop", False)
                 async for partial in spotify.SpotifyTrack.iterator(
                         query=search, partial_tracks=True):
-                    index += 1
-                    if index == 1:
+                    if index == 0:
                         await vc.play(partial)
                         embedVar = discord.Embed(
                                     title=f'Now Playing :',
                                     description=f"{partial.title}",
                                     color=0x1DB954)
-                        # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
                         await ctx.send(embed=embedVar)
                     else:
-                        vc.queue.put_at_front(partial)
+                        vc.queue.put_at_index(index - 1, partial)
+                        Songlist.songList.insert(index - 1, [partial, ctx.author])
+
+                    index += 1
 
             else:
-                async for partial in spotify.SpotifyTrack.iterator(
-                        query=search, partial_tracks=True):
-                    vc.queue.put_at_front(partial)
+              index = 0
+              async for partial in spotify.SpotifyTrack.iterator(
+                      query=search, partial_tracks=True):
+                  vc.queue.put_at_index(index, partial)
+                  Songlist.songList.insert(index, [partial, ctx.author])
+                  index += 1
 
     else:
         if 'youtube.com/playlist' in search:
@@ -143,18 +157,20 @@ class Songtopinsert(commands.Cog):
                                     title=f'Now Playing :',
                                     description=f"{track.title}",
                                     color=0x1DB954)
-                        # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
                         await ctx.send(embed=embedVar)
                     else:
-                        vc.queue.put_at_index(tempIndex, track)
-
+                        vc.queue.put_at_index(tempIndex - 1, track)
+                        Songlist.songList.insert(tempIndex - 1, [track, ctx.author])
+                    
                     tempIndex += 1
 
             else:
               index = 0
               for track in search.tracks:
                 vc.queue.put_at_index(index, track)
+                Songlist.songList.insert(index, [track, ctx.author])
                 index += 1
 
         else:
@@ -167,12 +183,13 @@ class Songtopinsert(commands.Cog):
                             title=f'Now Playing :',
                             description=f"{search.title}",
                             color=0x1DB954)
-                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.respond(embed=embedVar)
 
             else:
                 vc.queue.put_at_front(search)
+                Songlist.songList.insert(0, [search, ctx.author])
                 embedVar = discord.Embed(
                     title=f'Top Queueing :',
                     description=f"{search.title}",

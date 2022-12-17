@@ -6,6 +6,7 @@ from discord.ui import Select, Button, Modal, InputText, View
 from discord.ext import commands
 from discord.commands import Option
 import datetime
+from StaticVars import Songlist
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
@@ -47,11 +48,12 @@ class Songinsert(commands.Cog):
                             title=f'Now Playing :',
                             description=f"{track.title}",
                             color=0x1DB954)
-                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.respond(embed=embedVar)
             else:
                 await vc.queue.put_wait(track)
+                Songlist.songList.append([track, ctx.author])
                 embedVar = discord.Embed(
                     title=f'Queueing :',
                     description=f"{track.title}",
@@ -77,19 +79,21 @@ class Songinsert(commands.Cog):
                     if index == 1:
                         continue
                     await vc.queue.put_wait(track)
+                    Songlist.songList.append([track, ctx.author])
 
                 await vc.play(tracks[0])
                 embedVar = discord.Embed(
                             title=f'Now Playing :',
                             description=f"{tracks[0].title}",
                             color=0x1DB954)
-                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.send(embed=embedVar)
 
             else:
                 for track in tracks:
                     await vc.queue.put_wait(track)
+                    Songlist.songList.append([track, ctx.author])
 
         elif decoded['type'] is spotify.SpotifySearchType.playlist:
             embedVar = discord.Embed(
@@ -111,16 +115,18 @@ class Songinsert(commands.Cog):
                                     title=f'Now Playing :',
                                     description=f"{partial.title}",
                                     color=0x1DB954)
-                        # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
                         await ctx.send(embed=embedVar)
                     else:
                         await vc.queue.put_wait(partial)
+                        Songlist.songList.append([partial, ctx.author])
 
             else:
                 async for partial in spotify.SpotifyTrack.iterator(
                         query=search, partial_tracks=True):
                     await vc.queue.put_wait(partial)
+                    Songlist.songList.append([partial, ctx.author])
 
     else:
         if 'youtube.com/playlist' in search:
@@ -143,15 +149,17 @@ class Songinsert(commands.Cog):
                                     title=f'Now Playing :',
                                     description=f"{track.title}",
                                     color=0x1DB954)
-                        # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=mgif)
                         await ctx.send(embed=embedVar)
                     else:
                         await vc.queue.put_wait(track)
+                        Songlist.songList.append([track, ctx.author])
 
             else:
                 for track in search.tracks:
                     await vc.queue.put_wait(track)
+                    Songlist.songList.append([track, ctx.author])
 
         else:
             search = await wavelink.YouTubeTrack.search(query=search,
@@ -163,12 +171,13 @@ class Songinsert(commands.Cog):
                             title=f'Now Playing :',
                             description=f"{search.title}",
                             color=0x1DB954)
-                # embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=mgif)
                 await ctx.respond(embed=embedVar)
 
             else:
                 await vc.queue.put_wait(search)
+                Songlist.songList.append([search, ctx.author])
                 embedVar = discord.Embed(
                     title=f'Queueing :',
                     description=f"{search.title}",

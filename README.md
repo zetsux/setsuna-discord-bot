@@ -1,7 +1,7 @@
 # Setsuna Discord Bot
 
 A multifunction discord bot created for personal or own group use fully using python.
-Connected with a database so that every user can register and have
+Connected with a MongoDB database so that every user can register and have
 their own profile. Also hosted almost 24/7 using Uptime Robot.
 
 ## Features

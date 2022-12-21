@@ -1,4 +1,4 @@
-# Multifunction-Discord-Bot (Setsuna)
+# Setsuna Discord Bot
 
 A multifunction discord bot created for personal or own group use fully using python.
 Connected with a database so that every user can register and have

@@ -16,11 +16,25 @@ their own profile. Also hosted almost 24/7 using Uptime Robot.
 - Add and Delete Anime Characters (Admin-only)
 
 ### Song Player (Wavelink)
-- Play songs from Youtube search / given link
-- Play Youtube Playlist
-- Play songs from Spotify
-- Play Spotify Playlists
-- Play Spotify Albums
+
+![Song Panel Image](https://cdn.discordapp.com/attachments/995337235211763722/1055340252333604904/image.png)
+
+- Insert songs to front of queue, back of queue, or by index of queue
+  - From Youtube search
+  - From Youtube video link
+  - From Youtube playlist link
+  - From Spotify song link
+  - From Spotify playlist link
+  - From Spotify album link
+  
+- Pause/Play current song
+- Skip current song
+- Check current song
+- Loop current song
+- Shuffle queue
+- Check queue
+- Clear queue
+- Remove from queue by index
 > Note : All songs from Spotify are re-searched into Youtube and then played
 
 ### Pokemon Collection and Battle

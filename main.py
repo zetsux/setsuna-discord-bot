@@ -82,7 +82,7 @@ async def on_wavelink_node_ready(node: wavelink.Node):
 
 async def connect_nodes():
     await bot.wait_until_ready()
-    await wavelink.NodePool.create_node(bot=bot, host='node1.kartadharta.xyz', port=443, password='kdlavalink', https=True, spotify_client=spotify.SpotifyClient(client_id=SPOTIFYID, client_secret=SPOTIFYSECRET))
+    await wavelink.NodePool.create_node(bot=bot, host='lavalink.lexnet.cc', port=443, password='lexn3tl@val!nk', https=True, spotify_client=spotify.SpotifyClient(client_id=SPOTIFYID, client_secret=SPOTIFYSECRET))
 
 
 @bot.event
@@ -120,12 +120,23 @@ async def on_voice_state_update(member, before, after):
               time = time + 1
               if voice.is_playing() and not voice.is_paused():
                   time = 0
-              if time >= 180:
+              if time >= 180 and not voice.is_paused():
                   if after.channel.guild.id in guildList :
                       idx = guildList.index(after.channel.guild.id)
                       channel = after.channel.guild.get_channel(songchList[idx])
                       embedVar = discord.Embed(
                         description=f"Watashi leave dari {after.channel.name} dulu deh ya, bosen nich udah 3 menit ga ngapa-ngapain, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~",
+                        color=0x800000)
+                      await channel.send(embed=embedVar)
+                
+                  return await voice.disconnect()
+
+              elif time >= 1200:
+                  if after.channel.guild.id in guildList :
+                      idx = guildList.index(after.channel.guild.id)
+                      channel = after.channel.guild.get_channel(songchList[idx])
+                      embedVar = discord.Embed(
+                        description=f"Watashi leave dari {after.channel.name} dulu deh ya, udah 20 menit kena pause bah, nanti /songinsert lagi ajah kalo mau manggil lagi yaa~",
                         color=0x800000)
                       await channel.send(embed=embedVar)
                 

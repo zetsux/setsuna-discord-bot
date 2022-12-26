@@ -420,6 +420,8 @@ for folder in os.listdir("./") :
 
 keep_alive()
 try:
-    bot.run(TOKEN)
-except:
-    os.system("kill 1")
+  bot.run(TOKEN)
+except discord.errors.HTTPException :
+  print("Kena rate limit nih, bentar restart duls..")
+  os.system('kill 1')
+  os.system('python restart.py')

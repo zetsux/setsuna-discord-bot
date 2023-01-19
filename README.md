@@ -53,11 +53,17 @@ their own profile. Also hosted almost 24/7 using Uptime Robot.
 - The '50/50' Gamble
 - Spy Game (SpyFall)
 
-### Chatbot (OpenAI API)
-- Ask questions
-- Give tasks (ex : Solve a problem, create a program code, create an essay, etc)
-- Chat normally
-- And other things that you can try yourself...
+### AI Features (OpenAI API)
+- Chatbot
+  - Ask questions
+  - Give tasks (ex : Solve a problem, create a program code, create an essay, etc)
+  - Chat normally
+  - And other things that you can try yourself...
+- Image Generation by prompt (DALL-E API)
+- Text Alter
+  - Fix Grammar Mistakes
+  - Fix Program Code Mistakes
+  - And other things that you can try yourself...
 
 ### Other Features
 - Profile with User's Statuses, Editable Bio, and Editable Picture

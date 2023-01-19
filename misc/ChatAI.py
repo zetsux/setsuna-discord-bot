@@ -19,10 +19,6 @@ class ChatAI(commands.Cog):
   @commands.slash_command(name='chat', description='Chat with or Ask things to Setsuna (Using Davinci Textbot API from OpenAI)')
   @commands.has_any_role('Encoder Magang', 'Owner')
   async def chatGPT(self, ctx, prompt: Option(str, "Chat to send", required=True)):
-    if ctx.author.id != 463203332027056129 :
-      await ctx.respond(f'Gomenasai {ctx.message.author}-nyan, anata ngga punya hak buat nyuruh watashi pakai command itu...')
-      return
-    
     await ctx.defer()
     try :
       async with aiohttp.ClientSession() as session:
@@ -30,7 +26,7 @@ class ChatAI(commands.Cog):
           "model": "text-davinci-003",
           "prompt": prompt,
           "temperature": 0.5,
-          "max_tokens": 1000,
+          "max_tokens": 4000,
           "presence_penalty": 0,
           "frequency_penalty": 0,
           "best_of": 1

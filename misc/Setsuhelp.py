@@ -18,7 +18,7 @@ class Setsuhelp(commands.Cog):
         title=f"[ Setsuna's AI Commands Help ]",
         description=
         'Seluruh AI commands yang terdapat pada watashi diawali dengan kata "setsu" dan dapat digunakan untuk membantu keperluan kalian!\n',
-        color=0x9acd32)
+        color=0x9457EB)
     embedVar.add_field(
         name=f"[ AI Commands List ]",
         value='```' +

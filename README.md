@@ -37,7 +37,8 @@ their own profile. Also hosted almost 24/7 using Uptime Robot.
 - Remove from queue by index
 > Note : All songs from Spotify are re-searched into Youtube and then played
 
-### Pokemon Collection and Battle
+### Pokemon Collection and Battle (Some Random API)
+- Check the chosen pokemon's entry in pokedex
 - Collect, Level Up, and Evolve Pokemons from Gacha
 - Battle with another user's pokemon
 

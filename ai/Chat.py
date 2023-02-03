@@ -16,9 +16,8 @@ class Chat(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='setsuchat', description='Chat with or Ask things to Setsuna')
-  @commands.has_any_role('Encoder Magang', 'Owner')
-  async def chatCommand(self, ctx, prompt: Option(str, "Chat to send", required=True)):
+  @commands.slash_command(name='setsuchat', description='Chat with and Ask Setsuna to answer or even do things')
+  async def chatCommand(self, ctx, prompt: Option(str, "Chat to send", required=True), answer: Option(str, "Form of Setsuna's answer", choices=["Normal Chat", "Code Blocks"], required=False, default="Normal Chat")):
     await ctx.defer()
     try :
       async with aiohttp.ClientSession() as session:
@@ -35,11 +34,15 @@ class Chat(commands.Cog):
         
         async with session.post("https://api.openai.com/v1/completions", json=pl, headers=h) as r:
           response = await r.json()
-          embedVar = discord.Embed(
-            title=f"Setsuna :",
-            description="```" + response["choices"][0]["text"] + "```",
-            color=0x9457EB)
-          await ctx.respond(embed=embedVar)
+
+          if answer == "Normal Chat" :
+            await ctx.respond(response["choices"][0]["text"])
+
+          else :
+            embedVar = discord.Embed(
+              description="```" + response["choices"][0]["text"] + "```",
+              color=0x9457EB)
+            await ctx.respond(embed=embedVar)
 
     except Exception as e :
       embedVar = discord.Embed(

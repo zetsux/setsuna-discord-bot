@@ -16,9 +16,8 @@ class AlterText(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='setsualter', description='Chat with or Ask things to Setsuna')
-  @commands.has_any_role('Encoder Magang', 'Owner')
-  async def chatCommand(self, ctx, input: Option(str, "Text to edit", required=True), instruction:  Option(str, "Something to do to the input text", required=True)):
+  @commands.slash_command(name='setsualter', description='Alter given text by the given instruction')
+  async def chatAlterCommand(self, ctx, input: Option(str, "Text to edit", required=True), instruction:  Option(str, "Something to do to the input text", required=True)):
     await ctx.defer()
     try :
       async with aiohttp.ClientSession() as session:

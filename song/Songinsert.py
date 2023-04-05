@@ -7,12 +7,23 @@ from discord.ext import commands
 from discord.commands import Option
 import datetime
 from StaticVars import Songlist
+import re
+import requests
+
+URL_REGEX = re.compile(r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)+(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))")
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
 SPOTIFYID = os.environ['SPOTIFYID']
 
 mgif = 'https://cdn.discordapp.com/attachments/995337235211763722/1033079306143940709/milk-and-mocha-cute.gif'
+
+def getThumbnail(url):
+  request = requests.get(url)
+  if request.status_code == 200 :
+    return url
+  else :
+    return mgif
 
 class Songinsert(commands.Cog):
   def __init__(self, bot):
@@ -49,7 +60,7 @@ class Songinsert(commands.Cog):
                             description=f"{track.title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                embedVar.set_thumbnail(url=mgif)
+                embedVar.set_thumbnail(url=getThumbnail(track.thumb))
                 await ctx.respond(embed=embedVar)
             else:
                 await vc.queue.put_wait(track)
@@ -59,7 +70,7 @@ class Songinsert(commands.Cog):
                     description=f"{track.title}",
                     color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                embedVar.set_thumbnail(url=mgif)
+                embedVar.set_thumbnail(url=getThumbnail(track.thumb))
                 await ctx.respond(embed=embedVar)
 
         elif decoded['type'] is spotify.SpotifySearchType.album:
@@ -87,7 +98,7 @@ class Songinsert(commands.Cog):
                             description=f"{tracks[0].title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                embedVar.set_thumbnail(url=mgif)
+                embedVar.set_thumbnail(url=getThumbnail(tracks[0].thumb))
                 await ctx.send(embed=embedVar)
 
             else:
@@ -116,7 +127,7 @@ class Songinsert(commands.Cog):
                                     description=f"{partial.title}",
                                     color=0x1DB954)
                         embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                        embedVar.set_thumbnail(url=mgif)
+                        embedVar.set_thumbnail(url=getThumbnail(partial.thumb))
                         await ctx.send(embed=embedVar)
                     else:
                         await vc.queue.put_wait(partial)
@@ -130,61 +141,84 @@ class Songinsert(commands.Cog):
 
     else:
         if 'youtube.com/playlist' in search:
+          if not URL_REGEX.match(search):
+            search = f'ytsearch: {search}'
+          
+          playlist = await wavelink.NodePool.get_node().get_playlist(wavelink.YouTubePlaylist, search)
+
+          if not playlist : 
             embedVar = discord.Embed(
-                title=f'Queueing :',
-                description=f"[Youtube Playlist]({str(search)})\n",
-                color=0x1DB954)
-            embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-            embedVar.set_thumbnail(url=mgif)
+                        title=f'{search} not found!',
+                        color=0x1DB954)
             await ctx.respond(embed=embedVar)
-            search = await wavelink.YouTubePlaylist.search(query=search)
-            if vc.queue.is_empty and not vc.is_playing():
-                setattr(vc, "loop", False)
-                tempIndex = 0
-                for track in search.tracks:
-                    tempIndex += 1
-                    if tempIndex == 1:
-                        await vc.play(track)
-                        embedVar = discord.Embed(
-                                    title=f'Now Playing :',
-                                    description=f"{track.title}",
-                                    color=0x1DB954)
-                        embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                        embedVar.set_thumbnail(url=mgif)
-                        await ctx.send(embed=embedVar)
-                    else:
-                        await vc.queue.put_wait(track)
-                        Songlist.songList.append([track, ctx.author])
-
-            else:
-                for track in search.tracks:
-                    await vc.queue.put_wait(track)
-                    Songlist.songList.append([track, ctx.author])
-
-        else:
-            search = await wavelink.YouTubeTrack.search(query=search,
-                                                        return_first=True)
-            if vc.queue.is_empty and not vc.is_playing():
-                setattr(vc, "loop", False)
-                await vc.play(search)
+            return
+          
+          embedVar = discord.Embed(
+              title=f'Queueing :',
+              description=f"[{playlist}]({str(search)})\n",
+              color=0x1DB954)
+          embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+          embedVar.set_thumbnail(url=mgif)
+          await ctx.respond(embed=embedVar)
+          if vc.queue.is_empty and not vc.is_playing():
+            setattr(vc, "loop", False)
+            tempIndex = 0
+            for track in playlist.tracks:
+              tempIndex += 1
+              if tempIndex == 1:
+                await vc.play(track)
                 embedVar = discord.Embed(
                             title=f'Now Playing :',
-                            description=f"{search.title}",
+                            description=f"{track.title}",
                             color=0x1DB954)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                embedVar.set_thumbnail(url=mgif)
-                await ctx.respond(embed=embedVar)
+                embedVar.set_thumbnail(url=getThumbnail(track.thumb))
+                await ctx.send(embed=embedVar)
+              else:
+                await vc.queue.put_wait(track)
+                Songlist.songList.append([track, ctx.author])
 
-            else:
-                await vc.queue.put_wait(search)
-                Songlist.songList.append([search, ctx.author])
-                embedVar = discord.Embed(
-                    title=f'Queueing :',
-                    description=f"{search.title}",
-                    color=0x1DB954)
-                embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-                embedVar.set_thumbnail(url=mgif)
-                await ctx.respond(embed=embedVar)
+          else:
+            for track in playlist.tracks:
+              await vc.queue.put_wait(track)
+              Songlist.songList.append([track, ctx.author])
+
+        else:
+          if not URL_REGEX.match(search):
+            search = f'ytsearch: {search}'
+          
+          tracks = await wavelink.NodePool.get_node().get_tracks(wavelink.YouTubeTrack, search)
+
+          if not tracks : 
+            embedVar = discord.Embed(
+                        title=f'{search} not found!',
+                        color=0x1DB954)
+            await ctx.respond(embed=embedVar)
+            return
+            
+          searchYt = tracks[0]
+          
+          if vc.queue.is_empty and not vc.is_playing():
+            setattr(vc, "loop", False)
+            await vc.play(searchYt)
+            embedVar = discord.Embed(
+                        title=f'Now Playing :',
+                        description=f"{searchYt}",
+                        color=0x1DB954)
+            embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+            embedVar.set_thumbnail(url=getThumbnail(searchYt.thumb))
+            await ctx.respond(embed=embedVar)
+
+          else:
+            await vc.queue.put_wait(searchYt)
+            Songlist.songList.append([searchYt, ctx.author])
+            embedVar = discord.Embed(
+                title=f'Queueing :',
+                description=f"{searchYt}",
+                color=0x1DB954)
+            embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+            embedVar.set_thumbnail(url=getThumbnail(searchYt.thumb))
+            await ctx.respond(embed=embedVar)
 
     vc.ctx = ctx
 

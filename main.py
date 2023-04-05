@@ -15,6 +15,7 @@ import pytz
 import numpy as np
 import asyncio
 import time
+import requests
 from StaticVars import Songlist
 
 TOKEN = os.environ['TOKEN']
@@ -87,6 +88,12 @@ async def connect_nodes():
     await bot.wait_until_ready()
     await wavelink.NodePool.create_node(bot=bot, host=LVLINKHOST, port=LVLINKPORT, password=LVLINKPASS, https=True, spotify_client=spotify.SpotifyClient(client_id=SPOTIFYID, client_secret=SPOTIFYSECRET))
 
+def getThumbnail(url):
+  request = requests.get(url)
+  if request.status_code == 200 :
+    return url
+  else :
+    return 'https://cdn.discordapp.com/attachments/995337235211763722/1033079306143940709/milk-and-mocha-cute.gif'
 
 @bot.event
 async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, reason):
@@ -106,7 +113,7 @@ async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, 
                     color=0x1DB954)
         songL = Songlist.songList.pop(0)
         embedVar.set_footer(text=f"Requested by : {songL[1].name}", icon_url=songL[1].avatar.url)
-        embedVar.set_thumbnail(url='https://cdn.discordapp.com/attachments/995337235211763722/1033079306143940709/milk-and-mocha-cute.gif')
+        embedVar.set_thumbnail(url=getThumbnail(next_track.thumb))
         await ctx.channel.send(embed=embedVar)
     except:
         await vc.stop()

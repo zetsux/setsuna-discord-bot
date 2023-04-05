@@ -110,7 +110,7 @@ async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, 
         embedVar = discord.Embed(
                     title=f'Now Playing :',
                     description=f"{next_track.title}",
-                    color=0x1DB954)
+                    color=0xf2bc00)
         songL = Songlist.songList.pop(0)
         embedVar.set_footer(text=f"Requested by : {songL[1].name}", icon_url=songL[1].avatar.url)
         embedVar.set_thumbnail(url=getThumbnail(next_track.thumb))

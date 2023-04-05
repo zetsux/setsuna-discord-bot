@@ -5,7 +5,6 @@ from wavelink.ext import spotify
 from discord.ui import Select, Button, Modal, InputText, View
 from discord.ext import commands
 from discord.commands import Option
-import datetime
 from StaticVars import Songlist
 import re
 import requests
@@ -58,7 +57,7 @@ class Songinsert(commands.Cog):
                 embedVar = discord.Embed(
                             title=f'Now Playing :',
                             description=f"{track.title}",
-                            color=0x1DB954)
+                            color=0xf2bc00)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=getThumbnail(track.thumb))
                 await ctx.respond(embed=embedVar)
@@ -68,7 +67,7 @@ class Songinsert(commands.Cog):
                 embedVar = discord.Embed(
                     title=f'Queueing :',
                     description=f"{track.title}",
-                    color=0x1DB954)
+                    color=0xf2bc00)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=getThumbnail(track.thumb))
                 await ctx.respond(embed=embedVar)
@@ -77,7 +76,7 @@ class Songinsert(commands.Cog):
             embedVar = discord.Embed(
                 title=f'Queueing :',
                 description=f"[Spotify Album]({str(search)})\n",
-                color=0x1DB954)
+                color=0xf2bc00)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
             embedVar.set_thumbnail(url=mgif)
             await ctx.respond(embed=embedVar)
@@ -96,7 +95,7 @@ class Songinsert(commands.Cog):
                 embedVar = discord.Embed(
                             title=f'Now Playing :',
                             description=f"{tracks[0].title}",
-                            color=0x1DB954)
+                            color=0xf2bc00)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=getThumbnail(tracks[0].thumb))
                 await ctx.send(embed=embedVar)
@@ -110,7 +109,7 @@ class Songinsert(commands.Cog):
             embedVar = discord.Embed(
                 title=f'Queueing :',
                 description=f"[Spotify Playlist]({str(search)})\n",
-                color=0x1DB954)
+                color=0xf2bc00)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
             embedVar.set_thumbnail(url=mgif)
             await ctx.respond(embed=embedVar)
@@ -125,7 +124,7 @@ class Songinsert(commands.Cog):
                         embedVar = discord.Embed(
                                     title=f'Now Playing :',
                                     description=f"{partial.title}",
-                                    color=0x1DB954)
+                                    color=0xf2bc00)
                         embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                         embedVar.set_thumbnail(url=getThumbnail(partial.thumb))
                         await ctx.send(embed=embedVar)
@@ -149,14 +148,14 @@ class Songinsert(commands.Cog):
           if not playlist : 
             embedVar = discord.Embed(
                         title=f'{search} not found!',
-                        color=0x1DB954)
+                        color=0xf2bc00)
             await ctx.respond(embed=embedVar)
             return
           
           embedVar = discord.Embed(
               title=f'Queueing :',
               description=f"[{playlist}]({str(search)})\n",
-              color=0x1DB954)
+              color=0xf2bc00)
           embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
           embedVar.set_thumbnail(url=mgif)
           await ctx.respond(embed=embedVar)
@@ -170,7 +169,7 @@ class Songinsert(commands.Cog):
                 embedVar = discord.Embed(
                             title=f'Now Playing :',
                             description=f"{track.title}",
-                            color=0x1DB954)
+                            color=0xf2bc00)
                 embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
                 embedVar.set_thumbnail(url=getThumbnail(track.thumb))
                 await ctx.send(embed=embedVar)
@@ -192,7 +191,7 @@ class Songinsert(commands.Cog):
           if not tracks : 
             embedVar = discord.Embed(
                         title=f'{search} not found!',
-                        color=0x1DB954)
+                        color=0xf2bc00)
             await ctx.respond(embed=embedVar)
             return
             
@@ -204,7 +203,7 @@ class Songinsert(commands.Cog):
             embedVar = discord.Embed(
                         title=f'Now Playing :',
                         description=f"{searchYt}",
-                        color=0x1DB954)
+                        color=0xf2bc00)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
             embedVar.set_thumbnail(url=getThumbnail(searchYt.thumb))
             await ctx.respond(embed=embedVar)
@@ -215,7 +214,7 @@ class Songinsert(commands.Cog):
             embedVar = discord.Embed(
                 title=f'Queueing :',
                 description=f"{searchYt}",
-                color=0x1DB954)
+                color=0xf2bc00)
             embedVar.set_footer(text=f"Requested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
             embedVar.set_thumbnail(url=getThumbnail(searchYt.thumb))
             await ctx.respond(embed=embedVar)

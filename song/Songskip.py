@@ -33,11 +33,13 @@ class Songskip(commands.Cog):
     else:
         vc: wavelink.Player = ctx.voice_client
 
-    setattr(vc, "loop", False)
-    await ctx.respond(
-        f'`{vc.track.title}` berhasil diskip paksa oleh {ctx.author.name}-nyan'
-    )
-    await vc.stop()
+    try:
+      setattr(vc, "loop", False)
+      await ctx.respond(
+        f'`{vc.track.title}` berhasil diskip paksa oleh {ctx.author.name}-nyan')
+      await vc.stop()
+    except:
+      await ctx.respond("Ngga ada lagu yang bisa diskip, gajelas ah..")
 
 def setup(bot):
   bot.add_cog(Songskip(bot))

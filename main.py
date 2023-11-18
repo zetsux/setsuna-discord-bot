@@ -25,6 +25,7 @@ LORENDB = os.environ['LORENDB']
 LVLINKHOST = os.environ['LVLINKHOST']
 LVLINKPORT = int(os.environ['LVLINKPORT'])
 LVLINKPASS = os.environ['LVLINKPASS']
+LVLINKSSL = (os.environ['LVLINKSSL'] == '1')
 SPOTIFYSECRET = os.environ['SPOTIFYSECRET']
 SPOTIFYID = os.environ['SPOTIFYID']
 SONGCH = int(os.environ['SONGCHID'])
@@ -86,7 +87,7 @@ async def on_wavelink_node_ready(node: wavelink.Node):
 
 async def connect_nodes():
     await bot.wait_until_ready()
-    await wavelink.NodePool.create_node(bot=bot, host=LVLINKHOST, port=LVLINKPORT, password=LVLINKPASS, https=True, spotify_client=spotify.SpotifyClient(client_id=SPOTIFYID, client_secret=SPOTIFYSECRET))
+    await wavelink.NodePool.create_node(bot=bot, host=LVLINKHOST, port=LVLINKPORT, password=LVLINKPASS, https=LVLINKSSL, spotify_client=spotify.SpotifyClient(client_id=SPOTIFYID, client_secret=SPOTIFYSECRET))
 
 def getThumbnail(url):
   request = requests.get(url)

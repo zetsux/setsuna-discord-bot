@@ -2,7 +2,7 @@
 
 A multifunction discord bot created for personal or own group use fully using python.
 Connected with a MongoDB database so that every user can register and have
-their own profile. Also hosted almost 24/7 using Uptime Robot.
+their own profile. Also hosted almost 24/7 using Replit and Uptime Robot.
 
 ![Icon Image](https://cdn.discordapp.com/attachments/995337235211763722/1055085621812678786/image.png)
 

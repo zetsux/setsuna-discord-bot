@@ -2,9 +2,7 @@
 
 A multifunction discord bot created for personal or own group use fully using python.
 Connected with a MongoDB database so that every user can register and have their own profile.
-~~Also~~ Was hosted almost 24/7 using Replit and Uptime Robot (sadly Replit stopped free hosting 😔), but the bot is of course still hostable by other means.
-
-![Icon Image](https://cdn.discordapp.com/attachments/995337235211763722/1055085621812678786/image.png)
+~~Is~~ Was hosted almost 24/7 using Replit and Uptime Robot (sadly Replit stopped free hosting 😔), but the bot is of course still hostable by other means.
 
 ## Features
 
@@ -16,8 +14,6 @@ Connected with a MongoDB database so that every user can register and have their
 - Add and Delete Anime Characters (Admin-only)
 
 ### Song Player (Wavelink)
-
-![Song Panel Image](https://cdn.discordapp.com/attachments/995337235211763722/1055340252333604904/image.png)
 
 - Insert songs to front of queue, back of queue, or by index of queue
   - From Youtube search

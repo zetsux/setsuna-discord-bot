@@ -645,7 +645,7 @@ class Anitrade(commands.Cog):
             f"Trade Cancelled ( {ctx.author.name}-nyan | {member.name}-nyan )",
             description="Cause : Not used for too long",
             color=0xff69b4)
-        await tradeMsg.edit_original_message(embed=embedEnd, view=None)
+        await tradeMsg.edit_original_response(embed=embedEnd, view=None)
 
 def setup(bot):
   bot.add_cog(Anitrade(bot))

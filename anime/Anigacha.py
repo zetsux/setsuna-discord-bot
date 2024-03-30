@@ -245,7 +245,7 @@ class Anigacha(commands.Cog):
                 title=f"Thank you for using anigacha!",
                 description="You can type /anigacha to do more gachas",
                 color=0xff69b4)
-            await gachaMsg.edit_original_message(embed=embedEdit, view=None)
+            await gachaMsg.edit_original_response(embed=embedEdit, view=None)
 
 def setup(bot):
   bot.add_cog(Anigacha(bot))

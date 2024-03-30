@@ -185,7 +185,7 @@ class Pokepartner(commands.Cog):
             title=f"Poke Partner Timed Out...",
             description=f"Partner : {tempFind['pokemon']}",
             color=0xffff00)
-        await panelMsg.edit_original_message(embed=embedEdit, view=None)
+        await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
 def setup(bot):
   bot.add_cog(Pokepartner(bot))

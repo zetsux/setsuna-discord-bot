@@ -1463,7 +1463,7 @@ class Pokeduel(commands.Cog):
                     description=
                     f"Result : <@{str(player[0])}> wins due to enemy not playing for too long!",
                     color=0xee1515)
-                await gameMsg.edit_original_message(embed=embedRes, view=None)
+                await gameMsg.edit_original_response(embed=embedRes, view=None)
                 await gameMsg.channel.send(f"Duel telah berakhir karena <@{str(player[1])}> kehabisan waktu!")
                 arrangelb(str(player[0]))
                 arrangelb(str(player[1]))
@@ -1494,7 +1494,7 @@ class Pokeduel(commands.Cog):
                     description=
                     f"Result : <@{str(player[1])}> wins due to enemy not playing for too long!",
                     color=0xee1515)
-                await gameMsg.edit_original_message(embed=embedRes, view=None)
+                await gameMsg.edit_original_response(embed=embedRes, view=None)
                 await gameMsg.channel.send(f"Duel telah berakhir karena <@{str(player[0])}> kehabisan waktu!")
 
                 arrangelb(str(player[0]))
@@ -1519,7 +1519,7 @@ class Pokeduel(commands.Cog):
             description=
             f"Cause : Timed out, no one accepted the duel for too long",
             color=0xee1515)
-        await panelMsg.edit_original_message(embed=embedEdit, view=None)
+        await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
 def setup(bot):
   bot.add_cog(Pokeduel(bot))

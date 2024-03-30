@@ -247,7 +247,7 @@ class Profile(commands.Cog):
                 description=
                 "Kalau mau cek profile lagi tinggal /profile aja yaa",
                 color=0xff10f0)
-            await profileMsg.edit_original_message(embed=embedEdit, view=None)
+            await profileMsg.edit_original_response(embed=embedEdit, view=None)
 
 def setup(bot):
   bot.add_cog(Profile(bot))

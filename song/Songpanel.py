@@ -502,7 +502,7 @@ class Songpanel(commands.Cog):
                 title=f"Song Panelnya sudah ditutup karena lama ngga dipakai..",
                 description="Tulis /songpanel lagi kalau mau pakai yaa~",
                 color=0xf2bc00)
-            await panelMsg.edit_original_message(embed=embedEdit, view=None)
+            await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
 def setup(bot):
   bot.add_cog(Songpanel(bot))

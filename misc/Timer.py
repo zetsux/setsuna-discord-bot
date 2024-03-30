@@ -78,7 +78,7 @@ class Timer(commands.Cog):
             embedEnd = discord.Embed(title=f"Timer ditutup karena waktu habis",
                                      description="Sudah abis kak",
                                      color=0xffff00)
-            await timerMsg.edit_original_message(embed=embedEnd, view=None)
+            await timerMsg.edit_original_response(embed=embedEnd, view=None)
             break
         if flag:
             break

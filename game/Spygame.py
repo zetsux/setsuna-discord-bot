@@ -1031,7 +1031,7 @@ class Spygame(commands.Cog):
             title=f"Game telah ditutup karena tak kunjung distart",
             description="Watashi udah nunggu lama tapi belum distart juga..",
             color=0x330066)
-        await panelMsg.edit_original_message(embed=embedEdit, view=None)
+        await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
 def setup(bot):
   bot.add_cog(Spygame(bot))

@@ -548,7 +548,7 @@ class Blackjack(commands.Cog):
             title=f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
             description="You've lost.. (Time limit's up)",
             color=0x8b0000)
-        await bjMsg.edit_original_message(embed=embedEdit, view=None)
+        await bjMsg.edit_original_response(embed=embedEdit, view=None)
         await bjMsg.followup.send(
             f"Neee {ctx.author.name}-nyan lama banget sih, udah watashi tungguin dari tadi loh, ngga kabur kan ya? Tapi zannen da, karena waktunya sudah habis jadi anata dianggap kalah dan kehilangan senilai {number} Gold"
         )

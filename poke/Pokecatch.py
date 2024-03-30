@@ -748,7 +748,7 @@ class Pokecatch(commands.Cog):
                 title=f"Thank you for using pokecatch!",
                 description="You can type /pokecatch to do more gachas",
                 color=0xee1515)
-            await gachaMsg.edit_original_message(embed=embedEdit, view=None)
+            await gachaMsg.edit_original_response(embed=embedEdit, view=None)
 
 def setup(bot):
   bot.add_cog(Pokecatch(bot))

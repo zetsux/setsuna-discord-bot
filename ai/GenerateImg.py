@@ -90,7 +90,7 @@ class GenerateImg(commands.Cog):
             embedVar = discord.Embed(color=0x9457EB)
             embedVar.set_image(url=response["data"][index-1]["url"])
             embedVar.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-            await imgMsg.edit_original_message(embed=embedVar, view=None)
+            await imgMsg.edit_original_response(embed=embedVar, view=None)
           
     except Exception as e :
       embedVar = discord.Embed(

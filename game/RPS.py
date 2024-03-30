@@ -131,7 +131,7 @@ class RPS(commands.Cog):
                     url=
                     'https://c.tenor.com/wyfhYqF1tJIAAAAM/mark-wahlberg-wahlberg.gif'
                 )
-                await rpsMessage.edit_original_message(embed=embedEdit,
+                await rpsMessage.edit_original_response(embed=embedEdit,
                                                        view=None)
                 await rpsMessage.followup.send(
                     f"Nampaknya terjadi tie game minna-san!")
@@ -163,7 +163,7 @@ class RPS(commands.Cog):
                     description=f"{winner.name} wins!",
                     color=0xf73718)
                 embedEdit.set_image(url=winner.avatar.url)
-                await rpsMessage.edit_original_message(embed=embedEdit,
+                await rpsMessage.edit_original_response(embed=embedEdit,
                                                        view=None)
                 await rpsMessage.followup.send(
                     f"Omedetou, {winner.name}-nyan berhasil menjadi pemenang!")
@@ -189,7 +189,7 @@ class RPS(commands.Cog):
             description=
             "Kelamaan ihh, masa dah 5 menit ada yang blom milih juga",
             color=0x808080)
-        await rpsMessage.edit_original_message(embed=embedEdit, view=None)
+        await rpsMessage.edit_original_response(embed=embedEdit, view=None)
         if player1 == "kosong" and player2 == "kosong":
             await rpsMessage.followup.send(
                 f"Hmph, battlenya watashi tutup deh, {ctx.author.name}-nyan sama {member.name}-nyan pada belum milih sih, lama banget..",

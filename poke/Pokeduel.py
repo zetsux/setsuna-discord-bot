@@ -6,7 +6,7 @@ import urllib.request as urllib2
 from discord.ext import commands
 from discord.commands import Option
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
 from discord.commands import Option
 import numpy as np

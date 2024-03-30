@@ -2,7 +2,7 @@ from webserver import keep_alive
 import os
 import random
 import discord
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
 from discord.commands import Option
 import pymongo

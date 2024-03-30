@@ -6,7 +6,7 @@ import urllib.request as urllib2
 from discord.ext import commands
 from discord.commands import Option
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
 from discord.commands import Option
 import numpy as np
@@ -46,7 +46,7 @@ class Pokepartner(commands.Cog):
 
         modaler = Modal(title="Change Pokemon Partner", timeout=None)
         modaler.add_item(
-            InputText(label='Pokemon Name',
+            TextInput(label='Pokemon Name',
                       placeholder=
                       '(Must be the exact same as inventory), ex : Pikachu'))
 

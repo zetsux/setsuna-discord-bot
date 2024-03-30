@@ -2,7 +2,7 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
 from discord.commands import Option
 import numpy as np
@@ -107,12 +107,12 @@ class Anitrade(commands.Cog):
         modaler = Modal(title="Add your anime character to the trading board",
                         timeout=None)
         modaler.add_item(
-            InputText(
+            TextInput(
                 label='Anime Character Name',
                 placeholder=
                 '(Must be the exact same as yours), ex : Naruto Uzumaki'))
         modaler.add_item(
-            InputText(label='Anime Character Quantity',
+            TextInput(label='Anime Character Quantity',
                       placeholder='(Must have in inventory), ex : 2'))
 
         async def addmod_callback(minteraction):
@@ -257,12 +257,12 @@ class Anitrade(commands.Cog):
         modaler = Modal(title="Remove anime character from the trading board",
                         timeout=None)
         modaler.add_item(
-            InputText(
+            TextInput(
                 label='Anime Character Name',
                 placeholder=
                 '(Must be the exact same as board), ex : Naruto Uzumaki'))
         modaler.add_item(
-            InputText(label='Anime Character Quantity',
+            TextInput(label='Anime Character Quantity',
                       placeholder='(Must have in board), ex : 2'))
 
         async def remmod_callback(minteraction):

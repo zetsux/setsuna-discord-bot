@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -46,17 +47,17 @@ class Anidel(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='anidel', description='Delete anime from your inventory with count is entered number')
+  @app_commands.command(name='anidel', description='Delete anime from your inventory with count is entered number')
   async def anime_remove(self, ctx, name: Option(str, "Name to delete", required=True), number: Option(int, "Number to delete", required=True)):
     if number <= 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan',
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)
         return
 
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
 
     else:
@@ -72,31 +73,31 @@ class Anidel(commands.Cog):
                 animeIndex += 1
 
             if userFind["animeCount"][animeIndex] < number:
-                await ctx.respond(
-                    f'Neee {ctx.author.name}-nyan, anata cuma punya {userFind["animeCount"][animeIndex]} {name}',
+                await ctx.response.send_message(
+                    f'Neee {ctx.user.name}-nyan, anata cuma punya {userFind["animeCount"][animeIndex]} {name}',
                     ephemeral=True)
 
             elif userFind["animeCount"][animeIndex] == number:
-                await ctx.respond(
-                    f'Omedetou {ctx.author.name}-nyan, penghapusan {number} {name} berhasil. Menghapuskan seluruh koleksi {name} anata'
+                await ctx.response.send_message(
+                    f'Omedetou {ctx.user.name}-nyan, penghapusan {number} {name} berhasil. Menghapuskan seluruh koleksi {name} anata'
                 )
                 stringIndex = "animeCount." + str(animeIndex)
                 mycol.update_one(userFind, {"$set": {"uniAni" : mUni - 1, "allAni" : mAll - 1, stringIndex: 0}})
-                arrangelb(ctx.author.id)
+                arrangelb(ctx.user.id)
 
             elif userFind["animeCount"][animeIndex] > number:
-                await ctx.respond(
-                    f'Omedetou {ctx.author.name}-nyan, penghapusan {number} {name} berhasil. Membuat jumlah koleksi {name} anata tersisa {userFind["animeCount"][animeIndex] - number}')
+                await ctx.response.send_message(
+                    f'Omedetou {ctx.user.name}-nyan, penghapusan {number} {name} berhasil. Membuat jumlah koleksi {name} anata tersisa {userFind["animeCount"][animeIndex] - number}')
               
                 stringIndex = "animeCount." + str(animeIndex)
                 newvalues = {"$set": {"allAni" : mAll - 1, stringIndex : userFind["animeCount"][animeIndex] - number}}
                 mycol.update_one(userFind, newvalues)
-                arrangelb(ctx.author.id)
+                arrangelb(ctx.user.id)
 
         else:
-            await ctx.respond(
-                f'Neee {ctx.author.name}-nyan, jangan halu yaa, anata ngga punya yang namanya {name}...\natau salah tulis nama mungkin, coba dicek lagi deh.',
+            await ctx.response.send_message(
+                f'Neee {ctx.user.name}-nyan, jangan halu yaa, anata ngga punya yang namanya {name}...\natau salah tulis nama mungkin, coba dicek lagi deh.',
                 ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Anidel(bot))
+async def setup(bot):
+  await bot.add_cog(Anidel(bot))

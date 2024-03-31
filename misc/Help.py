@@ -3,6 +3,7 @@ import os
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
@@ -11,7 +12,7 @@ class Help(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='help', description='Shows the guide to use Setsuna')
+  @app_commands.command(name='help', description='Shows the guide to use Setsuna')
   async def show_helpp(self, ctx):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
@@ -29,7 +30,7 @@ class Help(commands.Cog):
         + '/setsuhelp\n↪ All about AI commands and how to use them!\n'
         + '```',
         inline=False)
-    await ctx.respond(embed=embedVar, ephemeral=True)
+    await ctx.response.send_message(embed=embedVar, ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Help(bot))
+async def setup(bot):
+  await bot.add_cog(Help(bot))

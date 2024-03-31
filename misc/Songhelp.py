@@ -3,6 +3,7 @@ import os
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
@@ -11,7 +12,7 @@ class Songhelp(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='songhelp', description='Explains how to use song commands')
+  @app_commands.command(name='songhelp', description='Explains how to use song commands')
   async def song_helpp(self, ctx):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
@@ -27,7 +28,7 @@ class Songhelp(commands.Cog):
         '/songpanel\n  ↪ Berisi berbagai tombol yang dapat digunakan untuk membantu dalam mendengarkan lagu, yakni Resume, Pause, Skip, Loop, Shuffle, dan Disconnect (hanya bila ada satu orang saja di dalam VC atau Setsuna tidak sedang melakukan apa-apa). Selain itu, juga bisa digunakan untuk mengecek lagu yang sedang diputar serta antrian yang menunggu!\n'
         + '```',
         inline=False)
-    await ctx.respond(embed=embedVar, ephemeral=True)
+    await ctx.response.send_message(embed=embedVar, ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Songhelp(bot))
+async def setup(bot):
+  await bot.add_cog(Songhelp(bot))

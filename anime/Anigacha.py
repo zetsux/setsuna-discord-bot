@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -48,12 +49,12 @@ class Anigacha(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='anigacha', description='Play anime gacha for 1 Platina each')
+  @app_commands.command(name='anigacha', description='Play anime gacha for 1 Platina each')
   async def anime_gacha(self, ctx):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
 
     else:
@@ -237,7 +238,7 @@ class Anigacha(commands.Cog):
             url=
             "https://cdn.discordapp.com/attachments/995337235211763722/1013753097807482911/imgonline-com-ua-twotoone-bC3frXSwfPCEo0S.jpg"
         )
-        gachaMsg = await ctx.respond(embed=embedVar, view=view)
+        gachaMsg = await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -247,5 +248,5 @@ class Anigacha(commands.Cog):
                 color=0xff69b4)
             await gachaMsg.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Anigacha(bot))
+async def setup(bot):
+  await bot.add_cog(Anigacha(bot))

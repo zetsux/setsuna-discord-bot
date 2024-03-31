@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -21,25 +22,25 @@ class Giveawaygold(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='giveawaygold', description='Giveaway the entered number of gold to the fastest claimer')
+  @app_commands.command(name='giveawaygold', description='Giveaway the entered number of gold to the fastest claimer')
   async def gold_giveaway(self, ctx, number: Option(int, "Number to giveaway",required=True)):
     await ctx.defer()
     if number <= 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan',
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)
         return
 
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
 
     else:
         goldCount = userFind["gold"]
         if number > goldCount:
-            await ctx.respond(
-                f'Gold anata ngga cukup, {ctx.author.name}-nyan...',
+            await ctx.response.send_message(
+                f'Gold anata ngga cukup, {ctx.user.name}-nyan...',
                 ephemeral=True)
 
         else:
@@ -60,7 +61,7 @@ class Giveawaygold(commands.Cog):
                 else:
                     embedEdit = discord.Embed(
                         title=str(number) + " Gold Giveaway by " +
-                        ctx.author.name + "-nyan",
+                        ctx.user.name + "-nyan",
                         description=
                         f">> Claimed by {interaction.user.name}-nyan",
                         color=0xffd700)
@@ -79,7 +80,7 @@ class Giveawaygold(commands.Cog):
             view.add_item(buttons)
 
             embedVar = discord.Embed(
-                title=str(number) + " Gold Giveaway by " + ctx.author.name +
+                title=str(number) + " Gold Giveaway by " + ctx.user.name +
                 "-nyan",
                 description="Penekan tombol tercepat akan mendapatkannya!",
                 color=0xffd700)
@@ -87,7 +88,7 @@ class Giveawaygold(commands.Cog):
                 url=
                 "https://i.ibb.co/BZPbJ6W/pngfind-com-gold-coins-png-37408.png"
             )
-            await ctx.respond(embed=embedVar, view=view)
+            await ctx.response.send_message(embed=embedVar, view=view)
 
-def setup(bot):
-  bot.add_cog(Giveawaygold(bot))
+async def setup(bot):
+  await bot.add_cog(Giveawaygold(bot))

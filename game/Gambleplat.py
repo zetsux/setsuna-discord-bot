@@ -3,6 +3,7 @@ import os
 import pymongo
 import datetime
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import random
 
@@ -18,25 +19,25 @@ class Gambleplat(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='gambleplat', description='Gamble your platina with approximately 50/50 odds of getting double or losing all'
+  @app_commands.command(name='gambleplat', description='Gamble your platina with approximately 50/50 odds of getting double or losing all'
 )
   async def platina_gamble(self, ctx, number: Option(int, "Number to gamble", required=True)):
     if number <= 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan',
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)
         return
 
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
 
     else:
         platinaCount = userFind["platina"]
         if number > platinaCount:
-            await ctx.respond(
-                f'Platina anata ngga cukup, {ctx.author.name}-nyan...',
+            await ctx.response.send_message(
+                f'Platina anata ngga cukup, {ctx.user.name}-nyan...',
                 ephemeral=True)
 
         else:
@@ -45,17 +46,17 @@ class Gambleplat(commands.Cog):
                 platinaCount += number
                 newvalues = {"$set": {"platina": platinaCount}}
                 mycol.update_one(userFind, newvalues)
-                await ctx.respond(
-                    f'Omedetou! platina {ctx.author.name}-nyan menjadi {platinaCount}',
+                await ctx.response.send_message(
+                    f'Omedetou! platina {ctx.user.name}-nyan menjadi {platinaCount}',
                     ephemeral=True)
 
             else:
                 platinaCount -= number
                 newvalues = {"$set": {"platina": platinaCount}}
                 mycol.update_one(userFind, newvalues)
-                await ctx.respond(
-                    f'Yahh kalah, platina {ctx.author.name}-nyan menjadi {platinaCount}',
+                await ctx.response.send_message(
+                    f'Yahh kalah, platina {ctx.user.name}-nyan menjadi {platinaCount}',
                     ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Gambleplat(bot))
+async def setup(bot):
+  await bot.add_cog(Gambleplat(bot))

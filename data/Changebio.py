@@ -1,7 +1,6 @@
 import discord
 import os
 import pymongo
-import datetime
 from discord.ext import commands
 from discord import app_commands
 

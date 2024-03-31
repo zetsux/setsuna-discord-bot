@@ -1,9 +1,9 @@
 import discord
-from discord import app_commands
 import os
 import pymongo
 import datetime
 from discord.ext import commands
+from discord import app_commands
 
 MONGODB = os.environ['MONGODB']
 

@@ -4,6 +4,7 @@ import wavelink
 from wavelink.ext import spotify
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 from StaticVars import Songlist
 
@@ -15,20 +16,20 @@ class Songbye(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(description='Disconnect the bot from the voice channel')
-  @commands.has_any_role('Encoder Magang', 'Owner')
+  @app_commands.command(description='Disconnect the bot from the voice channel')
+  @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
   async def songbye(self, ctx):
     if not ctx.voice_client:
-        await ctx.respond(
-            f'Ihh aneh deh {ctx.author.name}-nyan, watashi aja ngga di vc',
+        await ctx.response.send_message(
+            f'Ihh aneh deh {ctx.user.name}-nyan, watashi aja ngga di vc',
             ephemeral=True)
         return
-    elif not ctx.author.voice:
-        await ctx.respond('Etlis join vc dlu la dek..', ephemeral=True)
+    elif not ctx.user.voice:
+        await ctx.response.send_message('Etlis join vc dlu la dek..', ephemeral=True)
         return
-    elif ctx.author.voice.channel != ctx.me.voice.channel:
-        await ctx.respond(
-            f'Hmph {ctx.author.name}-nyan, watashi ngga mau diatur-atur kalo watashitachi ngga satu vc',
+    elif ctx.user.voice.channel != ctx.me.voice.channel:
+        await ctx.response.send_message(
+            f'Hmph {ctx.user.name}-nyan, watashi ngga mau diatur-atur kalo watashitachi ngga satu vc',
             ephemeral=True)
         return
     else:
@@ -36,9 +37,9 @@ class Songbye(commands.Cog):
 
     await vc.disconnect()
     Songlist.songList.clear()
-    await ctx.respond(
-        f'Hmph, watashi dipaksa keluar sama {ctx.author.name}-nyan, yauda deh sayonara'
+    await ctx.response.send_message(
+        f'Hmph, watashi dipaksa keluar sama {ctx.user.name}-nyan, yauda deh sayonara'
     )
 
-def setup(bot):
-  bot.add_cog(Songbye(bot))
+async def setup(bot):
+  await bot.add_cog(Songbye(bot))

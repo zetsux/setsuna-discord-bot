@@ -4,10 +4,12 @@ import os
 import json
 import urllib.request as urllib2
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -23,12 +25,12 @@ class Pokepity(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.slash_command(name='pokepity', description='Check how many catches left for you to get pity at /pokecatch')
+  @app_commands.command(name='pokepity', description='Check how many catches left for you to get pity at /pokecatch')
   async def pokemon_pity(self, ctx):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk /regist dulu yuk baru liat pokemon..',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk /regist dulu yuk baru liat pokemon..',
             ephemeral=True)
         return
 
@@ -46,8 +48,8 @@ class Pokepity(commands.Cog):
         f"- Epic : {30 - epicPity} catch(es) left!\n- Legendary : {100 - legendPity} catch(es) left!",
         color=0xee1515)
     embedVar.set_footer(text="— May good luck bless you in /pokecatch!",
-                        icon_url=ctx.author.avatar.url)
-    await ctx.respond(embed=embedVar)
+                        icon_url=ctx.user.avatar.url)
+    await ctx.response.send_message(embed=embedVar)
 
-def setup(bot):
-  bot.add_cog(Pokepity(bot))
+async def setup(bot):
+  await bot.add_cog(Pokepity(bot))

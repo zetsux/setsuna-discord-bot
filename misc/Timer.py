@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -22,12 +23,12 @@ class Timer(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(
+  @app_commands.command(
     name='timer',
     description='Create a button that auto end after a set period of time')
   async def timer_test(self, ctx, timer: Option(int, "Seconds to wait", required=True)):
     if timer <= 0:
-        await ctx.respond(
+        await ctx.response.send_message(
             f"Neeee {ctx.user.name}-nyan, ngga jelas banget ah, ngapain coba timer kurang dari 0 detik",
             ephemeral=True)
         return
@@ -67,7 +68,7 @@ class Timer(commands.Cog):
     embedVar = discord.Embed(title=f'[ Timer ]',
                              description=f"for {timer} seconds",
                              color=0x8b0000)
-    timerMsg = await ctx.respond(embed=embedVar, view=view)
+    timerMsg = await ctx.response.send_message(embed=embedVar, view=view)
 
     time = 0
     while True:
@@ -83,5 +84,5 @@ class Timer(commands.Cog):
         if flag:
             break
 
-def setup(bot):
-  bot.add_cog(Timer(bot))
+async def setup(bot):
+  await bot.add_cog(Timer(bot))

@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -46,31 +47,31 @@ class Anitrade(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='anitrade', description='Trade with the mentioned user')
+  @app_commands.command(name='anitrade', description='Trade with the mentioned user')
   async def anime_trading(self, ctx, member: Option(discord.Member, "Trade partner", required=True)):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, /regist dulu gih baru trading yaa~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, /regist dulu gih baru trading yaa~',
             ephemeral=True)
         return
 
     if member.bot:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, apasih masa ngajak trade bot. Gajelas ih..',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, apasih masa ngajak trade bot. Gajelas ih..',
             ephemeral=True)
         return
 
-    if ctx.author.id == member.id:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, apasih masa ngajak trade diri sendiri. Gajelas ih..',
+    if ctx.user.id == member.id:
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, apasih masa ngajak trade diri sendiri. Gajelas ih..',
             ephemeral=True)
         return
 
     targetFind = mycol.find_one({"userid": str(member.id)})
     if targetFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, itu {member.name}-nyan belum kedaftar nih. Suruh /regist dulu gih baru trading yaa~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, itu {member.name}-nyan belum kedaftar nih. Suruh /regist dulu gih baru trading yaa~',
             ephemeral=True)
         return
 
@@ -98,7 +99,7 @@ class Anitrade(commands.Cog):
                       row=1)
 
     async def add_callback(interaction):
-        if interaction.user.id != member.id and interaction.user.id != ctx.author.id:
+        if interaction.user.id != member.id and interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
                 f"Neeee, anata kan ngga ikut tradingnya sih.. /anitrade sendiri gih kalau mau ngetrade juga, {interaction.user.name}-nyan",
                 ephemeral=True)
@@ -168,7 +169,7 @@ class Anitrade(commands.Cog):
                             anime2.append(aniName)
                             count2.append(int(modaler.children[1].value))
 
-                    elif interaction.user.id == ctx.author.id:
+                    elif interaction.user.id == ctx.user.id:
                         nonlocal anime1, count1
                         if aniName in anime1:
                             alrIndex = 0
@@ -223,9 +224,9 @@ class Anitrade(commands.Cog):
                     embedEdit = discord.Embed(
                         title="— Trading Board —",
                         description=
-                        f"{ctx.author.name}-nyan and {member.name}-nyan",
+                        f"{ctx.user.name}-nyan and {member.name}-nyan",
                         color=0xff69b4)
-                    embedEdit.add_field(name=f"[ {ctx.author.name}'s Offer ]",
+                    embedEdit.add_field(name=f"[ {ctx.user.name}'s Offer ]",
                                         value=f"```{edString1}```",
                                         inline=True)
                     embedEdit.add_field(name=f"| DEAL |",
@@ -248,7 +249,7 @@ class Anitrade(commands.Cog):
         await interaction.response.send_modal(modaler)
 
     async def remove_callback(interaction):
-        if interaction.user.id != member.id and interaction.user.id != ctx.author.id:
+        if interaction.user.id != member.id and interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
                 f"Neeee, anata kan ngga ikut tradingnya sih.. /anitrade sendiri gih kalau mau ngetrade juga, {interaction.user.name}-nyan",
                 ephemeral=True)
@@ -303,7 +304,7 @@ class Anitrade(commands.Cog):
                         ephemeral=True)
                     return
 
-            elif interaction.user.id == ctx.author.id:
+            elif interaction.user.id == ctx.user.id:
                 nonlocal anime1, count1
                 if aniName in anime1:
                     anindx = 0
@@ -360,9 +361,9 @@ class Anitrade(commands.Cog):
 
             embedEdit = discord.Embed(
                 title="— Trading Board —",
-                description=f"{ctx.author.name}-nyan and {member.name}-nyan",
+                description=f"{ctx.user.name}-nyan and {member.name}-nyan",
                 color=0xff69b4)
-            embedEdit.add_field(name=f"[ {ctx.author.name}'s Offer ]",
+            embedEdit.add_field(name=f"[ {ctx.user.name}'s Offer ]",
                                 value=f"```{edString1}```",
                                 inline=True)
             embedEdit.add_field(name=f"| DEAL |", value=f"🟩 | 🟩", inline=True)
@@ -378,7 +379,7 @@ class Anitrade(commands.Cog):
         await interaction.response.send_modal(modaler)
 
     async def deal_callback(interaction):
-        if interaction.user.id != member.id and interaction.user.id != ctx.author.id:
+        if interaction.user.id != member.id and interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
                 f"Neeee, anata kan ngga ikut tradingnya sih.. /anitrade sendiri gih kalau mau ngetrade juga, {interaction.user.name}-nyan",
                 ephemeral=True)
@@ -391,7 +392,7 @@ class Anitrade(commands.Cog):
             return
 
         nonlocal deal1, deal2
-        if deal1 and interaction.user.id == ctx.author.id:
+        if deal1 and interaction.user.id == ctx.user.id:
             await interaction.response.send_message(
                 f"Sabar yah {interaction.user.name}, {member.name}-nyan masih belum mencet deal juga nih...",
                 ephemeral=True)
@@ -399,14 +400,14 @@ class Anitrade(commands.Cog):
 
         elif deal2 and interaction.user.id == member.id:
             await interaction.response.send_message(
-                f"Sabar yah {interaction.user.name}, {ctx.author.name}-nyan masih belum mencet deal juga nih...",
+                f"Sabar yah {interaction.user.name}, {ctx.user.name}-nyan masih belum mencet deal juga nih...",
                 ephemeral=True)
             return
 
         if interaction.user.id == member.id:
             deal2 = True
 
-        elif interaction.user.id == ctx.author.id:
+        elif interaction.user.id == ctx.user.id:
             deal1 = True
 
         if deal1 and deal2:
@@ -433,9 +434,9 @@ class Anitrade(commands.Cog):
             embedEdit = discord.Embed(
                 title="— Trading Board (Finished) —",
                 description=
-                f"{ctx.author.name}-nyan and {member.name}-nyan | Trade Success!",
+                f"{ctx.user.name}-nyan and {member.name}-nyan | Trade Success!",
                 color=0xff69b4)
-            embedEdit.add_field(name=f"[ {ctx.author.name}'s Offer ]",
+            embedEdit.add_field(name=f"[ {ctx.user.name}'s Offer ]",
                                 value=f"```{edString1}```",
                                 inline=True)
             embedEdit.add_field(name=f"| DEAL |", value=f"✅ | ✅", inline=True)
@@ -444,7 +445,7 @@ class Anitrade(commands.Cog):
                                 inline=True)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"Trade berhasil! Telah disetujui oleh {ctx.author.name}-nyan dan {member.name}-nyan!"
+                f"Trade berhasil! Telah disetujui oleh {ctx.user.name}-nyan dan {member.name}-nyan!"
             )
 
             async def giveAni(usera, namea, numbera):
@@ -506,17 +507,17 @@ class Anitrade(commands.Cog):
 
             tempIndex = 0
             for char in anime1:
-                await takeAni(ctx.author.id, char, count1[tempIndex])
+                await takeAni(ctx.user.id, char, count1[tempIndex])
                 await giveAni(member.id, char, count1[tempIndex])
                 tempIndex += 1
 
             tempIndex = 0
             for char in anime2:
                 await takeAni(member.id, char, count2[tempIndex])
-                await giveAni(ctx.author.id, char, count2[tempIndex])
+                await giveAni(ctx.user.id, char, count2[tempIndex])
                 tempIndex += 1
 
-            arrangelb(ctx.author.id)
+            arrangelb(ctx.user.id)
             arrangelb(member.id)
 
         elif deal1:
@@ -542,9 +543,9 @@ class Anitrade(commands.Cog):
 
             embedEdit = discord.Embed(
                 title="— Trading Board —",
-                description=f"{ctx.author.name}-nyan and {member.name}-nyan",
+                description=f"{ctx.user.name}-nyan and {member.name}-nyan",
                 color=0xff69b4)
-            embedEdit.add_field(name=f"[ {ctx.author.name}'s Offer ]",
+            embedEdit.add_field(name=f"[ {ctx.user.name}'s Offer ]",
                                 value=f"```{edString1}```",
                                 inline=True)
             embedEdit.add_field(name=f"| DEAL |", value=f"✅ | 🟩", inline=True)
@@ -580,9 +581,9 @@ class Anitrade(commands.Cog):
 
             embedEdit = discord.Embed(
                 title="— Trading Board —",
-                description=f"{ctx.author.name}-nyan and {member.name}-nyan",
+                description=f"{ctx.user.name}-nyan and {member.name}-nyan",
                 color=0xff69b4)
-            embedEdit.add_field(name=f"[ {ctx.author.name}'s Offer ]",
+            embedEdit.add_field(name=f"[ {ctx.user.name}'s Offer ]",
                                 value=f"```{edString1}```",
                                 inline=True)
             embedEdit.add_field(name=f"| DEAL |", value=f"🟩 | ✅", inline=True)
@@ -590,13 +591,13 @@ class Anitrade(commands.Cog):
                                 value=f"```{edString2}```",
                                 inline=True)
             await interaction.response.edit_message(embed=embedEdit)
-            mentionUser = '<@' + str(ctx.author.id) + '>'
+            mentionUser = '<@' + str(ctx.user.id) + '>'
             await interaction.followup.send(
                 f"{interaction.user.name}-nyan sudah deal tuh sama trade ini, tinggal kamu nih {mentionUser}"
             )
 
     async def cancel_callback(interaction):
-        if interaction.user.id != member.id and interaction.user.id != ctx.author.id:
+        if interaction.user.id != member.id and interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
                 f"Neeee, anata kan ngga ikut tradingnya sih.. /anitrade sendiri gih kalau mau ngetrade juga, {interaction.user.name}-nyan",
                 ephemeral=True)
@@ -604,12 +605,12 @@ class Anitrade(commands.Cog):
 
         embedEnd = discord.Embed(
             title=
-            f"Trade Cancelled ( {ctx.author.name}-nyan | {member.name}-nyan )",
+            f"Trade Cancelled ( {ctx.user.name}-nyan | {member.name}-nyan )",
             description=f"Cause : Cancelled by {interaction.user.name}-nyan",
             color=0xff69b4)
         await interaction.response.edit_message(embed=embedEnd, view=None)
         await interaction.followup.send(
-            f"Trade antara {ctx.author.name}-nyan dan {member.name}-nyan dibatalin sama {interaction.user.name}-nyan.."
+            f"Trade antara {ctx.user.name}-nyan dan {member.name}-nyan dibatalin sama {interaction.user.name}-nyan.."
         )
 
     buttonAD.callback = add_callback
@@ -627,25 +628,25 @@ class Anitrade(commands.Cog):
 
     embedVar = discord.Embed(
         title="— Trading Board —",
-        description=f"{ctx.author.name}-nyan and {member.name}-nyan",
+        description=f"{ctx.user.name}-nyan and {member.name}-nyan",
         color=0xff69b4)
-    embedVar.add_field(name=f"[ {ctx.author.name}'s Offer ]",
+    embedVar.add_field(name=f"[ {ctx.user.name}'s Offer ]",
                        value=f"```{aniString1}```",
                        inline=True)
     embedVar.add_field(name=f"| DEAL |", value=f"🟩 | 🟩", inline=True)
     embedVar.add_field(name=f"[ {member.name}'s Offer ]",
                        value=f"```{aniString2}```",
                        inline=True)
-    tradeMsg = await ctx.respond(embed=embedVar, view=view)
+    tradeMsg = await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
         embedEnd = discord.Embed(
             title=
-            f"Trade Cancelled ( {ctx.author.name}-nyan | {member.name}-nyan )",
+            f"Trade Cancelled ( {ctx.user.name}-nyan | {member.name}-nyan )",
             description="Cause : Not used for too long",
             color=0xff69b4)
         await tradeMsg.edit_original_response(embed=embedEnd, view=None)
 
-def setup(bot):
-  bot.add_cog(Anitrade(bot))
+async def setup(bot):
+  await bot.add_cog(Anitrade(bot))

@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -22,7 +23,7 @@ class Spygame(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='spygame', description='Play a spyfall game with at least 3 players')
+  @app_commands.command(name='spygame', description='Play a spyfall game with at least 3 players')
   async def spyfall_game(self, ctx):
     playersID = []
     playersName = []
@@ -1023,7 +1024,7 @@ class Spygame(commands.Cog):
         description=
         "Press button to join, can start after at least 3 players have joined",
         color=0x330066)
-    panelMsg = await ctx.respond(embed=embedVar, view=view)
+    panelMsg = await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
@@ -1033,5 +1034,5 @@ class Spygame(commands.Cog):
             color=0x330066)
         await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Spygame(bot))
+async def setup(bot):
+  await bot.add_cog(Spygame(bot))

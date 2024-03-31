@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -21,15 +22,15 @@ class RPS(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='rps', description='Battle RPS against a target')
+  @app_commands.command(name='rps', description='Battle RPS against a target')
   async def rps_battle(self, ctx, member: Option(discord.Member, "Member to diss", required=True)):
     if member.bot:
-        await ctx.respond(f'Masa nantang bewan sama bot sih {ctx.author.name}-nyan, aneh banget deh', ephemeral=True)
+        await ctx.response.send_message(f'Masa nantang bewan sama bot sih {ctx.user.name}-nyan, aneh banget deh', ephemeral=True)
         return
 
-    if member.id == ctx.author.id:
-        await ctx.respond(
-            f'Masa battle sama diri sendiri sih {ctx.author.name}-nyan, aneh banget deh',
+    if member.id == ctx.user.id:
+        await ctx.response.send_message(
+            f'Masa battle sama diri sendiri sih {ctx.user.name}-nyan, aneh banget deh',
             ephemeral=True)
         return
 
@@ -74,7 +75,7 @@ class RPS(commands.Cog):
                     ephemeral=True)
 
             if player1 == "kosong":
-                mentionUser = '<@' + str(ctx.author.id) + '>'
+                mentionUser = '<@' + str(ctx.user.id) + '>'
                 await interaction.followup.send(
                     f"{interaction.user.name}-nyan telah menentukan pilihannya, yuk dipilih yuk cepat {mentionUser}-nyan"
                 )
@@ -84,7 +85,7 @@ class RPS(commands.Cog):
                     f"{interaction.user.name}-nyan telah menentukan pilihannya!"
                 )
 
-        elif interaction.user.id == ctx.author.id:
+        elif interaction.user.id == ctx.user.id:
             if select.values[0] == "r":
                 player1 = '🪨'
                 await interaction.response.send_message(
@@ -124,7 +125,7 @@ class RPS(commands.Cog):
             if player1 == player2:
                 embedEdit = discord.Embed(
                     title=
-                    f"{ctx.author.name} ({player1}) VS {member.name} ({player2})",
+                    f"{ctx.user.name} ({player1}) VS {member.name} ({player2})",
                     description=f"It's a tie!",
                     color=0xadd8e6)
                 embedEdit.set_image(
@@ -143,23 +144,23 @@ class RPS(commands.Cog):
                     if player2 == '📄':
                         winner = member
                     elif player2 == '✂️':
-                        winner = ctx.author
+                        winner = ctx.user
 
                 elif player1 == '📄':
                     if player2 == '🪨':
-                        winner = ctx.author
+                        winner = ctx.user
                     elif player2 == '✂️':
                         winner = member
 
                 if player1 == '✂️':
                     if player2 == '📄':
-                        winner = ctx.author
+                        winner = ctx.user
                     elif player2 == '🪨':
                         winner = member
 
                 embedEdit = discord.Embed(
                     title=
-                    f"{ctx.author.name} ({player1}) VS {member.name} ({player2})",
+                    f"{ctx.user.name} ({player1}) VS {member.name} ({player2})",
                     description=f"{winner.name} wins!",
                     color=0xf73718)
                 embedEdit.set_image(url=winner.avatar.url)
@@ -174,13 +175,13 @@ class RPS(commands.Cog):
     view.add_item(select)
 
     embedVar = discord.Embed(title="Rock, Paper, Scissors Battle",
-                             description=f"{ctx.author.name} VS {member.name}",
+                             description=f"{ctx.user.name} VS {member.name}",
                              color=0xf73718)
     embedVar.set_image(
         url=
         'https://cdn.pixabay.com/photo/2013/07/12/15/02/fingers-149296__340.png'
     )
-    rpsMessage = await ctx.respond(embed=embedVar, view=view)
+    rpsMessage = await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
@@ -192,16 +193,16 @@ class RPS(commands.Cog):
         await rpsMessage.edit_original_response(embed=embedEdit, view=None)
         if player1 == "kosong" and player2 == "kosong":
             await rpsMessage.followup.send(
-                f"Hmph, battlenya watashi tutup deh, {ctx.author.name}-nyan sama {member.name}-nyan pada belum milih sih, lama banget..",
+                f"Hmph, battlenya watashi tutup deh, {ctx.user.name}-nyan sama {member.name}-nyan pada belum milih sih, lama banget..",
                 ephemeral=True)
         elif player1 == "kosong":
             await rpsMessage.followup.send(
-                f"Hmph, battlenya watashi tutup deh, {ctx.author.name}-nyan belum milih sih, lama banget. Kasian tuh {member.name} udah nungguin..",
+                f"Hmph, battlenya watashi tutup deh, {ctx.user.name}-nyan belum milih sih, lama banget. Kasian tuh {member.name} udah nungguin..",
                 ephemeral=True)
         elif player2 == "kosong":
             await rpsMessage.followup.send(
-                f"Hmph, battlenya watashi tutup deh, {member.name}-nyan belum milih sih, lama banget. Kasian tuh {ctx.author.name} udah nungguin..",
+                f"Hmph, battlenya watashi tutup deh, {member.name}-nyan belum milih sih, lama banget. Kasian tuh {ctx.user.name} udah nungguin..",
                 ephemeral=True)
           
-def setup(bot):
-  bot.add_cog(RPS(bot))
+async def setup(bot):
+  await bot.add_cog(RPS(bot))

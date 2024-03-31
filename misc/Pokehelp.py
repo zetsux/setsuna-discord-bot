@@ -3,6 +3,7 @@ import os
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
@@ -11,7 +12,7 @@ class Pokehelp(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='pokehelp', description='Explains how to use pokecommands')
+  @app_commands.command(name='pokehelp', description='Explains how to use pokecommands')
   async def poke_helpp(self, ctx):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
@@ -45,7 +46,7 @@ class Pokehelp(commands.Cog):
         '➤ Boost Atk : Meningkatkan status Sp. Atk pokemon sebanyak 1 stage\n'
         + '```',
         inline=False)
-    await ctx.respond(embed=embedVar, ephemeral=True)
+    await ctx.response.send_message(embed=embedVar, ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Pokehelp(bot))
+async def setup(bot):
+  await bot.add_cog(Pokehelp(bot))

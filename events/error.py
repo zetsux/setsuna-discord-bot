@@ -18,13 +18,13 @@ def get_cooldown_str(cooldown):
 async def handle_command_error(ctx, error, logChannel, isApplicationCommand = False):
   if isinstance(error, commands.errors.CheckFailure):
       if isApplicationCommand:
-        await ctx.respond(f'Gomenasai {ctx.message.author}-nyan, anata ngga punya hak buat nyuruh watashi pakai command itu...')
+        await ctx.response.send_message(f'Gomenasai {ctx.message.author}-nyan, anata ngga punya hak buat nyuruh watashi pakai command itu...')
       else:
         await ctx.channel.send(f'Gomenasai {ctx.message.author}-nyan, anata ngga punya hak buat nyuruh watashi pakai command itu...')
 
   elif isinstance(error, commands.CommandOnCooldown):
       if isApplicationCommand:
-          await ctx.respond(f'Command is is still on cooldown...\n' + get_cooldown_str(error.retry_after), ephemeral=True)
+          await ctx.response.send_message(f'Command is is still on cooldown...\n' + get_cooldown_str(error.retry_after), ephemeral=True)
       else:
           await ctx.channel.send(f'Command !{ctx.invoked_with} is still on cooldown...\n' + get_cooldown_str(error.retry_after))
 

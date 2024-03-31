@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import aiohttp
@@ -16,7 +17,7 @@ class Chat(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='setsuchat', description='Chat with and Ask Setsuna to answer or even do things')
+  @app_commands.command(name='setsuchat', description='Chat with and Ask Setsuna to answer or even do things')
   async def chatCommand(self, ctx, prompt: Option(str, "Chat to send", required=True), answer: Option(str, "Form of Setsuna's answer", choices=["Normal Chat", "Code Blocks"], required=False, default="Normal Chat")):
     await ctx.defer()
     try :
@@ -36,21 +37,21 @@ class Chat(commands.Cog):
           response = await r.json()
 
           if answer == "Normal Chat" :
-            await ctx.respond(response["choices"][0]["text"])
+            await ctx.response.send_message(response["choices"][0]["text"])
 
           else :
             embedVar = discord.Embed(
               description="```" + response["choices"][0]["text"] + "```",
               color=0x9457EB)
-            await ctx.respond(embed=embedVar)
+            await ctx.response.send_message(embed=embedVar)
 
     except Exception as e :
       embedVar = discord.Embed(
             title=f"[ Error!!! ]",
             description=f"Maaf, fiturnya lagi error, coba tanya ke yg bikin bot deh.",
             color=0x28282B)
-      await ctx.respond(embed=embedVar)
+      await ctx.response.send_message(embed=embedVar)
       print(e)
         
-def setup(bot):
-  bot.add_cog(Chat(bot))
+async def setup(bot):
+  await bot.add_cog(Chat(bot))

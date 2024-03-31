@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -19,12 +20,12 @@ class Anirank(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='anirank', description='Check the leaderboard to see who is the best anime collector')
+  @app_commands.command(name='anirank', description='Check the leaderboard to see who is the best anime collector')
   async def anime_rank(self, ctx):
-    targetFind = mycol.find_one({"userid": str(ctx.author.id)})
-    mentionTarget = '<@' + str(ctx.author.id) + '>'
+    targetFind = mycol.find_one({"userid": str(ctx.user.id)})
+    mentionTarget = '<@' + str(ctx.user.id) + '>'
     if targetFind == None:
-      await ctx.respond(f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh')
+      await ctx.response.send_message(f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh')
 
     else:
       await ctx.defer()
@@ -43,7 +44,7 @@ class Anirank(commands.Cog):
           continue
           
         if rank <= 15 :
-          if id == str(ctx.author.id) :
+          if id == str(ctx.user.id) :
             uniUser = targetFind["uniAni"]
             allUser = targetFind["allAni"]
             lbString += f"{rank}) {username} (You) [{uniUser}/{allUser}]\n"
@@ -56,7 +57,7 @@ class Anirank(commands.Cog):
             lbString += f"{rank}) {username} [{uniUser}/{allUser}]\n"
 
         elif noSelf :
-          if id == str(ctx.author.id) :
+          if id == str(ctx.user.id) :
             uniUser = targetFind["uniAni"]
             allUser = targetFind["allAni"]
 
@@ -83,8 +84,8 @@ class Anirank(commands.Cog):
           f"{lbString}```\n",
           color=0xFFD700)
       embedVar.set_thumbnail(url='https://cdn.discordapp.com/attachments/995337235211763722/1033605605484662874/hoho-omoshiroi_1.gif')
-      embedVar.set_footer(text="Note :\n[Unique Owned Anime Count/All Owned Anime Count]", icon_url=ctx.author.avatar.url)
-      await ctx.respond(embed=embedVar)
+      embedVar.set_footer(text="Note :\n[Unique Owned Anime Count/All Owned Anime Count]", icon_url=ctx.user.avatar.url)
+      await ctx.response.send_message(embed=embedVar)
 
-def setup(bot):
-  bot.add_cog(Anirank(bot))
+async def setup(bot):
+  await bot.add_cog(Anirank(bot))

@@ -4,6 +4,7 @@ import wavelink
 from wavelink.ext import spotify
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import datetime
 import pytz
@@ -21,19 +22,19 @@ class Songpanel(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='songpanel', description='Open the song panel to control the song playing')
+  @app_commands.command(name='songpanel', description='Open the song panel to control the song playing')
   async def song_panel(self, ctx):
     if not ctx.voice_client:
-        await ctx.respond(
-            f'Watashi aja ngga join vc loh {ctx.author.name}-nyan...',
+        await ctx.response.send_message(
+            f'Watashi aja ngga join vc loh {ctx.user.name}-nyan...',
             ephemeral=True)
         return
-    elif not ctx.author.voice:
-        await ctx.respond('Etlis join vc dlu la dek..', ephemeral=True)
+    elif not ctx.user.voice:
+        await ctx.response.send_message('Etlis join vc dlu la dek..', ephemeral=True)
         return
-    elif ctx.author.voice.channel != ctx.me.voice.channel:
-        await ctx.respond(
-            f'Hmph {ctx.author.name}-nyan, watashi ngga mau diatur-atur kalo watashitachi ngga satu vc',
+    elif ctx.user.voice.channel != ctx.me.voice.channel:
+        await ctx.response.send_message(
+            f'Hmph {ctx.user.name}-nyan, watashi ngga mau diatur-atur kalo watashitachi ngga satu vc',
             ephemeral=True)
         return
     else:
@@ -448,7 +449,7 @@ class Songpanel(commands.Cog):
                     await interaction.response.edit_message(embed=embedEdit,
                                                             view=None)
                     await interaction.followup.send(
-                        f"Watashi disuruh keluar vc sama {ctx.author}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
+                        f"Watashi disuruh keluar vc sama {ctx.user}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
                     )
                     await vc.disconnect()
                     Songlist.songList.clear()
@@ -463,7 +464,7 @@ class Songpanel(commands.Cog):
                     await interaction.response.edit_message(embed=embedEdit,
                                                             view=None)
                     await interaction.followup.send(
-                        f"Watashi disuruh keluar vc sama {ctx.author}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
+                        f"Watashi disuruh keluar vc sama {ctx.user}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
                     )
                     view.stop()
                     await vc.disconnect()
@@ -494,7 +495,7 @@ class Songpanel(commands.Cog):
             title=f'[ Song Panel ]',
             description="Control by pressing the buttons below",
             color=0xf2bc00)
-        panelMsg = await ctx.respond(embed=embedVar, view=view)
+        panelMsg = await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -504,5 +505,5 @@ class Songpanel(commands.Cog):
                 color=0xf2bc00)
             await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Songpanel(bot))
+async def setup(bot):
+  await bot.add_cog(Songpanel(bot))

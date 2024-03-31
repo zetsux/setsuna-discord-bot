@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import aiohttp
@@ -16,7 +17,7 @@ class AlterText(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='setsualter', description='Alter given text by the given instruction')
+  @app_commands.command(name='setsualter', description='Alter given text by the given instruction')
   async def chatAlterCommand(self, ctx, input: Option(str, "Text to edit", required=True), instruction:  Option(str, "Something to do to the input text", required=True)):
     await ctx.defer()
     try :
@@ -35,15 +36,15 @@ class AlterText(commands.Cog):
             title=f"Setsuna Alter :",
             description="```" + response["choices"][0]["text"] + "```",
             color=0x9457EB)
-          await ctx.respond(embed=embedVar)
+          await ctx.response.send_message(embed=embedVar)
 
     except Exception as e :
       embedVar = discord.Embed(
             title=f"[ Error!!! ]",
             description=f"Maaf, fiturnya lagi error, coba tanya ke yg bikin bot deh.",
             color=0x28282B)
-      await ctx.respond(embed=embedVar)
+      await ctx.response.send_message(embed=embedVar)
       print(e)
         
-def setup(bot):
-  bot.add_cog(AlterText(bot))
+async def setup(bot):
+  await bot.add_cog(AlterText(bot))

@@ -4,10 +4,12 @@ import os
 import json
 import urllib.request as urllib2
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -23,12 +25,12 @@ class Pokepartner(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.slash_command(name='pokepartner', description='Check your current pokemon partner to battle and change it if you want')
+  @app_commands.command(name='pokepartner', description='Check your current pokemon partner to battle and change it if you want')
   async def pokemon_partner(self, ctx):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk /regist dulu yuk baru liat pokemon..',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk /regist dulu yuk baru liat pokemon..',
             ephemeral=True)
         return
 
@@ -118,7 +120,7 @@ class Pokepartner(commands.Cog):
                 ephemeral=True)
             return
 
-        tempFind = mycol.find_one({"userid": str(ctx.author.id)})
+        tempFind = mycol.find_one({"userid": str(ctx.user.id)})
         embedEdit = discord.Embed(
             title=f"[ Poke Partner Confirmed! ]",
             description=f"Current : {tempFind['pokemon']}",
@@ -176,16 +178,16 @@ class Pokepartner(commands.Cog):
             description=f"Current : None (Change Partner to set)",
             color=0xee1515)
 
-    panelMsg = await ctx.respond(embed=embedVar, view=view, ephemeral=True)
+    panelMsg = await ctx.response.send_message(embed=embedVar, view=view, ephemeral=True)
     checkView = await view.wait()
 
     if checkView:
-        tempFind = mycol.find_one({"userid": str(ctx.author.id)})
+        tempFind = mycol.find_one({"userid": str(ctx.user.id)})
         embedEdit = discord.Embed(
             title=f"Poke Partner Timed Out...",
             description=f"Partner : {tempFind['pokemon']}",
             color=0xffff00)
         await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Pokepartner(bot))
+async def setup(bot):
+  await bot.add_cog(Pokepartner(bot))

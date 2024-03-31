@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -21,12 +22,12 @@ class Hunt(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='hunt', description='Hunt for loots once per 10 minutes')
+  @app_commands.command(name='hunt', description='Hunt for loots once per 10 minutes')
   async def hunting(self, ctx):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
 
     if userFind == None:
-        await ctx.respond(f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~', ephemeral=True)
+        await ctx.response.send_message(f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~', ephemeral=True)
         return
 
     now = datetime.datetime.now()
@@ -41,7 +42,7 @@ class Hunt(commands.Cog):
             secLeft = duration % 60
             embedVar = discord.Embed(
                 title=
-                f"Hunt Command for {ctx.author.name}-nyan is still on cooldown...",
+                f"Hunt Command for {ctx.user.name}-nyan is still on cooldown...",
                 description=
                 f'Duration Left : {int(minLeft)} minute(s) and {int(secLeft)} second(s)',
                 color=0x808080)
@@ -49,11 +50,11 @@ class Hunt(commands.Cog):
         else:
             embedVar = discord.Embed(
                 title=
-                f"Hunt Command for {ctx.author.name}-nyan is still on cooldown...",
+                f"Hunt Command for {ctx.user.name}-nyan is still on cooldown...",
                 description=f'Duration Left : {int(duration)} second(s)',
                 color=0x808080)
 
-        await ctx.respond(embed=embedVar, ephemeral=True)
+        await ctx.response.send_message(embed=embedVar, ephemeral=True)
         return
 
     await ctx.defer()
@@ -62,9 +63,9 @@ class Hunt(commands.Cog):
                                    "%Y-%m-%dT%H:%M:%S.%f")
     if randValue <= 10:
         embedVar = discord.Embed(
-            title="Hunt Result by " + ctx.author.name,
+            title="Hunt Result by " + ctx.user.name,
             description=
-            f'Waduh, {ctx.author.name}-nyan menemukan seorang loli yang tengah menari-nari dan malah menghabiskan waktunya memandanginya..',
+            f'Waduh, {ctx.user.name}-nyan menemukan seorang loli yang tengah menari-nari dan malah menghabiskan waktunya memandanginya..',
             color=0x808080)
         loliGifs = [
             'https://cdn.discordapp.com/attachments/995337235211763722/1014927108633542656/loli30.gif',
@@ -137,9 +138,9 @@ class Hunt(commands.Cog):
             }
 
         embedVar = discord.Embed(
-            title="Hunt Result by " + ctx.author.name,
+            title="Hunt Result by " + ctx.user.name,
             description=
-            f'Agak miris, {ctx.author.name}-nyan hanya berhasil membunuh satu slime dan mendapat 20 Gold dan 2 EXP',
+            f'Agak miris, {ctx.user.name}-nyan hanya berhasil membunuh satu slime dan mendapat 20 Gold dan 2 EXP',
             color=0x32cd32)
         embedVar.set_thumbnail(
             url=
@@ -180,9 +181,9 @@ class Hunt(commands.Cog):
             }
 
         embedVar = discord.Embed(
-            title="Hunt Result by " + ctx.author.name,
+            title="Hunt Result by " + ctx.user.name,
             description=
-            f'Walau tak seberapa, {ctx.author.name}-nyan setidaknya berhasil membunuh satu goblin dan mendapat 40 Gold dan 4 EXP',
+            f'Walau tak seberapa, {ctx.user.name}-nyan setidaknya berhasil membunuh satu goblin dan mendapat 40 Gold dan 4 EXP',
             color=0x877a23)
         embedVar.set_thumbnail(
             url=
@@ -223,9 +224,9 @@ class Hunt(commands.Cog):
             }
 
         embedVar = discord.Embed(
-            title="Hunt Result by " + ctx.author.name,
+            title="Hunt Result by " + ctx.user.name,
             description=
-            f'Sedikit beruntung, {ctx.author.name}-nyan berhasil membunuh satu skeleton dan mendapat 70 Gold dan 6 EXP',
+            f'Sedikit beruntung, {ctx.user.name}-nyan berhasil membunuh satu skeleton dan mendapat 70 Gold dan 6 EXP',
             color=0x6699cc)
         embedVar.set_thumbnail(
             url=
@@ -266,9 +267,9 @@ class Hunt(commands.Cog):
             }
 
         embedVar = discord.Embed(
-            title="Hunt Result by " + ctx.author.name,
+            title="Hunt Result by " + ctx.user.name,
             description=
-            f'Berusaha lumayan keras, {ctx.author.name}-nyan akhirnya berhasil membunuh satu ogre dan mendapat 100 Gold dan 10 EXP',
+            f'Berusaha lumayan keras, {ctx.user.name}-nyan akhirnya berhasil membunuh satu ogre dan mendapat 100 Gold dan 10 EXP',
             color=0xbdb369)
         embedVar.set_thumbnail(
             url=
@@ -309,9 +310,9 @@ class Hunt(commands.Cog):
             }
 
         embedVar = discord.Embed(
-            title="Hunt Result by " + ctx.author.name,
+            title="Hunt Result by " + ctx.user.name,
             description=
-            f'Wah ngeri, {ctx.author.name}-nyan dengan kerennya berhasil membunuh satu golem dan mendapat 200 Gold dan 14 EXP',
+            f'Wah ngeri, {ctx.user.name}-nyan dengan kerennya berhasil membunuh satu golem dan mendapat 200 Gold dan 14 EXP',
             color=0x9d00ff)
         embedVar.set_thumbnail(
             url=
@@ -352,9 +353,9 @@ class Hunt(commands.Cog):
             }
 
         embedVar = discord.Embed(
-            title="Hunt Result by " + ctx.author.name,
+            title="Hunt Result by " + ctx.user.name,
             description=
-            f"JACKPOT!! {ctx.author.name}-nyan berhasil mengalahkan seekor naga api dan menjual kepalanya seharga 600 Gold dan 20 EXP",
+            f"JACKPOT!! {ctx.user.name}-nyan berhasil mengalahkan seekor naga api dan menjual kepalanya seharga 600 Gold dan 20 EXP",
             color=0xf73718)
         embedVar.set_thumbnail(
             url=
@@ -362,9 +363,9 @@ class Hunt(commands.Cog):
         )
 
     embedVar.set_footer(text="Cooldown : 10 Minutes",
-                        icon_url=ctx.author.avatar.url)
-    await ctx.respond(embed=embedVar)
+                        icon_url=ctx.user.avatar.url)
+    await ctx.response.send_message(embed=embedVar)
     mycol.update_one(userFind, newvalues)
 
-def setup(bot):
-  bot.add_cog(Hunt(bot))
+async def setup(bot):
+  await bot.add_cog(Hunt(bot))

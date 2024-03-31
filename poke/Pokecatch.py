@@ -4,10 +4,12 @@ import os
 import json
 import urllib.request as urllib2
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -28,12 +30,12 @@ class Pokecatch(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.slash_command(name='pokecatch', description='Catch a random pokemon from the wild for 1 Platina')
+  @app_commands.command(name='pokecatch', description='Catch a random pokemon from the wild for 1 Platina')
   async def poke_gacha(self, ctx):
-    firstFind = mycol.find_one({"userid": str(ctx.author.id)})
+    firstFind = mycol.find_one({"userid": str(ctx.user.id)})
     if firstFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
 
     else:
@@ -740,7 +742,7 @@ class Pokecatch(commands.Cog):
             color=0xee1515)
         embedVar.set_image(
             url="https://mcdn.wallpapersafari.com/medium/61/37/kqVFfY.jpg")
-        gachaMsg = await ctx.respond(embed=embedVar, view=view)
+        gachaMsg = await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -750,5 +752,5 @@ class Pokecatch(commands.Cog):
                 color=0xee1515)
             await gachaMsg.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Pokecatch(bot))
+async def setup(bot):
+  await bot.add_cog(Pokecatch(bot))

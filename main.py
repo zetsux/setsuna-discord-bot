@@ -93,10 +93,10 @@ async def on_member_join(member):
 
 @bot.event
 async def on_command_error(ctx, error):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
         await ctx.channel.send(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~')
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~')
         return
 
     guild = bot.get_guild(GUILDID)
@@ -106,10 +106,10 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_application_command_error(ctx, error):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
         return
 
@@ -119,11 +119,11 @@ async def on_application_command_error(ctx, error):
 
 
 # @bot.slash_command(name='resetcd', description='Reset cooldown of a command for self')
-# @commands.has_any_role('Encoder Magang', 'Owner')
+# @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
 # async def reset_cd(ctx, command: Option(str, "Name of command to reset", required=True)):
 #   await ctx.defer(ephemeral=True)
 #   bot.get_application_command(command).reset_cooldown(ctx)
-#   await ctx.respond(f'Cooldown command /{command} pada {ctx.author.name}-nyan berhasil direset!', ephemeral=True)
+#   await ctx.response.send_message(f'Cooldown command /{command} pada {ctx.user.name}-nyan berhasil direset!', ephemeral=True)
 
 for folder in os.listdir("./"):
     path = f"./{folder}"

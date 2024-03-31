@@ -4,10 +4,12 @@ import os
 import json
 import urllib.request as urllib2
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -54,19 +56,19 @@ class Pokeduel(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.slash_command(name='pokeduel', description='Find a challenger to battle each other in a Pokemon Duel')
+  @app_commands.command(name='pokeduel', description='Find a challenger to battle each other in a Pokemon Duel')
   async def pokemon_duel(self, ctx):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk /regist dulu yuk baru liat pokemon..',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk /regist dulu yuk baru liat pokemon..',
             ephemeral=True)
         return
 
     userInven = userFind["pokeName"]
     if userFind["pokemon"] not in userInven:
-        await ctx.respond(
-            f"Neee {ctx.author.name}-nyan, /pokepartner dulu yuk buat set pokemon yang mau dipake",
+        await ctx.response.send_message(
+            f"Neee {ctx.user.name}-nyan, /pokepartner dulu yuk buat set pokemon yang mau dipake",
             ephemeral=True)
         return
 
@@ -122,11 +124,11 @@ class Pokeduel(commands.Cog):
                      emoji='👎')
     player = []
     playerName = []
-    player.append(ctx.author.id)
-    playerName.append(ctx.author.name)
+    player.append(ctx.user.id)
+    playerName.append(ctx.user.name)
 
     async def cancel_callback(interaction):
-        if interaction.user.id != ctx.author.id:
+        if interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
                 f"Neee {interaction.user.name}-nyan, itu challenge orang ih, jangan dimainin..",
                 ephemeral=True)
@@ -141,7 +143,7 @@ class Pokeduel(commands.Cog):
         view.stop()
 
     async def battle_callback(interaction):
-        if interaction.user.id == ctx.author.id:
+        if interaction.user.id == ctx.user.id:
             await interaction.response.send_message(
                 f"Neee {interaction.user.name}-nyan, masa mau duel sama diri sendiri sih..",
                 ephemeral=True)
@@ -150,7 +152,7 @@ class Pokeduel(commands.Cog):
         tapFind = mycol.find_one({"userid": str(interaction.user.id)})
         if tapFind == None:
             await interaction.response.send_message(
-                f'Neee {ctx.author.name}-nyan, yuk /regist dulu yuk baru battle..',
+                f'Neee {ctx.user.name}-nyan, yuk /regist dulu yuk baru battle..',
                 ephemeral=True)
             return
 
@@ -1507,10 +1509,10 @@ class Pokeduel(commands.Cog):
     view.add_item(buttonC)
 
     embedVar = discord.Embed(
-        title=f'[ PokeDuel Challenge by {ctx.author.name}-nyan ]',
+        title=f'[ PokeDuel Challenge by {ctx.user.name}-nyan ]',
         description=f"Click the 'Battle!' button to accept",
         color=0xee1515)
-    panelMsg = await ctx.respond(embed=embedVar, view=view)
+    panelMsg = await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
@@ -1521,5 +1523,5 @@ class Pokeduel(commands.Cog):
             color=0xee1515)
         await panelMsg.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Pokeduel(bot))
+async def setup(bot):
+  await bot.add_cog(Pokeduel(bot))

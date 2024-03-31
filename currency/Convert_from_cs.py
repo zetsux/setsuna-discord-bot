@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 
 guilds = [989086863434334279]
@@ -18,34 +19,34 @@ class Convert_from_cs(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='convertcstoplat', description='Convert gold in Loraine to platina with the entered number ( 2000 : 1 )')
+  @app_commands.command(name='convertcstoplat', description='Convert gold in Loraine to platina with the entered number ( 2000 : 1 )')
   async def csconvert_to_plat(self, ctx, number: Option(int, "Number of platina to get", required=True)):
     await ctx.defer(ephemeral=True)
     if number <= 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan', ephemeral=True)
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan', ephemeral=True)
         return
 
     lclient = pymongo.MongoClient(LORENDB)
     lmydb = lclient["LoraineDB"]
     lmycol = lmydb["profilemodels"]
-    luserFind = lmycol.find_one({"userID": str(ctx.author.id)})
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    luserFind = lmycol.find_one({"userID": str(ctx.user.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'{ctx.author.name}-nyan belum terdaftar nih, /regist dulu yuk',
+        await ctx.response.send_message(
+            f'{ctx.user.name}-nyan belum terdaftar nih, /regist dulu yuk',
             ephemeral=True)
 
     elif luserFind == None:
-        await ctx.respond(
-            f'{ctx.author.name}-nyan belum terdaftar di loren nih, /register dulu atau minta role dulu deh..',
+        await ctx.response.send_message(
+            f'{ctx.user.name}-nyan belum terdaftar di loren nih, /register dulu atau minta role dulu deh..',
             ephemeral=True)
 
     else:
         goldCount = luserFind["userGold"]
         platCount = userFind["platina"]
         if goldCount < (number * 2000):
-            await ctx.respond(
-                f'Gold CS {ctx.author.name}-nyan cuma {goldCount}, mana cukup sih buat dijadikan {number} Platina',
+            await ctx.response.send_message(
+                f'Gold CS {ctx.user.name}-nyan cuma {goldCount}, mana cukup sih buat dijadikan {number} Platina',
                 ephemeral=True)
         else:
             goldCount -= (number * 2000)
@@ -54,9 +55,9 @@ class Convert_from_cs(commands.Cog):
             mycol.update_one(userFind, newvalues)
             newvalues = {"$set": {"userGold": goldCount}}
             lmycol.update_one(luserFind, newvalues)
-            await ctx.respond(
-                f'Convert berhasil, Platina {ctx.author.name}-nyan menjadi {platCount} dan gold CSnya menjadi {goldCount}',
+            await ctx.response.send_message(
+                f'Convert berhasil, Platina {ctx.user.name}-nyan menjadi {platCount} dan gold CSnya menjadi {goldCount}',
                 ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Convert_from_cs(bot))
+async def setup(bot):
+  await bot.add_cog(Convert_from_cs(bot))

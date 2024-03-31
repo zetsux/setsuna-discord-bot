@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import aiohttp
@@ -16,13 +17,13 @@ class GenerateImg(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='setsuimg', description='Ask Setsuna to generate an image based on the given prompt')
-  @commands.has_any_role('Encoder Magang', 'Owner')
+  @app_commands.command(name='setsuimg', description='Ask Setsuna to generate an image based on the given prompt')
+  @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
   async def generateImgCommand(self, ctx, prompt: Option(str, "Prompt for the image to generate", required=True), number: Option(int, "Number of image to generate (Max : 10)", required=False, default=1)):
     await ctx.defer()
 
     if number > 10 or number < 1 :
-      await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan',
+      await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)
       return
 
@@ -58,7 +59,7 @@ class GenerateImg(commands.Cog):
               index -= 1
               embedEd = discord.Embed(color=0x9457EB)
               embedEd.set_image(url=response["data"][index-1]["url"])
-              embedEd.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+              embedEd.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.user.name}", icon_url=ctx.user.avatar.url)
               await interaction.response.edit_message(embed=embedEd)
 
           async def np_callback(interaction):
@@ -71,7 +72,7 @@ class GenerateImg(commands.Cog):
               index += 1
               embedEd = discord.Embed(color=0x9457EB)
               embedEd.set_image(url=response["data"][index-1]["url"])
-              embedEd.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+              embedEd.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.user.name}", icon_url=ctx.user.avatar.url)
               await interaction.response.edit_message(embed=embedEd)
 
           buttonPP.callback = pp_callback
@@ -82,14 +83,14 @@ class GenerateImg(commands.Cog):
 
           embedVar = discord.Embed(color=0x9457EB)
           embedVar.set_image(url=response["data"][0]["url"])
-          embedVar.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
-          imgMsg = await ctx.respond(embed=embedVar, view=inView)
+          embedVar.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.user.name}", icon_url=ctx.user.avatar.url)
+          imgMsg = await ctx.response.send_message(embed=embedVar, view=inView)
           checkView = await inView.wait()
 
           if checkView:
             embedVar = discord.Embed(color=0x9457EB)
             embedVar.set_image(url=response["data"][index-1]["url"])
-            embedVar.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.author.name}", icon_url=ctx.author.avatar.url)
+            embedVar.set_footer(text=f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.user.name}", icon_url=ctx.user.avatar.url)
             await imgMsg.edit_original_response(embed=embedVar, view=None)
           
     except Exception as e :
@@ -97,8 +98,8 @@ class GenerateImg(commands.Cog):
             title=f"[ Error!!! ]",
             description=f"Maaf, fiturnya lagi error, coba tanya ke yg bikin bot deh.",
             color=0x28282B)
-      await ctx.respond(embed=embedVar)
+      await ctx.response.send_message(embed=embedVar)
       print(e)
         
-def setup(bot):
-  bot.add_cog(GenerateImg(bot))
+async def setup(bot):
+  await bot.add_cog(GenerateImg(bot))

@@ -4,7 +4,7 @@ import pymongo
 import datetime
 from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
-from discord.commands import Option
+from discord import app_commands
 import numpy as np
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
@@ -19,14 +19,15 @@ class Profile(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='profile', description='Shows the profile of the one you mentioned or yourself', guild_ids=guilds)
-  async def character_profile(self, ctx, member: Option(discord.Member, "The profile you want to check of", required=False, default=None)):
+  @app_commands.command(name='profile', description='Shows the profile of the one you mentioned or yourself')
+  @app_commands.describe(member='The member to show profile')
+  async def character_profile(self, ctx: discord.Interaction, member: discord.Member = None):
     if not member:
-        member = ctx.author
+        member = ctx.user
 
     userFind = mycol.find_one({"userid": str(member.id)})
     if userFind == None:
-        await ctx.respond(
+        await ctx.response.send_message(
             f'{member.name}-nyan belum terdaftar, watashi tidak bisa membuka profilenya',
             ephemeral=True)
 
@@ -156,7 +157,7 @@ class Profile(commands.Cog):
             pageIndex += 1
 
         async def selection_callback(interaction):
-            if interaction.user.id == ctx.author.id:
+            if interaction.user.id == ctx.user.id:
                 if select.values[0] == "profile":
                     embedEdit = discord.Embed(
                         title=f"— {member.name}'s Profile —",
@@ -238,7 +239,7 @@ class Profile(commands.Cog):
                                  description=f"**{member}**",
                                  color=member.color)
         embedVar.set_image(url=member.avatar.url)
-        profileMsg = await ctx.respond(embed=embedVar, view=view)
+        profileMsg = await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -249,5 +250,5 @@ class Profile(commands.Cog):
                 color=0xff10f0)
             await profileMsg.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Profile(bot))
+async def setup(bot):
+  await bot.add_cog(Profile(bot))

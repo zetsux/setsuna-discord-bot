@@ -1,12 +1,11 @@
 from webserver import keep_alive
 import os
 import discord
-from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
-from discord.commands import Option
 import pymongo
 import wavelink
 from wavelink.ext import spotify
+import asyncio
 import events.song as song_events
 import events.error as error_events
 
@@ -42,13 +41,14 @@ mycol = mydb["user"]
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!$', intents=intents)
 
+
 @bot.event
 async def on_ready():
-  print(f'{bot.user.name} has connected to Discord!')
-  await bot.change_presence(activity=discord.Activity(
-      type=discord.ActivityType.watching, name="u from afar | /help"))
-        
-  bot.loop.create_task(connect_nodes())
+    print(f'{bot.user.name} has connected to Discord!')
+    await bot.change_presence(activity=discord.Activity(
+        type=discord.ActivityType.watching, name="u from afar | /help"))
+
+    bot.loop.create_task(connect_nodes())
 
 
 @bot.event
@@ -58,38 +58,27 @@ async def on_wavelink_node_ready(node: wavelink.Node):
 
 async def connect_nodes():
     await bot.wait_until_ready()
-    await wavelink.NodePool.create_node(bot=bot, host=LVLINKHOST, port=LVLINKPORT, password=LVLINKPASS, https=LVLINKSSL, spotify_client=spotify.SpotifyClient(client_id=SPOTIFYID, client_secret=SPOTIFYSECRET))
+    await wavelink.NodePool.create_node(bot=bot,
+                                        host=LVLINKHOST,
+                                        port=LVLINKPORT,
+                                        password=LVLINKPASS,
+                                        https=LVLINKSSL,
+                                        spotify_client=spotify.SpotifyClient(
+                                            client_id=SPOTIFYID,
+                                            client_secret=SPOTIFYSECRET))
+
 
 @bot.event
-async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track, reason):
+async def on_wavelink_track_end(player: wavelink.Player, track: wavelink.Track,
+                                reason):
     await song_events.get_next_song(player, track, reason)
 
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    await song_events.auto_leave(member, before, after, bot.user.id, guildList, songchList)
+    await song_events.auto_leave(member, before, after, bot.user.id, guildList,
+                                 songchList)
 
-
-@bot.slash_command(name='reloadcogs', description='Reload Cogs')
-@commands.has_any_role('Encoder Magang', 'Owner')
-async def reload(ctx):
-  await ctx.defer()
-  str = ""
-  for folder in os.listdir("./") :
-    path = f"./{folder}"
-    
-    if not os.path.isdir(path) :
-      continue
-      
-    for filename in os.listdir(f"./{folder}") :
-      if filename.endswith(".py") :
-        try : 
-          bot.load_extension(f"{folder}.{filename[:-3]}")
-          str += f"{folder}.{filename[:-3]}\n"
-        except Exception as error :
-          print(error)
-
-  await ctx.respond(f"{str}")
 
 @bot.event
 async def on_member_join(member):
@@ -109,7 +98,7 @@ async def on_command_error(ctx, error):
         await ctx.channel.send(
             f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~')
         return
-    
+
     guild = bot.get_guild(GUILDID)
     channel = guild.get_channel(LOGCH)
     await error_events.handle_command_error(ctx, error, channel)
@@ -123,7 +112,7 @@ async def on_application_command_error(ctx, error):
             f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
         return
-    
+
     guild = bot.get_guild(GUILDID)
     channel = guild.get_channel(LOGCH)
     await error_events.handle_command_error(ctx, error, channel, True)
@@ -136,25 +125,24 @@ async def on_application_command_error(ctx, error):
 #   bot.get_application_command(command).reset_cooldown(ctx)
 #   await ctx.respond(f'Cooldown command /{command} pada {ctx.author.name}-nyan berhasil direset!', ephemeral=True)
 
+for folder in os.listdir("./"):
+    path = f"./{folder}"
 
-for folder in os.listdir("./") :
-  path = f"./{folder}"
-  
-  if not os.path.isdir(path) :
-    continue
-    
-  for filename in os.listdir(f"./{folder}") :
-    if filename.endswith(".py") :
-      try : 
-        print(f"{folder}.{filename[:-3]}")
-        bot.load_extension(f"{folder}.{filename[:-3]}")
-      except Exception as error :
-        print(error)
+    if not os.path.isdir(path) or folder == "events" or folder == "ai":
+        continue
+
+    for filename in os.listdir(f"./{folder}"):
+        if filename.endswith(".py"):
+            try:
+                print(f"{folder}.{filename[:-3]}")
+                asyncio.run(bot.load_extension(f"{folder}.{filename[:-3]}"))
+            except Exception as error:
+                print(error)
 
 keep_alive()
 try:
-  bot.run(TOKEN)
-except discord.errors.HTTPException :
-  print("Kena rate limit nih, bentar restart duls..")
-  os.system('kill 1')
-  os.system('python restart.py')
+    bot.run(TOKEN)
+except discord.errors.HTTPException:
+    print("Kena rate limit nih, bentar restart duls..")
+    os.system('kill 1')
+    os.system('python restart.py')

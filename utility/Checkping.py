@@ -7,7 +7,7 @@ class Checkping(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name="pinger", description="Check Ping", guild_ids=guilds)
+  @commands.command(name="pinger", description="Check Ping", guild_ids=guilds)
   async def pinger(self, ctx):
       embed = discord.Embed(
           title="Current Ping",
@@ -15,5 +15,5 @@ class Checkping(commands.Cog):
           color=ctx.author.color)
       await ctx.respond(embed=embed)
 
-def setup(bot):
-  bot.add_cog(Checkping(bot))
+async def setup(bot):
+  await bot.add_cog(Checkping(bot))

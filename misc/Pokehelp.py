@@ -13,7 +13,7 @@ class Pokehelp(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='pokehelp', description='Explains how to use pokecommands')
-  async def poke_helpp(self, ctx : discord.Interaction):
+  async def poke_helpp(self, ctx: discord.Interaction):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
         title=f"[ Setsuna's PokeCommands Help ]",

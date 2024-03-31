@@ -18,7 +18,7 @@ class Songremove(commands.Cog):
     
   @app_commands.command(description='Force remove a song from queue')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def songremove(self, ctx : discord.Interaction, remove: Option(int, "The position of song in queue", required=True)):
+  async def songremove(self, ctx: discord.Interaction, remove: Option(int, "The position of song in queue", required=True)):
     if not ctx.voice_client:
         await ctx.response.send_message(
             f'Ihh aneh deh {ctx.user.name}-nyan, watashi aja ngga di vc',

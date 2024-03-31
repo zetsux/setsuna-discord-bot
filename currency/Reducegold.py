@@ -21,7 +21,7 @@ class Reducegold(commands.Cog):
     
   @app_commands.command(name='reducegold', description='Reduce gold for the mentioned user (or to self if without mention)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def gold_reduce(self, ctx : discord.Interaction, number: Option(int, "Number to reduce", required=True), member: Option(discord.Member, "Who to reduce gold or self if empty", required=False, default=None)):
+  async def gold_reduce(self, ctx: discord.Interaction, number: Option(int, "Number to reduce", required=True), member: Option(discord.Member, "Who to reduce gold or self if empty", required=False, default=None)):
     await ctx.defer()
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',

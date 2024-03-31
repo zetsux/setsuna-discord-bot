@@ -19,7 +19,7 @@ class Register(commands.Cog):
     @app_commands.command(
         name='regist',
         description='Register your account and create a profile')
-    async def register_account(self, ctx : discord.Interaction: discord.Interaction):
+    async def register_account(self, ctx: discord.Interaction):
         checkRegist = mycol.find_one({"userid": str(ctx.user.id)})
         if checkRegist != None:
             await ctx.response.send_message(

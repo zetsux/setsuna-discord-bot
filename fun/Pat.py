@@ -12,7 +12,7 @@ class Pat(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='pat', description='Do an anime patpat')
-  async def pat(self, ctx : discord.Interaction, member: Option(discord.Member, "The one you will patpat", required=False, default=None)):
+  async def pat(self, ctx: discord.Interaction, member: Option(discord.Member, "The one you will patpat", required=False, default=None)):
       response = urllib2.urlopen('https://some-random-api.ml/animu/pat')
       data = json.loads(response.read())
   

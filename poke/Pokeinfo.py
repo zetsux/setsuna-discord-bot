@@ -26,7 +26,7 @@ class Pokeinfo(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='pokeinfo', description='Check the information of a specific pokemon')
-  async def pokemon_info(self, ctx : discord.Interaction, poke: Option(str, "The name of the pokemon to check for", required=True)):
+  async def pokemon_info(self, ctx: discord.Interaction, poke: Option(str, "The name of the pokemon to check for", required=True)):
     pokeFind = mycol.find_one({"func": "pokedb"})
     pokeBasic = pokeFind["basic"]
     pokeElite = pokeFind["elite"]

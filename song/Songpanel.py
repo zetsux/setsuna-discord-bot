@@ -23,7 +23,7 @@ class Songpanel(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='songpanel', description='Open the song panel to control the song playing')
-  async def song_panel(self, ctx : discord.Interaction):
+  async def song_panel(self, ctx: discord.Interaction):
     if not ctx.voice_client:
         await ctx.response.send_message(
             f'Watashi aja ngga join vc loh {ctx.user.name}-nyan...',

@@ -12,7 +12,7 @@ class Hug(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='hug', description='Do an anime hug')
-  async def hug(self, ctx : discord.Interaction, member: Option(discord.Member, "The one you will hug", required=False, default=None)):
+  async def hug(self, ctx: discord.Interaction, member: Option(discord.Member, "The one you will hug", required=False, default=None)):
       response = urllib2.urlopen('https://some-random-api.ml/animu/hug')
       data = json.loads(response.read())
   

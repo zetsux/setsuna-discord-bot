@@ -23,7 +23,7 @@ class Blackjack(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='blackjack', description='Play blackjack against a CPU Dealer')
-  async def play_blackjack(self, ctx : discord.Interaction, number: Option(int, "Number of gold to bet", required=True)):
+  async def play_blackjack(self, ctx: discord.Interaction, number: Option(int, "Number of gold to bet", required=True)):
     if number < 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)

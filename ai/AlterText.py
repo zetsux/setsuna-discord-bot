@@ -18,7 +18,7 @@ class AlterText(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='setsualter', description='Alter given text by the given instruction')
-  async def chatAlterCommand(self, ctx : discord.Interaction, input: Option(str, "Text to edit", required=True), instruction:  Option(str, "Something to do to the input text", required=True)):
+  async def chatAlterCommand(self, ctx: discord.Interaction, input: Option(str, "Text to edit", required=True), instruction:  Option(str, "Something to do to the input text", required=True)):
     await ctx.defer()
     try :
       async with aiohttp.ClientSession() as session:

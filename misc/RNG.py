@@ -14,7 +14,7 @@ class RNG(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='rng', description='Generates a random number from 1 to the entered number')
-  async def random_number_generate(self, ctx : discord.Interaction, max: Option(int, "Max range of rng", required=True), count: Option(int, "Number of rolls wanted", required=False, default=1)):
+  async def random_number_generate(self, ctx: discord.Interaction, max: Option(int, "Max range of rng", required=True), count: Option(int, "Number of rolls wanted", required=False, default=1)):
     await ctx.defer()
     if max > 1 and count >= 1:
         rngStr = ""

@@ -20,7 +20,7 @@ class Gamblegold(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='gamblegold', description='Gamble your gold with approximately 50/50 odds of getting double or losing all')
-  async def gold_gamble(self, ctx : discord.Interaction, number: Option(int, "Number to add", required=True)):
+  async def gold_gamble(self, ctx: discord.Interaction, number: Option(int, "Number to add", required=True)):
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)

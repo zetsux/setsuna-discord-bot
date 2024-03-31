@@ -48,7 +48,7 @@ class Anitrade(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='anitrade', description='Trade with the mentioned user')
-  async def anime_trading(self, ctx : discord.Interaction, member: Option(discord.Member, "Trade partner", required=True)):
+  async def anime_trading(self, ctx: discord.Interaction, member: Option(discord.Member, "Trade partner", required=True)):
     userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
         await ctx.response.send_message(

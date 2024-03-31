@@ -23,7 +23,7 @@ class RPS(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='rps', description='Battle RPS against a target')
-  async def rps_battle(self, ctx : discord.Interaction, member: Option(discord.Member, "Member to diss", required=True)):
+  async def rps_battle(self, ctx: discord.Interaction, member: Option(discord.Member, "Member to diss", required=True)):
     if member.bot:
         await ctx.response.send_message(f'Masa nantang bewan sama bot sih {ctx.user.name}-nyan, aneh banget deh', ephemeral=True)
         return

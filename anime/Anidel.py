@@ -48,7 +48,7 @@ class Anidel(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='anidel', description='Delete anime from your inventory with count is entered number')
-  async def anime_remove(self, ctx : discord.Interaction, name: Option(str, "Name to delete", required=True), number: Option(int, "Number to delete", required=True)):
+  async def anime_remove(self, ctx: discord.Interaction, name: Option(str, "Name to delete", required=True), number: Option(int, "Number to delete", required=True)):
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)

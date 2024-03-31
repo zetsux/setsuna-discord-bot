@@ -20,7 +20,7 @@ class Resethunt(commands.Cog):
     
   @app_commands.command(name='resethunt', description='Reset cooldown of /hunt command for chosen user or self (if not choose)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def reset_hunt(self, ctx : discord.Interaction, member: Option(discord.Member, "The profile you want to check of", required=False, default=None)):
+  async def reset_hunt(self, ctx: discord.Interaction, member: Option(discord.Member, "The profile you want to check of", required=False, default=None)):
     await ctx.defer()
     if not member:
         member = ctx.user

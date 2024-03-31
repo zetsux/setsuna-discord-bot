@@ -24,7 +24,7 @@ class Giveawayplat(commands.Cog):
     
   @app_commands.command(name='giveawayplat', description='Giveaway the entered number of platina to the fastest claimer'
 )
-  async def platina_giveaway(self, ctx : discord.Interaction, number: Option(int, "Number to giveaway", required=True)):
+  async def platina_giveaway(self, ctx: discord.Interaction, number: Option(int, "Number to giveaway", required=True)):
     await ctx.defer()
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan', ephemeral=True)

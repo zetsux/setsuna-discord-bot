@@ -13,7 +13,7 @@ class Setsuhelp(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='setsuhelp', description='Explains how to use AI commands')
-  async def setsu_helpp(self, ctx : discord.Interaction):
+  async def setsu_helpp(self, ctx: discord.Interaction):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
         title=f"[ Setsuna's AI Commands Help ]",

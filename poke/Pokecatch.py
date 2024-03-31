@@ -31,7 +31,7 @@ class Pokecatch(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='pokecatch', description='Catch a random pokemon from the wild for 1 Platina')
-  async def poke_gacha(self, ctx : discord.Interaction):
+  async def poke_gacha(self, ctx: discord.Interaction):
     firstFind = mycol.find_one({"userid": str(ctx.user.id)})
     if firstFind == None:
         await ctx.response.send_message(

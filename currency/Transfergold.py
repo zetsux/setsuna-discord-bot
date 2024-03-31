@@ -21,7 +21,7 @@ class Transfergold(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='transfergold', description='Transfer the entered number of gold to a user')
-  async def gold_transfer(self, ctx : discord.Interaction, number: Option(int, "Number of gold to transfer", required=True), member: Option(discord.Member, "Who to transfer gold to", required=True)):
+  async def gold_transfer(self, ctx: discord.Interaction, number: Option(int, "Number of gold to transfer", required=True), member: Option(discord.Member, "Who to transfer gold to", required=True)):
     await ctx.defer()
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',

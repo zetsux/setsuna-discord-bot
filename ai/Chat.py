@@ -18,7 +18,7 @@ class Chat(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='setsuchat', description='Chat with and Ask Setsuna to answer or even do things')
-  async def chatCommand(self, ctx : discord.Interaction, prompt: Option(str, "Chat to send", required=True), answer: Option(str, "Form of Setsuna's answer", choices=["Normal Chat", "Code Blocks"], required=False, default="Normal Chat")):
+  async def chatCommand(self, ctx: discord.Interaction, prompt: Option(str, "Chat to send", required=True), answer: Option(str, "Form of Setsuna's answer", choices=["Normal Chat", "Code Blocks"], required=False, default="Normal Chat")):
     await ctx.defer()
     try :
       async with aiohttp.ClientSession() as session:

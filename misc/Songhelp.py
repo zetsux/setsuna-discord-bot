@@ -13,7 +13,7 @@ class Songhelp(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='songhelp', description='Explains how to use song commands')
-  async def song_helpp(self, ctx : discord.Interaction):
+  async def song_helpp(self, ctx: discord.Interaction):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
         title=f"[ Setsuna's Song Commands Help ]",

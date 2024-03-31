@@ -24,7 +24,7 @@ class Spygame(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='spygame', description='Play a spyfall game with at least 3 players')
-  async def spyfall_game(self, ctx : discord.Interaction):
+  async def spyfall_game(self, ctx: discord.Interaction):
     playersID = []
     playersName = []
     playerCount = 0

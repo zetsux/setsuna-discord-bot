@@ -20,7 +20,7 @@ class Profile(commands.Cog):
     
   @app_commands.command(name='profile', description='Shows the profile of the one you mentioned or yourself')
   @app_commands.describe(member='The member to show profile')
-  async def character_profile(self, ctx : discord.Interaction: discord.Interaction, member: discord.Member = None):
+  async def character_profile(self, ctx: discord.Interaction, member: discord.Member = None):
     if not member:
         member = ctx.user
 

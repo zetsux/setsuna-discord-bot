@@ -19,7 +19,7 @@ class Addxp(commands.Cog):
   @app_commands.command(name='addxp', description='Add exp for the mentioned user (or to self if without mention)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
   @app_commands.describe(number="number of XP to add", member="member to give XP")
-  async def exp_add(self, ctx : discord.Interaction, number: int = 0, member: discord.Member = None):
+  async def exp_add(self, ctx: discord.Interaction, number: int = 0, member: discord.Member = None):
     await ctx.response.defer()
     if number <= 0:
         await ctx.followup.send(f'Neee {ctx.user.name}-nyan, ngga jelas deh ih',

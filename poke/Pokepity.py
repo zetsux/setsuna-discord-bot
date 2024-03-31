@@ -26,7 +26,7 @@ class Pokepity(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='pokepity', description='Check how many catches left for you to get pity at /pokecatch')
-  async def pokemon_pity(self, ctx : discord.Interaction):
+  async def pokemon_pity(self, ctx: discord.Interaction):
     userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
         await ctx.response.send_message(

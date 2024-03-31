@@ -23,7 +23,7 @@ class Hunt(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='hunt', description='Hunt for loots once per 10 minutes')
-  async def hunting(self, ctx : discord.Interaction):
+  async def hunting(self, ctx: discord.Interaction):
     userFind = mycol.find_one({"userid": str(ctx.user.id)})
 
     if userFind == None:

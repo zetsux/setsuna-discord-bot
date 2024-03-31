@@ -9,7 +9,7 @@ class Poketype(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='poketype', description='Open a chart to see pokemon typing')
-  async def pokemochart(self, ctx : discord.Interaction):
+  async def pokemochart(self, ctx: discord.Interaction):
     embedVar = discord.Embed(title=f"[ PokeType Chart ]",
                              description=f' ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼',
                              color=0xee1515)

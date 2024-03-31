@@ -4,7 +4,6 @@ import pymongo
 import datetime
 from discord.ext import commands
 from discord import app_commands
-from discord.commands import Option
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 
@@ -20,19 +19,20 @@ class Resethunt(commands.Cog):
     
   @app_commands.command(name='resethunt', description='Reset cooldown of /hunt command for chosen user or self (if not choose)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def reset_hunt(self, ctx: discord.Interaction, member: Option(discord.Member, "The profile you want to check of", required=False, default=None)):
-    await ctx.defer()
+  @app_commands.describe(member="The member to reset hunt cd")
+  async def reset_hunt(self, ctx: discord.Interaction, member: discord.Member = None):
+    await ctx.response.defer()
     if not member:
         member = ctx.user
 
     userFind = mycol.find_one({"userid": str(member.id)})
     if userFind == None:
-        await ctx.response.send_message(
+        await ctx.followup.send(
             f'{member.name}-nyan belum terdaftar, watashi tidak bisa membuka profilenya',
             ephemeral=True)
 
     else:
-        await ctx.response.send_message(
+        await ctx.followup.send(
             f"Cooldown command /hunt punya {member.name}-nyan berhasil direset!"
         )
         newvalues = {

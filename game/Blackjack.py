@@ -541,7 +541,7 @@ class Blackjack(commands.Cog):
         name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
         value='```' + player + '```',
         inline=False)
-    bjMsg = await ctx.response.send_message(embed=embedVar, view=view)
+    await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
@@ -549,8 +549,8 @@ class Blackjack(commands.Cog):
             title=f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
             description="You've lost.. (Time limit's up)",
             color=0x8b0000)
-        await bjMsg.edit_original_response(embed=embedEdit, view=None)
-        await bjMsg.followup.send(
+        await ctx.edit_original_response(embed=embedEdit, view=None)
+        await ctx.followup.send(
             f"Neee {ctx.user.name}-nyan lama banget sih, udah watashi tungguin dari tadi loh, ngga kabur kan ya? Tapi zannen da, karena waktunya sudah habis jadi anata dianggap kalah dan kehilangan senilai {number} Gold"
         )
         newvalues = {"$set": {"gold": goldCount - number}}

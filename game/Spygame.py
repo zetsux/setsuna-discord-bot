@@ -1024,7 +1024,7 @@ class Spygame(commands.Cog):
         description=
         "Press button to join, can start after at least 3 players have joined",
         color=0x330066)
-    panelMsg = await ctx.response.send_message(embed=embedVar, view=view)
+    await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
@@ -1032,7 +1032,7 @@ class Spygame(commands.Cog):
             title=f"Game telah ditutup karena tak kunjung distart",
             description="Watashi udah nunggu lama tapi belum distart juga..",
             color=0x330066)
-        await panelMsg.edit_original_response(embed=embedEdit, view=None)
+        await ctx.edit_original_response(embed=embedEdit, view=None)
 
 async def setup(bot):
   await bot.add_cog(Spygame(bot))

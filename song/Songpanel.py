@@ -490,7 +490,7 @@ class Songpanel(commands.Cog):
             title=f'[ Song Panel ]',
             description="Control by pressing the buttons below",
             color=0xf2bc00)
-        panelMsg = await ctx.response.send_message(embed=embedVar, view=view)
+        await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -498,7 +498,7 @@ class Songpanel(commands.Cog):
                 title=f"Song Panelnya sudah ditutup karena lama ngga dipakai..",
                 description="Tulis /songpanel lagi kalau mau pakai yaa~",
                 color=0xf2bc00)
-            await panelMsg.edit_original_response(embed=embedEdit, view=None)
+            await ctx.edit_original_response(embed=embedEdit, view=None)
 
 async def setup(bot):
   await bot.add_cog(Songpanel(bot))

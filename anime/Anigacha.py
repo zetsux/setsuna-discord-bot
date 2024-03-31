@@ -238,7 +238,7 @@ class Anigacha(commands.Cog):
             url=
             "https://cdn.discordapp.com/attachments/995337235211763722/1013753097807482911/imgonline-com-ua-twotoone-bC3frXSwfPCEo0S.jpg"
         )
-        gachaMsg = await ctx.response.send_message(embed=embedVar, view=view)
+        await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -246,7 +246,7 @@ class Anigacha(commands.Cog):
                 title=f"Thank you for using anigacha!",
                 description="You can type /anigacha to do more gachas",
                 color=0xff69b4)
-            await gachaMsg.edit_original_response(embed=embedEdit, view=None)
+            await ctx.edit_original_response(embed=embedEdit, view=None)
 
 async def setup(bot):
   await bot.add_cog(Anigacha(bot))

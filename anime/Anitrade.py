@@ -637,7 +637,7 @@ class Anitrade(commands.Cog):
     embedVar.add_field(name=f"[ {member.name}'s Offer ]",
                        value=f"```{aniString2}```",
                        inline=True)
-    tradeMsg = await ctx.response.send_message(embed=embedVar, view=view)
+    await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
@@ -646,7 +646,7 @@ class Anitrade(commands.Cog):
             f"Trade Cancelled ( {ctx.user.name}-nyan | {member.name}-nyan )",
             description="Cause : Not used for too long",
             color=0xff69b4)
-        await tradeMsg.edit_original_response(embed=embedEnd, view=None)
+        await ctx.edit_original_response(embed=embedEnd, view=None)
 
 async def setup(bot):
   await bot.add_cog(Anitrade(bot))

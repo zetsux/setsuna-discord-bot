@@ -238,7 +238,7 @@ class Profile(commands.Cog):
                                  description=f"**{member}**",
                                  color=member.color)
         embedVar.set_image(url=member.avatar.url)
-        profileMsg = await ctx.response.send_message(embed=embedVar, view=view)
+        await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -247,7 +247,7 @@ class Profile(commands.Cog):
                 description=
                 "Kalau mau cek profile lagi tinggal /profile aja yaa",
                 color=0xff10f0)
-            await profileMsg.edit_original_response(embed=embedEdit, view=None)
+            await ctx.edit_original_response(embed=embedEdit, view=None)
 
 async def setup(bot):
   await bot.add_cog(Profile(bot))

@@ -178,7 +178,7 @@ class Pokepartner(commands.Cog):
             description=f"Current : None (Change Partner to set)",
             color=0xee1515)
 
-    panelMsg = await ctx.response.send_message(embed=embedVar, view=view, ephemeral=True)
+    await ctx.response.send_message(embed=embedVar, view=view, ephemeral=True)
     checkView = await view.wait()
 
     if checkView:
@@ -187,7 +187,7 @@ class Pokepartner(commands.Cog):
             title=f"Poke Partner Timed Out...",
             description=f"Partner : {tempFind['pokemon']}",
             color=0xffff00)
-        await panelMsg.edit_original_response(embed=embedEdit, view=None)
+        await ctx.edit_original_response(embed=embedEdit, view=None)
 
 async def setup(bot):
   await bot.add_cog(Pokepartner(bot))

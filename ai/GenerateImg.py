@@ -104,7 +104,7 @@ class GenerateImg(commands.Cog):
                         text=
                         f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.user.name}",
                         icon_url=ctx.user.avatar.url)
-                    imgMsg = await ctx.followup.send(embed=embedVar,
+                    await ctx.followup.send(embed=embedVar,
                                                              view=inView)
                     checkView = await inView.wait()
 
@@ -116,7 +116,7 @@ class GenerateImg(commands.Cog):
                             text=
                             f"Image : {index}/{number}\nPrompt : {prompt}\nRequested by : {ctx.user.name}",
                             icon_url=ctx.user.avatar.url)
-                        await imgMsg.edit_original_response(embed=embedVar,
+                        await ctx.edit_original_response(embed=embedVar,
                                                             view=None)
 
         except Exception as e:

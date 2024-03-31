@@ -742,7 +742,7 @@ class Pokecatch(commands.Cog):
             color=0xee1515)
         embedVar.set_image(
             url="https://mcdn.wallpapersafari.com/medium/61/37/kqVFfY.jpg")
-        gachaMsg = await ctx.response.send_message(embed=embedVar, view=view)
+        await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -750,7 +750,7 @@ class Pokecatch(commands.Cog):
                 title=f"Thank you for using pokecatch!",
                 description="You can type /pokecatch to do more gachas",
                 color=0xee1515)
-            await gachaMsg.edit_original_response(embed=embedEdit, view=None)
+            await ctx.edit_original_response(embed=embedEdit, view=None)
 
 async def setup(bot):
   await bot.add_cog(Pokecatch(bot))

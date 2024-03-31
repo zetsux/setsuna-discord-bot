@@ -128,7 +128,7 @@ async def on_application_command_error(ctx, error):
 for folder in os.listdir("./"):
     path = f"./{folder}"
 
-    if not os.path.isdir(path) or folder == "events" or folder == "ai":
+    if not os.path.isdir(path) or folder == "events":
         continue
 
     for filename in os.listdir(f"./{folder}"):

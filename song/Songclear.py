@@ -1,11 +1,8 @@
 import discord
 import os
 import wavelink
-from wavelink.ext import spotify
-from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
 from discord import app_commands
-from discord.commands import Option
 from StaticVars import Songlist
 
 guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
@@ -19,7 +16,7 @@ class Songclear(commands.Cog):
   @app_commands.command(description='Force clear all song in queue')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
   async def songclear(self, ctx: discord.Interaction):
-    if not ctx.voice_client:
+    if not ctx.guild.voice_client:
         await ctx.response.send_message(
             f'Ihh aneh deh {ctx.user.name}-nyan, watashi aja ngga di vc',
             ephemeral=True)
@@ -27,13 +24,13 @@ class Songclear(commands.Cog):
     elif not ctx.user.voice:
         await ctx.response.send_message('Etlis join vc dlu la dek..', ephemeral=True)
         return
-    elif ctx.user.voice.channel != ctx.me.voice.channel:
+    elif ctx.user.voice.channel != ctx.guild.me.voice.channel:
         await ctx.response.send_message(
             f'Hmph {ctx.user.name}-nyan, watashi ngga mau diatur-atur kalo watashitachi ngga satu vc',
             ephemeral=True)
         return
     else:
-        vc: wavelink.Player = ctx.voice_client
+        vc: wavelink.Player = ctx.guild.voice_client
 
     setattr(vc, "loop", False)
     await ctx.response.send_message(

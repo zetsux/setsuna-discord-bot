@@ -14,7 +14,7 @@ def getThumbnail(url):
 
 async def get_next_song(player: wavelink.Player, track: wavelink.Track, reason):
   ctx = player.ctx
-  vc: player = ctx.voice_client
+  vc: player = ctx.guild.voice_client
 
   if vc.loop:
       await vc.play(track)

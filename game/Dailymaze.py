@@ -46,7 +46,7 @@ class Dailymaze(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='dailymaze', description='Play in daily minigame from level 1-7 with different prizes')
-  async def daily_dungeon(self, ctx, level: Option(int, "Level of difficulty (1-7)", required=True)):
+  async def daily_dungeon(self, ctx : discord.Interaction, level: Option(int, "Level of difficulty (1-7)", required=True)):
     if level <= 0:
         await ctx.response.send_message(f'Sumpa gajelas lu {ctx.user.name}-nyan', ephemeral=True)
         return

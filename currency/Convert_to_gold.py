@@ -20,7 +20,7 @@ class Convert_to_gold(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='converttogold', description='Convert platina to gold with the entered number ( 1 : 100 )')
-  async def convert_to_gold(self, ctx, number: Option(int, "Number of platina to convert", required=True)):
+  async def convert_to_gold(self, ctx : discord.Interaction, number: Option(int, "Number of platina to convert", required=True)):
     await ctx.defer(ephemeral=True)
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',

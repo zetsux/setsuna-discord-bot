@@ -57,7 +57,7 @@ class Pokeduel(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='pokeduel', description='Find a challenger to battle each other in a Pokemon Duel')
-  async def pokemon_duel(self, ctx):
+  async def pokemon_duel(self, ctx : discord.Interaction):
     userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
         await ctx.response.send_message(

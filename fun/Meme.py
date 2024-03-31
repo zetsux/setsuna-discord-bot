@@ -11,7 +11,7 @@ class Meme(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='meme', description='Randomly generate a meme', guild_ids=guilds)
-  async def meme(self, ctx):
+  async def meme(self, ctx : discord.Interaction):
       response = urllib2.urlopen('https://some-random-api.ml/meme')
       data = json.loads(response.read())
       embed = discord.Embed(title="Randomly Generated Meme",

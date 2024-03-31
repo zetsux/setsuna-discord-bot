@@ -26,7 +26,7 @@ class Timer(commands.Cog):
   @app_commands.command(
     name='timer',
     description='Create a button that auto end after a set period of time')
-  async def timer_test(self, ctx, timer: Option(int, "Seconds to wait", required=True)):
+  async def timer_test(self, ctx : discord.Interaction, timer: Option(int, "Seconds to wait", required=True)):
     if timer <= 0:
         await ctx.response.send_message(
             f"Neeee {ctx.user.name}-nyan, ngga jelas banget ah, ngapain coba timer kurang dari 0 detik",

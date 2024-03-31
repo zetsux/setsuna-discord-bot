@@ -19,7 +19,7 @@ class Songseek(commands.Cog):
     
   @app_commands.command(name='songseek', description='Go to the specific duration of the song')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def song_seek(self, ctx, *, seconds: Option(int, "Second(s) of song duration to seek", required=False, default=0), minutes: Option(int, "Minute(s) of song duration to seek", required=False, default=0), hours: Option(int, "Hour(s) of song duration to seek", required=False, default=0)):
+  async def song_seek(self, ctx : discord.Interaction, *, seconds: Option(int, "Second(s) of song duration to seek", required=False, default=0), minutes: Option(int, "Minute(s) of song duration to seek", required=False, default=0), hours: Option(int, "Hour(s) of song duration to seek", required=False, default=0)):
     if not ctx.user.voice:
         await ctx.response.send_message('Etlis join vc dlu la dek..', ephemeral=True)
         return

@@ -18,7 +18,7 @@ class Songbye(commands.Cog):
     
   @app_commands.command(description='Disconnect the bot from the voice channel')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def songbye(self, ctx):
+  async def songbye(self, ctx : discord.Interaction):
     if not ctx.voice_client:
         await ctx.response.send_message(
             f'Ihh aneh deh {ctx.user.name}-nyan, watashi aja ngga di vc',

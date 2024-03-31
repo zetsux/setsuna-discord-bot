@@ -21,7 +21,7 @@ class Anifav(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='anifav', description='Set an owned anime character as favorite')
-  async def anime_favorite(self, ctx, name: Option(str, "Name of anime to set as favorite", required=True)):
+  async def anime_favorite(self, ctx : discord.Interaction, name: Option(str, "Name of anime to set as favorite", required=True)):
     userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
         await ctx.response.send_message(

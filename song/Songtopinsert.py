@@ -32,7 +32,7 @@ class Songtopinsert(commands.Cog):
     
   @app_commands.command(name='songinserttop', description='Insert track/album/playlist from spotify/youtube to the top of the queue')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def song_top(self, ctx, *, search: Option(str, "Link or key to search for", required=True)):
+  async def song_top(self, ctx : discord.Interaction, *, search: Option(str, "Link or key to search for", required=True)):
     if not ctx.user.voice:
         await ctx.response.send_message('Etlis join vc dlu la dek..', ephemeral=True)
         return

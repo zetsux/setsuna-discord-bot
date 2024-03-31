@@ -26,7 +26,7 @@ class Pokepartner(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='pokepartner', description='Check your current pokemon partner to battle and change it if you want')
-  async def pokemon_partner(self, ctx):
+  async def pokemon_partner(self, ctx : discord.Interaction):
     userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
         await ctx.response.send_message(

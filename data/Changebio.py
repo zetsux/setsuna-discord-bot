@@ -22,7 +22,7 @@ class ChangeBio(commands.Cog):
 
     @app_commands.command(name='changebio', description='Change profile bio')
     @app_commands.describe(bio='Your new bio')
-    async def bio_change(self, ctx: discord.Interaction, bio: str):
+    async def bio_change(self, ctx : discord.Interaction: discord.Interaction, bio: str):
         userFind = mycol.find_one({"userid": str(ctx.user.id)})
         if userFind == None:
             await ctx.response.send_message(

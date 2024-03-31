@@ -48,7 +48,7 @@ class Anigive(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='anigive', description='Give the entered number of anime to the mentioned user')
-  async def anime_give(self, ctx, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member, "Give target", required=True)):
+  async def anime_give(self, ctx : discord.Interaction, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member, "Give target", required=True)):
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)

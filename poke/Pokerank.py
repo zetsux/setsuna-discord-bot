@@ -21,7 +21,7 @@ class Pokerank(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='pokerank', description='Check the leaderboard for pokeduel Ranking')
-  async def poke_rank(self, ctx):
+  async def poke_rank(self, ctx : discord.Interaction):
     targetFind = mycol.find_one({"userid": str(ctx.user.id)})
     mentionTarget = '<@' + str(ctx.user.id) + '>'
     if targetFind == None:

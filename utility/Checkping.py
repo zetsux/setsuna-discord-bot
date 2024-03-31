@@ -9,7 +9,7 @@ class Checkping(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name="pinger", description="Check Ping", guild_ids=guilds)
-  async def pinger(self, ctx):
+  async def pinger(self, ctx : discord.Interaction):
       embed = discord.Embed(
           title="Current Ping",
           description=f"Ping is `{round(self.bot.latency * 100, 2)}` ms",

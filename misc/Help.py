@@ -13,7 +13,7 @@ class Help(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='help', description='Shows the guide to use Setsuna')
-  async def show_helpp(self, ctx):
+  async def show_helpp(self, ctx : discord.Interaction):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
         title=f"Yoroshiku {ctx.user.name}-nyan, watashi wa Setsuna desu!",

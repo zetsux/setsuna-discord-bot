@@ -20,7 +20,7 @@ class Convert_from_cs(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='convertcstoplat', description='Convert gold in Loraine to platina with the entered number ( 2000 : 1 )')
-  async def csconvert_to_plat(self, ctx, number: Option(int, "Number of platina to get", required=True)):
+  async def csconvert_to_plat(self, ctx : discord.Interaction, number: Option(int, "Number of platina to get", required=True)):
     await ctx.defer(ephemeral=True)
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan', ephemeral=True)

@@ -13,7 +13,7 @@ class Anihelp(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='anihelp', description='Explains how to use anicommands')
-  async def ani_helpp(self, ctx):
+  async def ani_helpp(self, ctx : discord.Interaction):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
         title=f"[ Setsuna's AniCommands Help ]",

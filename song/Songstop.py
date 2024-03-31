@@ -18,7 +18,7 @@ class Songstop(commands.Cog):
     
   @app_commands.command(description='Force stop current song and clear all song in queue')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def songstop(self, ctx):
+  async def songstop(self, ctx : discord.Interaction):
     if not ctx.voice_client:
         await ctx.response.send_message(
             f'Ihh aneh deh {ctx.user.name}-nyan, watashi aja ngga di vc',

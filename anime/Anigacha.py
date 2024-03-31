@@ -50,7 +50,7 @@ class Anigacha(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='anigacha', description='Play anime gacha for 1 Platina each')
-  async def anime_gacha(self, ctx):
+  async def anime_gacha(self, ctx : discord.Interaction):
     userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
         await ctx.response.send_message(

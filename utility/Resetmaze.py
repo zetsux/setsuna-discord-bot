@@ -19,7 +19,7 @@ class Resetmaze(commands.Cog):
     
   @app_commands.command(name='resetmaze', description='Reset cooldown of /dailymaze command for chosen user or self (if not choose)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def reset_maze(self, ctx, member: Option(discord.Member, "The profile you want to check of", required=False, default=None)):
+  async def reset_maze(self, ctx : discord.Interaction, member: Option(discord.Member, "The profile you want to check of", required=False, default=None)):
     await ctx.defer()
     if not member:
         member = ctx.user

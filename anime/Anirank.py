@@ -21,7 +21,7 @@ class Anirank(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='anirank', description='Check the leaderboard to see who is the best anime collector')
-  async def anime_rank(self, ctx):
+  async def anime_rank(self, ctx : discord.Interaction):
     targetFind = mycol.find_one({"userid": str(ctx.user.id)})
     mentionTarget = '<@' + str(ctx.user.id) + '>'
     if targetFind == None:

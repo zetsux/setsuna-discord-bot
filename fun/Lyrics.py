@@ -14,7 +14,7 @@ class Lyrics(commands.Cog):
   @app_commands.command(
       name='lyrics',
       description='Generate the lyrics of the song title requested')
-  async def lyrics(self, ctx, songtitle: Option(str, "Title of the song requested", required=True)):
+  async def lyrics(self, ctx : discord.Interaction, songtitle: Option(str, "Title of the song requested", required=True)):
       songsearch = ''.join(e for e in songtitle if e.isalnum() or e == ' ')
       try:
           response = urllib2.urlopen('https://some-random-api.ml/lyrics?title=' +

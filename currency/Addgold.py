@@ -21,7 +21,7 @@ class Addgold(commands.Cog):
     
   @app_commands.command(name='addgold', description='Add gold for the mentioned user (or to self if without mention)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def gold_add(self, ctx, number: Option(int, "Number to add", required=True), member: Option(discord.Member, "Who to add gold or self if empty", required=False, default=None)):
+  async def gold_add(self, ctx : discord.Interaction, number: Option(int, "Number to add", required=True), member: Option(discord.Member, "Who to add gold or self if empty", required=False, default=None)):
     await ctx.defer()
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',

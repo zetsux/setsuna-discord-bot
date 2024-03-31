@@ -21,7 +21,7 @@ class Reduceplat(commands.Cog):
     
   @app_commands.command(name='reduceplat', description='Reduce platina for the mentioned user (or to self if without mention)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def platina_reduce(self, ctx, number: Option(int, "Number to reduce", required=True), member: Option(discord.Member, "Who to reduce platina or self if empty", required=False, default=None)):
+  async def platina_reduce(self, ctx : discord.Interaction, number: Option(int, "Number to reduce", required=True), member: Option(discord.Member, "Who to reduce platina or self if empty", required=False, default=None)):
     await ctx.defer()
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',

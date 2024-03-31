@@ -17,7 +17,7 @@ class Songskip(commands.Cog):
     
   @app_commands.command(description='Force skip the current song playing')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def songskip(self, ctx):
+  async def songskip(self, ctx : discord.Interaction):
     if not ctx.voice_client:
         await ctx.response.send_message(
             f'Ihh aneh deh {ctx.user.name}-nyan, watashi aja ngga di vc',

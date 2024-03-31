@@ -12,7 +12,7 @@ class Wink(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='wink', description='Do an anime wink')
-  async def wink(self, ctx, member: Option(discord.Member, "The one you will wink to", required=False, default=None)):
+  async def wink(self, ctx : discord.Interaction, member: Option(discord.Member, "The one you will wink to", required=False, default=None)):
       response = urllib2.urlopen('https://some-random-api.ml/animu/wink')
       data = json.loads(response.read())
   

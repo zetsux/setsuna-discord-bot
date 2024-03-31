@@ -21,7 +21,7 @@ class Gambleplat(commands.Cog):
     
   @app_commands.command(name='gambleplat', description='Gamble your platina with approximately 50/50 odds of getting double or losing all'
 )
-  async def platina_gamble(self, ctx, number: Option(int, "Number to gamble", required=True)):
+  async def platina_gamble(self, ctx : discord.Interaction, number: Option(int, "Number to gamble", required=True)):
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)

@@ -13,7 +13,7 @@ class Spyhelp(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='spyhelp', description='Explains how to play SpyGame')
-  async def spy_helpp(self, ctx):
+  async def spy_helpp(self, ctx : discord.Interaction):
     await ctx.defer(ephemeral=True)
     embedVar = discord.Embed(
         title=f"[ Setsuna's SpyGame Help ]",

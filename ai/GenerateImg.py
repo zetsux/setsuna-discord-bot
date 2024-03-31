@@ -19,7 +19,7 @@ class GenerateImg(commands.Cog):
     
   @app_commands.command(name='setsuimg', description='Ask Setsuna to generate an image based on the given prompt')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def generateImgCommand(self, ctx, prompt: Option(str, "Prompt for the image to generate", required=True), number: Option(int, "Number of image to generate (Max : 10)", required=False, default=1)):
+  async def generateImgCommand(self, ctx : discord.Interaction, prompt: Option(str, "Prompt for the image to generate", required=True), number: Option(int, "Number of image to generate (Max : 10)", required=False, default=1)):
     await ctx.defer()
 
     if number > 10 or number < 1 :

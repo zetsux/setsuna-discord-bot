@@ -21,7 +21,7 @@ class Addplat(commands.Cog):
     
   @app_commands.command(name='addplat', description='Add platina for the mentioned user (or to self if without mention)')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def platina_add(self, ctx, number: Option(int, "Number to add", required=True), member: Option(discord.Member, "Who to add platina or self if empty", required=False, default=None)):
+  async def platina_add(self, ctx : discord.Interaction, number: Option(int, "Number to add", required=True), member: Option(discord.Member, "Who to add platina or self if empty", required=False, default=None)):
     await ctx.defer()
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan', ephemeral=True)

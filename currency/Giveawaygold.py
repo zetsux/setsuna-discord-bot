@@ -23,7 +23,7 @@ class Giveawaygold(commands.Cog):
     self.bot = bot
     
   @app_commands.command(name='giveawaygold', description='Giveaway the entered number of gold to the fastest claimer')
-  async def gold_giveaway(self, ctx, number: Option(int, "Number to giveaway",required=True)):
+  async def gold_giveaway(self, ctx : discord.Interaction, number: Option(int, "Number to giveaway",required=True)):
     await ctx.defer()
     if number <= 0:
         await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',

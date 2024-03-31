@@ -49,7 +49,7 @@ class Aniadd(commands.Cog):
     
   @app_commands.command(name='aniadd', description='Add the entered number of anime to the mentioned user')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def anime_add(self, ctx, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member,"Give target", required=True)):
+  async def anime_add(self, ctx : discord.Interaction, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member,"Give target", required=True)):
     targetFind = mycol.find_one({"userid": str(member.id)})
     mentionTarget = '<@' + str(member.id) + '>'
     if targetFind == None:

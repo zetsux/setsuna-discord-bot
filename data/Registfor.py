@@ -26,7 +26,7 @@ class Registfor(commands.Cog):
         description='Register account and create profile for someone')
     @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
     @app_commands.describe(member='The member to register')
-    async def registfor(self, ctx, member: discord.Member):
+    async def registfor(self, ctx : discord.Interaction, member: discord.Member):
         if not member:
             userID = ctx.user.id
         else:

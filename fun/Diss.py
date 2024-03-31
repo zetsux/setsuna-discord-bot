@@ -12,7 +12,7 @@ class Diss(commands.Cog):
 
   @app_commands.command(name='diss', description='Disses a target')
   @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
-  async def diss_target(self, ctx, member: Option(discord.Member, "Member to diss", required=True)):
+  async def diss_target(self, ctx : discord.Interaction, member: Option(discord.Member, "Member to diss", required=True)):
     dissLines = [
         'Cupu bgt si', 'Diem ya lemah', 'Sini gelud penakut',
         'Gausah sok jago', 'Janji ga nangis dek?', 'Belajar dulu sana'

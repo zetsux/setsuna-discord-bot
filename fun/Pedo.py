@@ -10,7 +10,7 @@ class Pedo(commands.Cog):
     self.bot = bot
 
   @app_commands.command(name='pedo', description='Expose a lolicon')
-  async def pedo(self, ctx, member: Option(discord.Member, "The people you want to accuse", required=True)):
+  async def pedo(self, ctx : discord.Interaction, member: Option(discord.Member, "The people you want to accuse", required=True)):
       mentionUser = '<@' + str(member.id) + '>'
       embed = discord.Embed()
       embed.set_image(url='https://some-random-api.ml/canvas/lolice?avatar=' +

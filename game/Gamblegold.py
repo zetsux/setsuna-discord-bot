@@ -3,6 +3,7 @@ import os
 import pymongo
 import datetime
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import random
 
@@ -18,24 +19,24 @@ class Gamblegold(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='gamblegold', description='Gamble your gold with approximately 50/50 odds of getting double or losing all')
-  async def gold_gamble(self, ctx, number: Option(int, "Number to add", required=True)):
+  @app_commands.command(name='gamblegold', description='Gamble your gold with approximately 50/50 odds of getting double or losing all')
+  async def gold_gamble(self, ctx: discord.Interaction, number: Option(int, "Number to add", required=True)):
     if number <= 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan',
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)
         return
 
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
 
     else:
         goldCount = userFind["gold"]
         if number > goldCount:
-            await ctx.respond(
-                f'Gold anata ngga cukup, {ctx.author.name}-nyan...',
+            await ctx.response.send_message(
+                f'Gold anata ngga cukup, {ctx.user.name}-nyan...',
                 ephemeral=True)
 
         else:
@@ -44,17 +45,17 @@ class Gamblegold(commands.Cog):
                 goldCount += number
                 newvalues = {"$set": {"gold": goldCount}}
                 mycol.update_one(userFind, newvalues)
-                await ctx.respond(
-                    f'Omedetou! Gold {ctx.author.name}-nyan menjadi {goldCount}',
+                await ctx.response.send_message(
+                    f'Omedetou! Gold {ctx.user.name}-nyan menjadi {goldCount}',
                     ephemeral=True)
 
             else:
                 goldCount -= number
                 newvalues = {"$set": {"gold": goldCount}}
                 mycol.update_one(userFind, newvalues)
-                await ctx.respond(
-                    f'Yahh kalah, gold {ctx.author.name}-nyan menjadi {goldCount}',
+                await ctx.response.send_message(
+                    f'Yahh kalah, gold {ctx.user.name}-nyan menjadi {goldCount}',
                     ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Gamblegold(bot))
+async def setup(bot):
+  await bot.add_cog(Gamblegold(bot))

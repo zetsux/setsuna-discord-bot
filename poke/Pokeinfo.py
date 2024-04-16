@@ -4,10 +4,12 @@ import os
 import json
 import urllib.request as urllib2
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -23,8 +25,8 @@ class Pokeinfo(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.slash_command(name='pokeinfo', description='Check the information of a specific pokemon')
-  async def pokemon_info(self, ctx, poke: Option(str, "The name of the pokemon to check for", required=True)):
+  @app_commands.command(name='pokeinfo', description='Check the information of a specific pokemon')
+  async def pokemon_info(self, ctx: discord.Interaction, poke: Option(str, "The name of the pokemon to check for", required=True)):
     pokeFind = mycol.find_one({"func": "pokedb"})
     pokeBasic = pokeFind["basic"]
     pokeElite = pokeFind["elite"]
@@ -87,12 +89,12 @@ class Pokeinfo(commands.Cog):
         embedVar.set_thumbnail(url=data['sprites']['animated'])
         embedVar.set_footer(text=data["description"],
                             icon_url=data["sprites"]["normal"])
-        await ctx.respond(embed=embedVar)
+        await ctx.response.send_message(embed=embedVar)
 
     else:
-        await ctx.respond(
+        await ctx.response.send_message(
             "Pokemon yang anata cari tidak / belum terdaftar, coba dicek lagi yah..",
             ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Pokeinfo(bot))
+async def setup(bot):
+  await bot.add_cog(Pokeinfo(bot))

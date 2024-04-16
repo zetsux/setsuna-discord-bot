@@ -2,8 +2,9 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -46,33 +47,33 @@ class Anigive(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='anigive', description='Give the entered number of anime to the mentioned user')
-  async def anime_give(self, ctx, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member, "Give target", required=True)):
+  @app_commands.command(name='anigive', description='Give the entered number of anime to the mentioned user')
+  async def anime_give(self, ctx: discord.Interaction, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member, "Give target", required=True)):
     if number <= 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan',
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)
         return
 
     if not member:
-        await ctx.respond(f'Tagnya yang serius dong, {ctx.author.name}-nyan',
+        await ctx.response.send_message(f'Tagnya yang serius dong, {ctx.user.name}-nyan',
                           ephemeral=True)
 
-    elif member.id == ctx.author.id:
-        await ctx.respond(f'Tagnya yang serius dong, {ctx.author.name}-nyan',
+    elif member.id == ctx.user.id:
+        await ctx.response.send_message(f'Tagnya yang serius dong, {ctx.user.name}-nyan',
                           ephemeral=True)
 
     else:
-        userFind = mycol.find_one({"userid": str(ctx.author.id)})
+        userFind = mycol.find_one({"userid": str(ctx.user.id)})
         if userFind == None:
-            await ctx.respond(
-                f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+            await ctx.response.send_message(
+                f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
                 ephemeral=True)
 
         else:
             targetFind = mycol.find_one({"userid": str(member.id)})
             mentionTarget = '<@' + str(member.id) + '>'
             if targetFind == None:
-                await ctx.respond(
+                await ctx.response.send_message(
                     f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh'
                 )
 
@@ -91,20 +92,20 @@ class Anigive(commands.Cog):
                     stringIndex = "animeCount." + str(animeIndex)
 
                     if userFind["animeCount"][animeIndex] < number:
-                        await ctx.respond(
-                            f'Neee {ctx.author.name}-nyan, anata cuma punya {userFind["animeCount"][animeIndex]} {name}, ngga cukup dong',
+                        await ctx.response.send_message(
+                            f'Neee {ctx.user.name}-nyan, anata cuma punya {userFind["animeCount"][animeIndex]} {name}, ngga cukup dong',
                             ephemeral=True)
                         return
 
                     elif userFind["animeCount"][animeIndex] == number:
-                        await ctx.respond(
-                            f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian seluruh koleksi {name} dari {ctx.author.name}-nyan sejumlah {number}'
+                        await ctx.response.send_message(
+                            f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian seluruh koleksi {name} dari {ctx.user.name}-nyan sejumlah {number}'
                         )
                         mycol.update_one(userFind, {"$set": {"uniAni" : mUni - 1, "allAni" : mAll - 1, stringIndex: 0}})
 
                     elif userFind["animeCount"][animeIndex] > number:
-                        await ctx.respond(
-                            f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian {number} {name} dari {ctx.author.name}-nyan'
+                        await ctx.response.send_message(
+                            f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian {number} {name} dari {ctx.user.name}-nyan'
                         )
                         newvalues = {
                             "$set": {
@@ -152,13 +153,13 @@ class Anigive(commands.Cog):
                         }
                         mycol.update_one(targetFind, newvalues)
 
-                    arrangelb(ctx.author.id)
+                    arrangelb(ctx.user.id)
                     arrangelb(member.id)
 
                 else:
-                    await ctx.respond(
-                        f'Neee {ctx.author.name}-nyan, jangan halu yaa, anata ngga punya yang namanya {name}...\natau salah tulis nama mungkin, coba dicek lagi deh.',
+                    await ctx.response.send_message(
+                        f'Neee {ctx.user.name}-nyan, jangan halu yaa, anata ngga punya yang namanya {name}...\natau salah tulis nama mungkin, coba dicek lagi deh.',
                         ephemeral=True)
 
-def setup(bot):
-  bot.add_cog(Anigive(bot))
+async def setup(bot):
+  await bot.add_cog(Anigive(bot))

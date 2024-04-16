@@ -2,8 +2,9 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -19,12 +20,12 @@ class Pokerank(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='pokerank', description='Check the leaderboard for pokeduel Ranking')
-  async def poke_rank(self, ctx):
-    targetFind = mycol.find_one({"userid": str(ctx.author.id)})
-    mentionTarget = '<@' + str(ctx.author.id) + '>'
+  @app_commands.command(name='pokerank', description='Check the leaderboard for pokeduel Ranking')
+  async def poke_rank(self, ctx: discord.Interaction):
+    targetFind = mycol.find_one({"userid": str(ctx.user.id)})
+    mentionTarget = '<@' + str(ctx.user.id) + '>'
     if targetFind == None:
-      await ctx.respond(f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh')
+      await ctx.response.send_message(f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh')
 
     else:
       await ctx.defer()
@@ -43,7 +44,7 @@ class Pokerank(commands.Cog):
           continue
           
         if rank <= 10 :
-          if id == str(ctx.author.id) :
+          if id == str(ctx.user.id) :
             wUser = targetFind["win"]
             lUser = targetFind["lose"]
             dUser = targetFind["draw"]
@@ -58,7 +59,7 @@ class Pokerank(commands.Cog):
             lbString += f"{rank}) {username} [{wUser}/{lUser}/{dUser}]\n"
 
         elif noSelf :
-          if id == str(ctx.author.id) :
+          if id == str(ctx.user.id) :
             wUser = targetFind["win"]
             lUser = targetFind["lose"]
             dUser = targetFind["draw"]
@@ -86,8 +87,8 @@ class Pokerank(commands.Cog):
           f"{lbString}```\n",
           color=0xFFD700)
       embedVar.set_thumbnail(url='https://cdn.discordapp.com/attachments/995337235211763722/1033610224445177856/slowpoke-pokemon.gif')
-      embedVar.set_footer(text="Note :\n[Win Count/Lose Count/Draw Count]", icon_url=ctx.author.avatar.url)
-      await ctx.respond(embed=embedVar)
+      embedVar.set_footer(text="Note :\n[Win Count/Lose Count/Draw Count]", icon_url=ctx.user.avatar.url)
+      await ctx.response.send_message(embed=embedVar)
 
-def setup(bot):
-  bot.add_cog(Pokerank(bot))
+async def setup(bot):
+  await bot.add_cog(Pokerank(bot))

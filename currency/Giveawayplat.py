@@ -2,8 +2,9 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -21,25 +22,25 @@ class Giveawayplat(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='giveawayplat', description='Giveaway the entered number of platina to the fastest claimer'
+  @app_commands.command(name='giveawayplat', description='Giveaway the entered number of platina to the fastest claimer'
 )
-  async def platina_giveaway(self, ctx, number: Option(int, "Number to giveaway", required=True)):
+  async def platina_giveaway(self, ctx: discord.Interaction, number: Option(int, "Number to giveaway", required=True)):
     await ctx.defer()
     if number <= 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan', ephemeral=True)
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan', ephemeral=True)
         return
 
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
 
     else:
         platinaCount = userFind["platina"]
         if number > platinaCount:
-            await ctx.respond(
-                f'Platina anata ngga cukup, {ctx.author.name}-nyan...',
+            await ctx.response.send_message(
+                f'Platina anata ngga cukup, {ctx.user.name}-nyan...',
                 ephemeral=True)
 
         else:
@@ -60,7 +61,7 @@ class Giveawayplat(commands.Cog):
                 else:
                     embedEdit = discord.Embed(
                         title=str(number) + " Platina Giveaway by " +
-                        ctx.author.name + "-nyan",
+                        ctx.user.name + "-nyan",
                         description=
                         f">> Claimed by {interaction.user.name}-nyan",
                         color=0xffd700)
@@ -79,7 +80,7 @@ class Giveawayplat(commands.Cog):
             view.add_item(buttons)
 
             embedVar = discord.Embed(
-                title=str(number) + " Platina Giveaway by " + ctx.author.name +
+                title=str(number) + " Platina Giveaway by " + ctx.user.name +
                 "-nyan",
                 description="Penekan tombol tercepat akan mendapatkannya!",
                 color=0xe5e4e2)
@@ -87,7 +88,7 @@ class Giveawayplat(commands.Cog):
                 url=
                 "https://i.ibb.co/F3rgw7r/kisspng-junk-silver-silver-coin-coin-collecting-5b2ecbbdd0c336-2118554315297934698551.png"
             )
-            await ctx.respond(embed=embedVar, view=view)
+            await ctx.response.send_message(embed=embedVar, view=view)
 
-def setup(bot):
-  bot.add_cog(Giveawayplat(bot))
+async def setup(bot):
+  await bot.add_cog(Giveawayplat(bot))

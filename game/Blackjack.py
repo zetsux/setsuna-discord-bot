@@ -2,8 +2,9 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -21,25 +22,25 @@ class Blackjack(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='blackjack', description='Play blackjack against a CPU Dealer')
-  async def play_blackjack(self, ctx, number: Option(int, "Number of gold to bet", required=True)):
+  @app_commands.command(name='blackjack', description='Play blackjack against a CPU Dealer')
+  async def play_blackjack(self, ctx: discord.Interaction, number: Option(int, "Number of gold to bet", required=True)):
     if number < 0:
-        await ctx.respond(f'Neee anata ngga jelas deh, {ctx.author.name}-nyan',
+        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
                           ephemeral=True)
         return
 
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
-    gamer = ctx.author.id
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
+    gamer = ctx.user.id
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
         return
 
     goldCount = userFind["gold"]
     if goldCount < number:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, gold anata cuma {goldCount}, ngga cukup dong..',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, gold anata cuma {goldCount}, ngga cukup dong..',
             ephemeral=True)
         return
 
@@ -143,7 +144,7 @@ class Blackjack(commands.Cog):
 
             embedEdit = discord.Embed(
                 title=
-                f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+                f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
                 description="You've lost... (Busted)",
                 color=0x8b0000)
             embedEdit.add_field(
@@ -152,12 +153,12 @@ class Blackjack(commands.Cog):
                 inline=False)
             embedEdit.add_field(
                 name=
-                f"{ctx.author.name}'s Card(s) | Total : {playerCount} (Bust)",
+                f"{ctx.user.name}'s Card(s) | Total : {playerCount} (Bust)",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"Zannen da, {ctx.author.name}-nyan terkena bust karena total scorenya melebihi 21 dan kehilangan senilai {number} Gold"
+                f"Zannen da, {ctx.user.name}-nyan terkena bust karena total scorenya melebihi 21 dan kehilangan senilai {number} Gold"
             )
             newvalues = {"$set": {"gold": goldCount - number}}
             mycol.update_one(userFind, newvalues)
@@ -166,7 +167,7 @@ class Blackjack(commands.Cog):
         else:
             embedEdit = discord.Embed(
                 title=
-                f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+                f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
                 description=
                 "Play by pressing the buttons below, find the highest score without getting more than 21",
                 color=0x8b0000)
@@ -175,7 +176,7 @@ class Blackjack(commands.Cog):
                 value='```' + dealer + ', ???' + '```',
                 inline=False)
             embedEdit.add_field(
-                name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit)
@@ -209,7 +210,7 @@ class Blackjack(commands.Cog):
         if playerPure and not dealerPure:
             embedEdit = discord.Embed(
                 title=
-                f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+                f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
                 description="You've won! (Pure 21)",
                 color=0x8b0000)
             embedEdit.add_field(
@@ -217,12 +218,12 @@ class Blackjack(commands.Cog):
                 value='```' + dealer + '```',
                 inline=False)
             embedEdit.add_field(
-                name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"PURE BLACKJACK!!! {ctx.author.name}-nyan menang dengan skor akhir {playerCount}, mengalahkan dealer dengan skor {dealerCount} dan mendapatkan senilai {number} Gold"
+                f"PURE BLACKJACK!!! {ctx.user.name}-nyan menang dengan skor akhir {playerCount}, mengalahkan dealer dengan skor {dealerCount} dan mendapatkan senilai {number} Gold"
             )
             newvalues = {"$set": {"gold": goldCount + number}}
             mycol.update_one(userFind, newvalues)
@@ -232,7 +233,7 @@ class Blackjack(commands.Cog):
         elif dealerPure and not playerPure:
             embedEdit = discord.Embed(
                 title=
-                f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+                f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
                 description="You've lost... (Dealer has more score)",
                 color=0x8b0000)
             embedEdit.add_field(
@@ -240,12 +241,12 @@ class Blackjack(commands.Cog):
                 value='```' + dealer + '```',
                 inline=False)
             embedEdit.add_field(
-                name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"Zannen da, {ctx.author.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan pure blackjacknya, lantas kehilangan senilai {number} Gold"
+                f"Zannen da, {ctx.user.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan pure blackjacknya, lantas kehilangan senilai {number} Gold"
             )
             newvalues = {"$set": {"gold": goldCount - number}}
             mycol.update_one(userFind, newvalues)
@@ -272,7 +273,7 @@ class Blackjack(commands.Cog):
         if dealerCount > 21:
             embedEdit = discord.Embed(
                 title=
-                f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+                f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
                 description="You've won! (Dealer Busted)",
                 color=0x8b0000)
             embedEdit.add_field(
@@ -280,12 +281,12 @@ class Blackjack(commands.Cog):
                 value='```' + dealer + '```',
                 inline=False)
             embedEdit.add_field(
-                name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"Omedetou, {ctx.author.name}-nyan menang dengan skor akhir {playerCount} dikarenakan dealer mengalami bust dan endapatkan senilai {number} Gold!"
+                f"Omedetou, {ctx.user.name}-nyan menang dengan skor akhir {playerCount} dikarenakan dealer mengalami bust dan endapatkan senilai {number} Gold!"
             )
             newvalues = {"$set": {"gold": goldCount + number}}
             mycol.update_one(userFind, newvalues)
@@ -294,7 +295,7 @@ class Blackjack(commands.Cog):
         elif dealerCount == playerCount:
             embedEdit = discord.Embed(
                 title=
-                f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+                f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
                 description="It's a tie. (Same Score)",
                 color=0x8b0000)
             embedEdit.add_field(
@@ -302,19 +303,19 @@ class Blackjack(commands.Cog):
                 value='```' + dealer + '```',
                 inline=False)
             embedEdit.add_field(
-                name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"Nampaknya terjadi seri antara {ctx.author.name}-nyan dengan dealer, skor akhirnya sama-sama {playerCount}"
+                f"Nampaknya terjadi seri antara {ctx.user.name}-nyan dengan dealer, skor akhirnya sama-sama {playerCount}"
             )
             view.stop()
 
         else:
             embedEdit = discord.Embed(
                 title=
-                f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+                f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
                 description="You've lost... (Dealer has more score)",
                 color=0x8b0000)
             embedEdit.add_field(
@@ -322,12 +323,12 @@ class Blackjack(commands.Cog):
                 value='```' + dealer + '```',
                 inline=False)
             embedEdit.add_field(
-                name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"Zannen da, {ctx.author.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan score {dealerCount}, lantas kehilangan senilai {number} Gold"
+                f"Zannen da, {ctx.user.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan score {dealerCount}, lantas kehilangan senilai {number} Gold"
             )
             newvalues = {"$set": {"gold": goldCount - number}}
             mycol.update_one(userFind, newvalues)
@@ -375,7 +376,7 @@ class Blackjack(commands.Cog):
             dealer = dealer + ', ' + inCard
 
             embedEdit = discord.Embed(
-                title=f'[ Blackjack | {ctx.author} ], Bet : {number*2} Gold',
+                title=f'[ Blackjack | {ctx.user} ], Bet : {number*2} Gold',
                 description="You've lost... (Busted)",
                 color=0x8b0000)
             embedEdit.add_field(
@@ -384,12 +385,12 @@ class Blackjack(commands.Cog):
                 inline=False)
             embedEdit.add_field(
                 name=
-                f"{ctx.author.name}'s Card(s) | Total : {playerCount} (Bust)",
+                f"{ctx.user.name}'s Card(s) | Total : {playerCount} (Bust)",
                 value='```' + player + '```',
                 inline=False)
             await interaction.response.edit_message(embed=embedEdit, view=None)
             await interaction.followup.send(
-                f"Zannen da, {ctx.author.name}-nyan terkena bust karena total scorenya melebihi 21 dan kehilangan senilai {number*2} Gold"
+                f"Zannen da, {ctx.user.name}-nyan terkena bust karena total scorenya melebihi 21 dan kehilangan senilai {number*2} Gold"
             )
             newvalues = {"$set": {"gold": goldCount - (number * 2)}}
             mycol.update_one(userFind, newvalues)
@@ -415,7 +416,7 @@ class Blackjack(commands.Cog):
             if dealerPure:
                 embedEdit = discord.Embed(
                     title=
-                    f'[ Blackjack | {ctx.author} ], Bet : {number*2} Gold',
+                    f'[ Blackjack | {ctx.user} ], Bet : {number*2} Gold',
                     description="You've lost... (Dealer has more score)",
                     color=0x8b0000)
                 embedEdit.add_field(
@@ -423,13 +424,13 @@ class Blackjack(commands.Cog):
                     value='```' + dealer + '```',
                     inline=False)
                 embedEdit.add_field(
-                    name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                    name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                     value='```' + player + '```',
                     inline=False)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
                 await interaction.followup.send(
-                    f"Zannen da, {ctx.author.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan pure blackjacknya, lantas kehilangan senilai {number*2} Gold"
+                    f"Zannen da, {ctx.user.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan pure blackjacknya, lantas kehilangan senilai {number*2} Gold"
                 )
                 newvalues = {"$set": {"gold": goldCount - (number * 2)}}
                 mycol.update_one(userFind, newvalues)
@@ -456,7 +457,7 @@ class Blackjack(commands.Cog):
             if dealerCount > 21:
                 embedEdit = discord.Embed(
                     title=
-                    f'[ Blackjack | {ctx.author} ], Bet : {number*2} Gold',
+                    f'[ Blackjack | {ctx.user} ], Bet : {number*2} Gold',
                     description="You've won... (Dealer Busted)",
                     color=0x8b0000)
                 embedEdit.add_field(
@@ -464,13 +465,13 @@ class Blackjack(commands.Cog):
                     value='```' + dealer + '```',
                     inline=False)
                 embedEdit.add_field(
-                    name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                    name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                     value='```' + player + '```',
                     inline=False)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
                 await interaction.followup.send(
-                    f"Omedetou, {ctx.author.name}-nyan menang dengan skor akhir {playerCount} dikarenakan dealer mengalami bust dan endapatkan senilai {number*2} Gold!"
+                    f"Omedetou, {ctx.user.name}-nyan menang dengan skor akhir {playerCount} dikarenakan dealer mengalami bust dan endapatkan senilai {number*2} Gold!"
                 )
                 newvalues = {"$set": {"gold": goldCount + (number * 2)}}
                 mycol.update_one(userFind, newvalues)
@@ -479,7 +480,7 @@ class Blackjack(commands.Cog):
             elif dealerCount == playerCount:
                 embedEdit = discord.Embed(
                     title=
-                    f'[ Blackjack | {ctx.author} ], Bet : {number*2} Gold',
+                    f'[ Blackjack | {ctx.user} ], Bet : {number*2} Gold',
                     description="It's a tie. (Same Score)",
                     color=0x8b0000)
                 embedEdit.add_field(
@@ -487,20 +488,20 @@ class Blackjack(commands.Cog):
                     value='```' + dealer + '```',
                     inline=False)
                 embedEdit.add_field(
-                    name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                    name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                     value='```' + player + '```',
                     inline=False)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
                 await interaction.followup.send(
-                    f"Nampaknya terjadi seri antara {ctx.author.name}-nyan dengan dealer, skor akhirnya sama-sama {playerCount}"
+                    f"Nampaknya terjadi seri antara {ctx.user.name}-nyan dengan dealer, skor akhirnya sama-sama {playerCount}"
                 )
                 view.stop()
 
             else:
                 embedEdit = discord.Embed(
                     title=
-                    f'[ Blackjack | {ctx.author} ], Bet : {number*2} Gold',
+                    f'[ Blackjack | {ctx.user} ], Bet : {number*2} Gold',
                     description="You've lost... (Dealer has more score)",
                     color=0x8b0000)
                 embedEdit.add_field(
@@ -508,13 +509,13 @@ class Blackjack(commands.Cog):
                     value='```' + dealer + '```',
                     inline=False)
                 embedEdit.add_field(
-                    name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+                    name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
                     value='```' + player + '```',
                     inline=False)
                 await interaction.response.edit_message(embed=embedEdit,
                                                         view=None)
                 await interaction.followup.send(
-                    f"Zannen da, {ctx.author.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan score {dealerCount}, lantas kehilangan senilai {number*2} Gold"
+                    f"Zannen da, {ctx.user.name}-nyan dengan score {playerCount} masih kalah terhadap dealer dengan score {dealerCount}, lantas kehilangan senilai {number*2} Gold"
                 )
                 newvalues = {"$set": {"gold": goldCount - (number * 2)}}
                 mycol.update_one(userFind, newvalues)
@@ -529,7 +530,7 @@ class Blackjack(commands.Cog):
     view.add_item(buttonD)
 
     embedVar = discord.Embed(
-        title=f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+        title=f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
         description=
         "Play by pressing the buttons below, find the highest score without getting more than 21",
         color=0x8b0000)
@@ -537,23 +538,23 @@ class Blackjack(commands.Cog):
                        value='```' + dealer + ', ???' + '```',
                        inline=False)
     embedVar.add_field(
-        name=f"{ctx.author.name}'s Card(s) | Total : {playerCount}",
+        name=f"{ctx.user.name}'s Card(s) | Total : {playerCount}",
         value='```' + player + '```',
         inline=False)
-    bjMsg = await ctx.respond(embed=embedVar, view=view)
+    await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
         embedEdit = discord.Embed(
-            title=f'[ Blackjack | {ctx.author.name} ] - Bet : {number} Gold',
+            title=f'[ Blackjack | {ctx.user.name} ] - Bet : {number} Gold',
             description="You've lost.. (Time limit's up)",
             color=0x8b0000)
-        await bjMsg.edit_original_message(embed=embedEdit, view=None)
-        await bjMsg.followup.send(
-            f"Neee {ctx.author.name}-nyan lama banget sih, udah watashi tungguin dari tadi loh, ngga kabur kan ya? Tapi zannen da, karena waktunya sudah habis jadi anata dianggap kalah dan kehilangan senilai {number} Gold"
+        await ctx.edit_original_response(embed=embedEdit, view=None)
+        await ctx.followup.send(
+            f"Neee {ctx.user.name}-nyan lama banget sih, udah watashi tungguin dari tadi loh, ngga kabur kan ya? Tapi zannen da, karena waktunya sudah habis jadi anata dianggap kalah dan kehilangan senilai {number} Gold"
         )
         newvalues = {"$set": {"gold": goldCount - number}}
         mycol.update_one(userFind, newvalues)
 
-def setup(bot):
-  bot.add_cog(Blackjack(bot))
+async def setup(bot):
+  await bot.add_cog(Blackjack(bot))

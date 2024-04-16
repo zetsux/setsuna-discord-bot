@@ -1,15 +1,11 @@
 import discord
 import os
 import wavelink
-from wavelink.ext import spotify
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Button, View
 from discord.ext import commands
-from discord.commands import Option
+from discord import app_commands
 import datetime
-import pytz
 import numpy as np
-import asyncio
-import time
 import random
 from StaticVars import Songlist
 
@@ -21,23 +17,23 @@ class Songpanel(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='songpanel', description='Open the song panel to control the song playing')
-  async def song_panel(self, ctx):
-    if not ctx.voice_client:
-        await ctx.respond(
-            f'Watashi aja ngga join vc loh {ctx.author.name}-nyan...',
+  @app_commands.command(name='songpanel', description='Open the song panel to control the song playing')
+  async def song_panel(self, ctx: discord.Interaction):
+    if not ctx.guild.voice_client:
+        await ctx.response.send_message(
+            f'Watashi aja ngga join vc loh {ctx.user.name}-nyan...',
             ephemeral=True)
         return
-    elif not ctx.author.voice:
-        await ctx.respond('Etlis join vc dlu la dek..', ephemeral=True)
+    elif not ctx.user.voice:
+        await ctx.response.send_message('Etlis join vc dlu la dek..', ephemeral=True)
         return
-    elif ctx.author.voice.channel != ctx.me.voice.channel:
-        await ctx.respond(
-            f'Hmph {ctx.author.name}-nyan, watashi ngga mau diatur-atur kalo watashitachi ngga satu vc',
+    elif ctx.user.voice.channel != ctx.guild.me.voice.channel:
+        await ctx.response.send_message(
+            f'Hmph {ctx.user.name}-nyan, watashi ngga mau diatur-atur kalo watashitachi ngga satu vc',
             ephemeral=True)
         return
     else:
-        vc: wavelink.Player = ctx.voice_client
+        vc: wavelink.Player = ctx.guild.voice_client
         buttonRP = Button(label='Resume/Pause',
                           emoji='⏯️',
                           style=discord.ButtonStyle.primary,
@@ -71,7 +67,7 @@ class Songpanel(commands.Cog):
         skipCount = 0
 
         async def rp_callback(interaction):
-            if not ctx.voice_client:
+            if not ctx.guild.voice_client:
                 embedEdit = discord.Embed(
                     title=f"Song Panelnya ditutup karena watashi udah keluar..",
                     description="Tulis /songpanel lagi kalau mau pakai yaa~",
@@ -85,9 +81,9 @@ class Songpanel(commands.Cog):
                 await interaction.response.send_message(
                     f"Neee {interaction.user.name}-nyan, join vc dulu laa",
                     ephemeral=True)
-            elif interaction.user.voice.channel != ctx.me.voice.channel:
+            elif interaction.user.voice.channel != ctx.guild.me.voice.channel:
                 await interaction.response.send_message(
-                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.me.voice.channel} bareng watashi",
+                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.guild.me.voice.channel} bareng watashi",
                     ephemeral=True)
             else:
                 if not vc.is_playing():
@@ -108,7 +104,7 @@ class Songpanel(commands.Cog):
                     await vc.pause()
 
         async def s_callback(interaction):
-            if not ctx.voice_client:
+            if not ctx.guild.voice_client:
                 await interaction.response.send_message(
                     f"Ahh telat {interaction.user.name}-nyan, watashi udah ngga di dalem vc",
                     ephemeral=True)
@@ -122,9 +118,9 @@ class Songpanel(commands.Cog):
                 await interaction.response.send_message(
                     f"Neee {interaction.user.name}-nyan, join vc dulu laa",
                     ephemeral=True)
-            elif interaction.user.voice.channel != ctx.me.voice.channel:
+            elif interaction.user.voice.channel != ctx.guild.me.voice.channel:
                 await interaction.response.send_message(
-                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.me.voice.channel} bareng watashi",
+                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.guild.me.voice.channel} bareng watashi",
                     ephemeral=True)
             else:
                 if not vc.is_playing():
@@ -165,7 +161,7 @@ class Songpanel(commands.Cog):
                 await vc.stop()
 
         async def l_callback(interaction):
-            if not ctx.voice_client:
+            if not ctx.guild.voice_client:
                 await interaction.response.send_message(
                     f"Ahh telat {interaction.user.name}-nyan, watashi udah ngga di dalem vc",
                     ephemeral=True)
@@ -179,9 +175,9 @@ class Songpanel(commands.Cog):
                 await interaction.response.send_message(
                     f"Neee {interaction.user.name}-nyan, join vc dulu laa",
                     ephemeral=True)
-            elif interaction.user.voice.channel != ctx.me.voice.channel:
+            elif interaction.user.voice.channel != ctx.guild.me.voice.channel:
                 await interaction.response.send_message(
-                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.me.voice.channel} bareng watashi",
+                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.guild.me.voice.channel} bareng watashi",
                     ephemeral=True)
             else:
                 if not vc.is_playing():
@@ -205,7 +201,7 @@ class Songpanel(commands.Cog):
                     )
 
         async def sh_callback(interaction):
-            if not ctx.voice_client:
+            if not ctx.guild.voice_client:
                 await interaction.response.send_message(
                     f"Ahh telat {interaction.user.name}-nyan, watashi udah ngga di dalem vc",
                     ephemeral=True)
@@ -219,9 +215,9 @@ class Songpanel(commands.Cog):
                 await interaction.response.send_message(
                     f"Neee {interaction.user.name}-nyan, join vc dulu laa",
                     ephemeral=True)
-            elif interaction.user.voice.channel != ctx.me.voice.channel:
+            elif interaction.user.voice.channel != ctx.guild.me.voice.channel:
                 await interaction.response.send_message(
-                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.me.voice.channel} bareng watashi",
+                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.guild.me.voice.channel} bareng watashi",
                     ephemeral=True)
             else:
                 if not vc.is_playing():
@@ -252,7 +248,7 @@ class Songpanel(commands.Cog):
                     )
 
         async def q_callback(interaction):
-            if not ctx.voice_client:
+            if not ctx.guild.voice_client:
                 await interaction.response.send_message(
                     f"Ahh anata telat {interaction.user.name}-nyan, watashi udah ngga di dalem vc",
                     ephemeral=True)
@@ -266,9 +262,9 @@ class Songpanel(commands.Cog):
                 await interaction.response.send_message(
                     f"Neee {interaction.user.name}-nyan, join vc dulu laa",
                     ephemeral=True)
-            elif interaction.user.voice.channel != ctx.me.voice.channel:
+            elif interaction.user.voice.channel != ctx.guild.me.voice.channel:
                 await interaction.response.send_message(
-                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.me.voice.channel} bareng watashi",
+                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.guild.me.voice.channel} bareng watashi",
                     ephemeral=True)
             else:
                 if not vc.is_playing():
@@ -380,7 +376,7 @@ class Songpanel(commands.Cog):
                                                             ephemeral=True)
 
         async def c_callback(interaction):
-            if not ctx.voice_client:
+            if not ctx.guild.voice_client:
                 await interaction.response.send_message(
                     f"Ahh telat {interaction.user.name}-nyan, watashi udah ngga di dalem vc",
                     ephemeral=True)
@@ -394,9 +390,9 @@ class Songpanel(commands.Cog):
                 await interaction.response.send_message(
                     f"Neee {interaction.user.name}-nyan, join vc dulu laa",
                     ephemeral=True)
-            elif interaction.user.voice.channel != ctx.me.voice.channel:
+            elif interaction.user.voice.channel != ctx.guild.me.voice.channel:
                 await interaction.response.send_message(
-                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.me.voice.channel} bareng watashi",
+                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.guild.me.voice.channel} bareng watashi",
                     ephemeral=True)
             else:
                 if not vc.is_playing():
@@ -419,7 +415,7 @@ class Songpanel(commands.Cog):
                                                         ephemeral=True)
 
         async def d_callback(interaction):
-            if not ctx.voice_client:
+            if not ctx.guild.voice_client:
                 await interaction.response.send_message(
                     f"Ahh telat {interaction.user.name}-nyan, watashi udah ngga di dalem vc",
                     ephemeral=True)
@@ -433,9 +429,9 @@ class Songpanel(commands.Cog):
                 await interaction.response.send_message(
                     f"Neee {interaction.user.name}-nyan, join vc dulu laa",
                     ephemeral=True)
-            elif interaction.user.voice.channel != ctx.me.voice.channel:
+            elif interaction.user.voice.channel != ctx.guild.me.voice.channel:
                 await interaction.response.send_message(
-                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.me.voice.channel} bareng watashi",
+                    f"Hmph {interaction.user.name}-nyan, watashi ngga mau diatur kalo anata ngga join vc {ctx.guild.me.voice.channel} bareng watashi",
                     ephemeral=True)
             else:
                 if vc.queue.is_empty and not vc.is_playing():
@@ -448,7 +444,7 @@ class Songpanel(commands.Cog):
                     await interaction.response.edit_message(embed=embedEdit,
                                                             view=None)
                     await interaction.followup.send(
-                        f"Watashi disuruh keluar vc sama {ctx.author}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
+                        f"Watashi disuruh keluar vc sama {ctx.user}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
                     )
                     await vc.disconnect()
                     Songlist.songList.clear()
@@ -463,7 +459,7 @@ class Songpanel(commands.Cog):
                     await interaction.response.edit_message(embed=embedEdit,
                                                             view=None)
                     await interaction.followup.send(
-                        f"Watashi disuruh keluar vc sama {ctx.author}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
+                        f"Watashi disuruh keluar vc sama {ctx.user}-nyan, kalau mau manggil lagi /songinsert aja yaa~"
                     )
                     view.stop()
                     await vc.disconnect()
@@ -494,7 +490,7 @@ class Songpanel(commands.Cog):
             title=f'[ Song Panel ]',
             description="Control by pressing the buttons below",
             color=0xf2bc00)
-        panelMsg = await ctx.respond(embed=embedVar, view=view)
+        await ctx.response.send_message(embed=embedVar, view=view)
         checkView = await view.wait()
 
         if checkView:
@@ -502,7 +498,7 @@ class Songpanel(commands.Cog):
                 title=f"Song Panelnya sudah ditutup karena lama ngga dipakai..",
                 description="Tulis /songpanel lagi kalau mau pakai yaa~",
                 color=0xf2bc00)
-            await panelMsg.edit_original_message(embed=embedEdit, view=None)
+            await ctx.edit_original_response(embed=embedEdit, view=None)
 
-def setup(bot):
-  bot.add_cog(Songpanel(bot))
+async def setup(bot):
+  await bot.add_cog(Songpanel(bot))

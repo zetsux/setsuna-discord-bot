@@ -2,8 +2,9 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -19,12 +20,12 @@ class Anifav(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='anifav', description='Set an owned anime character as favorite')
-  async def anime_favorite(self, ctx, name: Option(str, "Name of anime to set as favorite", required=True)):
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+  @app_commands.command(name='anifav', description='Set an owned anime character as favorite')
+  async def anime_favorite(self, ctx: discord.Interaction, name: Option(str, "Name of anime to set as favorite", required=True)):
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk /regist dulu yuk baru pasang favorite..',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk /regist dulu yuk baru pasang favorite..',
             ephemeral=True)
         return
 
@@ -38,22 +39,22 @@ class Anifav(commands.Cog):
             animeIndex += 1
 
         if userFind["animeCount"][animeIndex] <= 0:
-            await ctx.respond(
-                f'Neee {ctx.author.name}-nyan, anata kayanya halu deh, di inventory anata ngga ada yang namanya {name} loh.. Coba deh dicek lagi',
+            await ctx.response.send_message(
+                f'Neee {ctx.user.name}-nyan, anata kayanya halu deh, di inventory anata ngga ada yang namanya {name} loh.. Coba deh dicek lagi',
                 ephemeral=True)
             return
 
         newvalues = {"$set": {"favani": name}}
         mycol.update_one(userFind, newvalues)
-        await ctx.respond(
-            f'{name} berhasil dijadikan favorite anime dari {ctx.author.name}-nyan!',
+        await ctx.response.send_message(
+            f'{name} berhasil dijadikan favorite anime dari {ctx.user.name}-nyan!',
             ephemeral=True)
 
     else:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, anata kayanya halu deh, di inventory anata ngga ada yang namanya {name} loh.. Atau salah tulis mungkin, coba deh dicek lagi',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, anata kayanya halu deh, di inventory anata ngga ada yang namanya {name} loh.. Atau salah tulis mungkin, coba deh dicek lagi',
             ephemeral=True)
         return
 
-def setup(bot):
-  bot.add_cog(Anifav(bot))
+async def setup(bot):
+  await bot.add_cog(Anifav(bot))

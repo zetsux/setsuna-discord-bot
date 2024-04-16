@@ -2,8 +2,9 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 import time
@@ -44,18 +45,18 @@ class Dailymaze(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='dailymaze', description='Play in daily minigame from level 1-7 with different prizes')
-  async def daily_dungeon(self, ctx, level: Option(int, "Level of difficulty (1-7)", required=True)):
+  @app_commands.command(name='dailymaze', description='Play in daily minigame from level 1-7 with different prizes')
+  async def daily_dungeon(self, ctx: discord.Interaction, level: Option(int, "Level of difficulty (1-7)", required=True)):
     if level <= 0:
-        await ctx.respond(f'Sumpa gajelas lu {ctx.author.name}-nyan', ephemeral=True)
+        await ctx.response.send_message(f'Sumpa gajelas lu {ctx.user.name}-nyan', ephemeral=True)
         return
 
     elif level > 7:
-        await ctx.respond(
-            f'Kegedean bro {ctx.author.name}-nyan, levelnya cuma 1-7', ephemeral=True)
+        await ctx.response.send_message(
+            f'Kegedean bro {ctx.user.name}-nyan, levelnya cuma 1-7', ephemeral=True)
         return
 
-    userFind = mycol.find_one({"userid": str(ctx.author.id)})
+    userFind = mycol.find_one({"userid": str(ctx.user.id)})
     indoTz = pytz.timezone("Asia/Jakarta")
     nowDay = datetime.datetime.now(indoTz)
     # print(str(nowDay.hour) + '/' + str(nowDay.minute) + '/' + str(nowDay.second))
@@ -63,14 +64,14 @@ class Dailymaze(commands.Cog):
         nowDay.year)
 
     if userFind == None:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, yuk bisa yuk /regist dulu~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
             ephemeral=True)
         return
 
     if currentDay == userFind['daily']:
-        await ctx.respond(
-            f'Neee {ctx.author.name}-nyan, hari ini kan anata udah pake /dailymaze, besok lagi yaa~',
+        await ctx.response.send_message(
+            f'Neee {ctx.user.name}-nyan, hari ini kan anata udah pake /dailymaze, besok lagi yaa~',
             ephemeral=True)
         return
 
@@ -146,9 +147,9 @@ class Dailymaze(commands.Cog):
     # for x in range(row):
     #   print(dungeonArea[x])
     async def left_callback(interaction):
-        if interaction.user.id != ctx.author.id:
+        if interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
-                f"Neeee, itu maze punya {ctx.author.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
+                f"Neeee, itu maze punya {ctx.user.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
                 ephemeral=True)
         else:
             nonlocal yPos, xPos
@@ -166,14 +167,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've reached the prize!",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Omedetou! {ctx.author.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
+                    f"Omedetou! {ctx.user.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
                     embed=embedEdit,
                     view=None)
                 goldCount = userFind["gold"] + (level * 50)
@@ -223,14 +224,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've died... ( Cause : Running into fire )",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Aduhh {ctx.author.name}-nyan, bisa-bisanya masuk ke api..",
+                    f"Aduhh {ctx.user.name}-nyan, bisa-bisanya masuk ke api..",
                     embed=embedEdit,
                     view=None)
                 newvalues = {"$set": {"daily": currentDay}}
@@ -253,7 +254,7 @@ class Dailymaze(commands.Cog):
                     title=f"— Daily Maze —",
                     description=
                     "Travel to the prize using buttons rapidly without going into the fire",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
@@ -263,9 +264,9 @@ class Dailymaze(commands.Cog):
                 await interaction.response.defer()
 
     async def up_callback(interaction):
-        if interaction.user.id != ctx.author.id:
+        if interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
-                f"Neeee, itu maze punya {ctx.author.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
+                f"Neeee, itu maze punya {ctx.user.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
                 ephemeral=True)
         else:
             nonlocal yPos, xPos
@@ -283,14 +284,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've reached the prize!",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Omedetou! {ctx.author.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
+                    f"Omedetou! {ctx.user.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
                     embed=embedEdit,
                     view=None)
                 goldCount = userFind["gold"] + (level * 50)
@@ -340,14 +341,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've died... ( Cause : Running into fire )",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Aduhh {ctx.author.name}-nyan, bisa-bisanya masuk ke api..",
+                    f"Aduhh {ctx.user.name}-nyan, bisa-bisanya masuk ke api..",
                     embed=embedEdit,
                     view=None)
                 newvalues = {"$set": {"daily": currentDay}}
@@ -370,7 +371,7 @@ class Dailymaze(commands.Cog):
                     title=f"— Daily Maze —",
                     description=
                     "Travel to the prize using buttons rapidly without going into the fire",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
@@ -380,9 +381,9 @@ class Dailymaze(commands.Cog):
                 await interaction.response.defer()
 
     async def down_callback(interaction):
-        if interaction.user.id != ctx.author.id:
+        if interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
-                f"Neeee, itu maze punya {ctx.author.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
+                f"Neeee, itu maze punya {ctx.user.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
                 ephemeral=True)
         else:
             nonlocal yPos, xPos
@@ -400,14 +401,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've reached the prize!",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Omedetou! {ctx.author.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
+                    f"Omedetou! {ctx.user.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
                     embed=embedEdit,
                     view=None)
                 goldCount = userFind["gold"] + (level * 50)
@@ -457,14 +458,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've died... ( Cause : Running into fire )",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Aduhh {ctx.author.name}-nyan, bisa-bisanya masuk ke api..",
+                    f"Aduhh {ctx.user.name}-nyan, bisa-bisanya masuk ke api..",
                     embed=embedEdit,
                     view=None)
                 newvalues = {"$set": {"daily": currentDay}}
@@ -487,7 +488,7 @@ class Dailymaze(commands.Cog):
                     title=f"— Daily Maze —",
                     description=
                     "Travel to the prize using buttons rapidly without going into the fire",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
@@ -497,9 +498,9 @@ class Dailymaze(commands.Cog):
                 await interaction.response.defer()
 
     async def right_callback(interaction):
-        if interaction.user.id != ctx.author.id:
+        if interaction.user.id != ctx.user.id:
             await interaction.response.send_message(
-                f"Neeee, itu maze punya {ctx.author.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
+                f"Neeee, itu maze punya {ctx.user.name}-nyan, kalau mau main /dailymaze sendiri deh ya {interaction.user.name}-nyan~",
                 ephemeral=True)
         else:
             nonlocal yPos, xPos
@@ -517,14 +518,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've reached the prize!",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Omedetou! {ctx.author.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
+                    f"Omedetou! {ctx.user.name}-nyan berhasil memenangkan {level*50} Gold dan mendapat {level*3} EXP dari Dungeon",
                     embed=embedEdit,
                     view=None)
                 goldCount = userFind["gold"] + (level * 50)
@@ -574,14 +575,14 @@ class Dailymaze(commands.Cog):
                 embedEdit = discord.Embed(
                     title=f"— Daily Maze —",
                     description="You've died... ( Cause : Running into fire )",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
                 await interaction.response.edit_message(
                     content=
-                    f"Aduhh {ctx.author.name}-nyan, bisa-bisanya masuk ke api..",
+                    f"Aduhh {ctx.user.name}-nyan, bisa-bisanya masuk ke api..",
                     embed=embedEdit,
                     view=None)
                 newvalues = {"$set": {"daily": currentDay}}
@@ -604,7 +605,7 @@ class Dailymaze(commands.Cog):
                     title=f"— Daily Maze —",
                     description=
                     "Travel to the prize using buttons rapidly without going into the fire",
-                    color=ctx.author.color)
+                    color=ctx.user.color)
                 embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
                 embedEdit.set_author(name=interaction.user.name,
                                      icon_url=interaction.user.avatar.url)
@@ -639,10 +640,10 @@ class Dailymaze(commands.Cog):
         title=f'— Daily Maze —',
         description=
         "Travel to the prize by using buttons rapidly without going into the fire",
-        color=ctx.author.color)
+        color=ctx.user.color)
     embedVar.add_field(name="[ Map ]", value=firstMap, inline=False)
-    embedVar.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-    dgMessage = await ctx.respond(embed=embedVar, view=view)
+    embedVar.set_author(name=ctx.user.name, icon_url=ctx.user.avatar.url)
+    dgMessage = await ctx.response.send_message(embed=embedVar, view=view)
     checkView = await view.wait()
 
     if checkView:
@@ -658,18 +659,18 @@ class Dailymaze(commands.Cog):
             title=f"— Daily Maze —",
             description=
             "You've died... ( Cause : Standing still for too long )",
-            color=ctx.author.color)
+            color=ctx.user.color)
         embedEdit.add_field(name="[ Map ]", value=rtMap, inline=False)
         embedEdit.set_footer(text="Resets daily at 00:00 WIB (GMT+7)")
-        embedEdit.set_author(name=ctx.author.name,
-                             icon_url=ctx.author.avatar.url)
+        embedEdit.set_author(name=ctx.user.name,
+                             icon_url=ctx.user.avatar.url)
         await dgMessage.edit(
             content=
-            f"Yah {ctx.author.name}-nyan mati, kelamaan ga gerak sih anata..",
+            f"Yah {ctx.user.name}-nyan mati, kelamaan ga gerak sih anata..",
             embed=embedEdit,
             view=None)
         newvalues = {"$set": {"daily": currentDay}}
         mycol.update_one(userFind, newvalues)
 
-def setup(bot):
-  bot.add_cog(Dailymaze(bot))
+async def setup(bot):
+  await bot.add_cog(Dailymaze(bot))

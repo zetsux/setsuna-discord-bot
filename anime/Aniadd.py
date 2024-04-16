@@ -2,8 +2,9 @@ import discord
 import os
 import pymongo
 import datetime
-from discord.ui import Select, Button, Modal, InputText, View
+from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
+from discord import app_commands
 from discord.commands import Option
 import numpy as np
 
@@ -46,18 +47,18 @@ class Aniadd(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     
-  @commands.slash_command(name='aniadd', description='Add the entered number of anime to the mentioned user')
-  @commands.has_any_role('Encoder Magang', 'Owner')
-  async def anime_add(self, ctx, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member,"Give target", required=True)):
+  @app_commands.command(name='aniadd', description='Add the entered number of anime to the mentioned user')
+  @app_commands.checks.has_any_role('Encoder Magang', 'Owner')
+  async def anime_add(self, ctx: discord.Interaction, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member,"Give target", required=True)):
     targetFind = mycol.find_one({"userid": str(member.id)})
     mentionTarget = '<@' + str(member.id) + '>'
     if targetFind == None:
-        await ctx.respond(
+        await ctx.response.send_message(
             f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh'
         )
 
     else:
-        await ctx.respond(
+        await ctx.response.send_message(
             f'Omedetou {mentionTarget}-nyan! Anata mendapatkan {number} {name}!!'
         )
         animeInven = targetFind["animeName"]
@@ -88,5 +89,5 @@ class Aniadd(commands.Cog):
           arrangelb(member.id)
           
 
-def setup(bot):
-  bot.add_cog(Aniadd(bot))
+async def setup(bot):
+  await bot.add_cog(Aniadd(bot))

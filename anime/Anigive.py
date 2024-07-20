@@ -1,14 +1,8 @@
 import discord
 import os
 import pymongo
-import datetime
-from discord.ui import Select, Button, Modal, TextInput, View
 from discord.ext import commands
 from discord import app_commands
-from discord.commands import Option
-import numpy as np
-
-guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
 
 MONGODB = os.environ['MONGODB']
 
@@ -16,109 +10,91 @@ client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
 
-def arrangelb(idUser) :
-  inFind = mycol.find_one({'userid' : str(idUser)})
 
-  lbFind = mycol.find_one({'func' : "anilb"})
-  newvalues = {'$pull': {'board': str(idUser)}}
-  mycol.update_one(lbFind, newvalues)
-  
-  index = 0
-  lbFind = mycol.find_one({'func' : "anilb"})
-  lbBoard = lbFind['board']
-  dUni = inFind["uniAni"]
-  dAll = inFind["allAni"]
-  
-  for i in lbBoard:
-    iUser = mycol.find_one({"userid": i})
-    iUni = iUser["uniAni"]
-    iAll = iUser["allAni"]
+def arrangelb(idUser):
+    inFind = mycol.find_one({'userid': str(idUser)})
 
-    if dUni > iUni or (dUni == iUni and dAll > iAll):
-        break
+    lbFind = mycol.find_one({'func': "anilb"})
+    newvalues = {'$pull': {'board': str(idUser)}}
+    mycol.update_one(lbFind, newvalues)
 
-    index += 1
-  
-  lbFind = mycol.find_one({'func' : "anilb"})
-  newvalues = {"$push": {'board' : {'$each': [str(idUser)], "$position": index}}}
-  mycol.update_one(lbFind, newvalues)
+    index = 0
+    lbFind = mycol.find_one({'func': "anilb"})
+    lbBoard = lbFind['board']
+    dUni = inFind["uniAni"]
+    dAll = inFind["allAni"]
+
+    for i in lbBoard:
+        iUser = mycol.find_one({"userid": i})
+        iUni = iUser["uniAni"]
+        iAll = iUser["allAni"]
+
+        if dUni > iUni or (dUni == iUni and dAll > iAll):
+            break
+
+        index += 1
+
+    lbFind = mycol.find_one({'func': "anilb"})
+    newvalues = {
+        "$push": {
+            'board': {
+                '$each': [str(idUser)],
+                "$position": index
+            }
+        }
+    }
+    mycol.update_one(lbFind, newvalues)
+
 
 class Anigive(commands.Cog):
-  def __init__(self, bot):
-    self.bot = bot
-    
-  @app_commands.command(name='anigive', description='Give the entered number of anime to the mentioned user')
-  async def anime_give(self, ctx: discord.Interaction, name: Option(str, "Name of anime to give", required=True), number: Option(int, "Number to give", required=True), member: Option(discord.Member, "Give target", required=True)):
-    if number <= 0:
-        await ctx.response.send_message(f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
-                          ephemeral=True)
-        return
+    def __init__(self, bot):
+        self.bot = bot
 
-    if not member:
-        await ctx.response.send_message(f'Tagnya yang serius dong, {ctx.user.name}-nyan',
-                          ephemeral=True)
-
-    elif member.id == ctx.user.id:
-        await ctx.response.send_message(f'Tagnya yang serius dong, {ctx.user.name}-nyan',
-                          ephemeral=True)
-
-    else:
-        userFind = mycol.find_one({"userid": str(ctx.user.id)})
-        if userFind == None:
+    @app_commands.command(
+        name='anigive',
+        description='Give the entered number of anime to the chosen user')
+    @app_commands.describe(name="The name of anime character to give",
+                           number="The number of characters to give",
+                           member="The user to give to")
+    async def anime_give(self, ctx: discord.Interaction, name: str,
+                         number: int, member: discord.Member):
+        if number <= 0:
             await ctx.response.send_message(
-                f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
+                f'Neee anata ngga jelas deh, {ctx.user.name}-nyan',
+                ephemeral=True)
+            return
+
+        if not member:
+            await ctx.response.send_message(
+                f'Tagnya yang serius dong, {ctx.user.name}-nyan',
+                ephemeral=True)
+
+        elif member.id == ctx.user.id:
+            await ctx.response.send_message(
+                f'Tagnya yang serius dong, {ctx.user.name}-nyan',
                 ephemeral=True)
 
         else:
-            targetFind = mycol.find_one({"userid": str(member.id)})
-            mentionTarget = '<@' + str(member.id) + '>'
-            if targetFind == None:
-                await ctx.response.send_message(
-                    f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh'
-                )
+            await ctx.response.defer()
+
+            userFind = mycol.find_one({"userid": str(ctx.user.id)})
+            if userFind == None:
+                await ctx.followup.send(
+                    f'Neee {ctx.user.name}-nyan, yuk bisa yuk /regist dulu~',
+                    ephemeral=True)
 
             else:
-                animeInven = userFind["animeName"]
-                mUni = userFind["uniAni"]
-                mAll = userFind["allAni"]
-                if name in animeInven:
-                    animeIndex = 0
+                targetFind = mycol.find_one({"userid": str(member.id)})
+                mentionTarget = '<@' + str(member.id) + '>'
+                if targetFind == None:
+                    await ctx.followup.send(
+                        f'Neee {mentionTarget}-nyan, yuk /regist yuk, ada yang mau ngegift anata tuhh'
+                    )
 
-                    for x in animeInven:
-                        if x == name:
-                            break
-                        animeIndex += 1
-
-                    stringIndex = "animeCount." + str(animeIndex)
-
-                    if userFind["animeCount"][animeIndex] < number:
-                        await ctx.response.send_message(
-                            f'Neee {ctx.user.name}-nyan, anata cuma punya {userFind["animeCount"][animeIndex]} {name}, ngga cukup dong',
-                            ephemeral=True)
-                        return
-
-                    elif userFind["animeCount"][animeIndex] == number:
-                        await ctx.response.send_message(
-                            f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian seluruh koleksi {name} dari {ctx.user.name}-nyan sejumlah {number}'
-                        )
-                        mycol.update_one(userFind, {"$set": {"uniAni" : mUni - 1, "allAni" : mAll - 1, stringIndex: 0}})
-
-                    elif userFind["animeCount"][animeIndex] > number:
-                        await ctx.response.send_message(
-                            f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian {number} {name} dari {ctx.user.name}-nyan'
-                        )
-                        newvalues = {
-                            "$set": {
-                                "allAni" : mAll - 1,
-                                stringIndex: userFind["animeCount"][animeIndex] - number
-                            }
-                        }
-                        mycol.update_one(userFind, newvalues)
-
-                    animeInven = targetFind["animeName"]
-                    animeCounting = targetFind["animeCount"]
-                    mUni = targetFind["uniAni"]
-                    mAll = targetFind["allAni"]
+                else:
+                    animeInven = userFind["animeName"]
+                    mUni = userFind["uniAni"]
+                    mAll = userFind["allAni"]
                     if name in animeInven:
                         animeIndex = 0
 
@@ -127,39 +103,91 @@ class Anigive(commands.Cog):
                                 break
                             animeIndex += 1
 
-                        if animeCounting[animeIndex] == 0 :
-                          mUni += 1
-
                         stringIndex = "animeCount." + str(animeIndex)
-                        newvalues = {
-                            "$set": {
-                                "uniAni" : mUni, 
-                                "allAni" : mAll + 1,
-                                stringIndex : targetFind["animeCount"][animeIndex] + number
+
+                        if userFind["animeCount"][animeIndex] < number:
+                            await ctx.followup.send(
+                                f'Neee {ctx.user.name}-nyan, anata cuma punya {userFind["animeCount"][animeIndex]} {name}, ngga cukup dong',
+                                ephemeral=True)
+                            return
+
+                        elif userFind["animeCount"][animeIndex] == number:
+                            await ctx.followup.send(
+                                f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian seluruh koleksi {name} dari {ctx.user.name}-nyan sejumlah {number}'
+                            )
+                            mycol.update_one(
+                                userFind, {
+                                    "$set": {
+                                        "uniAni": mUni - 1,
+                                        "allAni": mAll - 1,
+                                        stringIndex: 0
+                                    }
+                                })
+
+                        elif userFind["animeCount"][animeIndex] > number:
+                            await ctx.followup.send(
+                                f'Omedetou {mentionTarget}-nyan! Anata mendapatkan pemberian {number} {name} dari {ctx.user.name}-nyan'
+                            )
+                            newvalues = {
+                                "$set": {
+                                    "allAni":
+                                    mAll - 1,
+                                    stringIndex:
+                                    userFind["animeCount"][animeIndex] - number
+                                }
                             }
-                        }
-                        mycol.update_one(targetFind, newvalues)
+                            mycol.update_one(userFind, newvalues)
+
+                        animeInven = targetFind["animeName"]
+                        animeCounting = targetFind["animeCount"]
+                        mUni = targetFind["uniAni"]
+                        mAll = targetFind["allAni"]
+                        if name in animeInven:
+                            animeIndex = 0
+
+                            for x in animeInven:
+                                if x == name:
+                                    break
+                                animeIndex += 1
+
+                            if animeCounting[animeIndex] == 0:
+                                mUni += 1
+
+                            stringIndex = "animeCount." + str(animeIndex)
+                            newvalues = {
+                                "$set": {
+                                    "uniAni":
+                                    mUni,
+                                    "allAni":
+                                    mAll + 1,
+                                    stringIndex:
+                                    targetFind["animeCount"][animeIndex] +
+                                    number
+                                }
+                            }
+                            mycol.update_one(targetFind, newvalues)
+
+                        else:
+                            newvalues = {
+                                "$set": {
+                                    "uniAni": mUni + 1,
+                                    "allAni": mAll + 1,
+                                },
+                                "$push": {
+                                    "animeName": name,
+                                    "animeCount": number
+                                }
+                            }
+                            mycol.update_one(targetFind, newvalues)
+
+                        arrangelb(ctx.user.id)
+                        arrangelb(member.id)
 
                     else:
-                        newvalues = {
-                            "$set" : {
-                                "uniAni" : mUni + 1, 
-                                "allAni" : mAll + 1,
-                            },
-                            "$push": {
-                                "animeName": name,
-                                "animeCount": number
-                            }
-                        }
-                        mycol.update_one(targetFind, newvalues)
+                        await ctx.followup.send(
+                            f'Neee {ctx.user.name}-nyan, jangan halu yaa, anata ngga punya yang namanya {name}...\natau salah tulis nama mungkin, coba dicek lagi deh.',
+                            ephemeral=True)
 
-                    arrangelb(ctx.user.id)
-                    arrangelb(member.id)
-
-                else:
-                    await ctx.response.send_message(
-                        f'Neee {ctx.user.name}-nyan, jangan halu yaa, anata ngga punya yang namanya {name}...\natau salah tulis nama mungkin, coba dicek lagi deh.',
-                        ephemeral=True)
 
 async def setup(bot):
-  await bot.add_cog(Anigive(bot))
+    await bot.add_cog(Anigive(bot))

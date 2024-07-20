@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-guilds = [990445490401341511, 1020927428459241522, 989086863434334279, 494097970208178186, 1028690906901139486]
-
 class Poketype(commands.Cog):
   def __init__(self, bot):
     self.bot = bot

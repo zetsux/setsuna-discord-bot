@@ -535,8 +535,10 @@ class Pokeduel(commands.Cog):
                                 inline=False)
                         await dinteraction.response.edit_message(
                             embed=embedChange)
-                        await turnMsg.edit(
-                            f"<@{str(turn)}>-nyan, giliran anata nih!")
+                        
+                        nonlocal turnMsg
+                        await turnMsg.delete()
+                        turnMsg = await ctx.followup.send(f"<@{str(turn)}>-nyan, giliran anata nih!")
 
                 else:
                     await dinteraction.response.send_message(
@@ -787,8 +789,10 @@ class Pokeduel(commands.Cog):
                                 inline=False)
                         await dinteraction.response.edit_message(
                             embed=embedChange)
-                        await turnMsg.edit(
-                            f"<@{str(turn)}>-nyan, giliran anata nih!")
+
+                        nonlocal turnMsg
+                        await turnMsg.delete()
+                        turnMsg = await ctx.followup.send(f"<@{str(turn)}>-nyan, giliran anata nih!")
 
                 else:
                     await dinteraction.response.send_message(
@@ -950,8 +954,10 @@ class Pokeduel(commands.Cog):
                                 inline=False)
                         await dinteraction.response.edit_message(
                             embed=embedChange)
-                        await turnMsg.edit(
-                            f"<@{str(turn)}>-nyan, giliran anata nih!")
+                        
+                        nonlocal turnMsg
+                        await turnMsg.delete()
+                        turnMsg = await ctx.followup.send(f"<@{str(turn)}>-nyan, giliran anata nih!")
 
                 else:
                     await dinteraction.response.send_message(
@@ -1111,8 +1117,10 @@ class Pokeduel(commands.Cog):
                                 inline=False)
                         await dinteraction.response.edit_message(
                             embed=embedChange)
-                        await turnMsg.edit(
-                            f"<@{str(turn)}>-nyan, giliran anata nih!")
+
+                        nonlocal turnMsg
+                        await turnMsg.delete()
+                        turnMsg = await ctx.followup.send(f"<@{str(turn)}>-nyan, giliran anata nih!")
 
                 else:
                     await dinteraction.response.send_message(
@@ -1187,8 +1195,10 @@ class Pokeduel(commands.Cog):
                             + '```',
                             inline=False)
                     await dinteraction.response.edit_message(embed=embedChange)
-                    await turnMsg.edit(
-                        f"<@{str(turn)}>-nyan, giliran anata nih!")
+
+                    nonlocal turnMsg
+                    await turnMsg.delete()
+                    turnMsg = await ctx.followup.send(f"<@{str(turn)}>-nyan, giliran anata nih!")
 
                 else:
                     await dinteraction.response.send_message(
@@ -1263,8 +1273,10 @@ class Pokeduel(commands.Cog):
                             + '```',
                             inline=False)
                     await dinteraction.response.edit_message(embed=embedChange)
-                    await turnMsg.edit(
-                        f"<@{str(turn)}>-nyan, giliran anata nih!")
+
+                    nonlocal turnMsg
+                    await turnMsg.delete()
+                    turnMsg = await ctx.followup.send(f"<@{str(turn)}>-nyan, giliran anata nih!")
 
                 else:
                     await dinteraction.response.send_message(
@@ -1466,10 +1478,8 @@ class Pokeduel(commands.Cog):
             embedGame.add_field(name="— Duel Log —",
                                 value='```' + f"Duel Starts!" + '```',
                                 inline=False)
-            gameMsg = await panelMsg.channel.send(embed=embedGame,
-                                                  view=viewGame)
-            turnMsg = await gameMsg.channel.send(
-                f"<@{str(turn)}>-nyan, giliran anata nih!")
+            gameMsg = await ctx.followup.send(embed=embedGame, view=viewGame)
+            turnMsg = await ctx.followup.send(f"<@{str(turn)}>-nyan, giliran anata nih!")
             checkGame = await viewGame.wait()
 
             if checkGame:
@@ -1501,7 +1511,7 @@ class Pokeduel(commands.Cog):
                         color=0xee1515)
                     await gameMsg.edit_original_response(embed=embedRes,
                                                          view=None)
-                    await gameMsg.channel.send(
+                    await ctx.followup.send(
                         f"Duel telah berakhir karena <@{str(player[1])}> kehabisan waktu!"
                     )
                     arrangelb(str(player[0]))
@@ -1535,7 +1545,7 @@ class Pokeduel(commands.Cog):
                         color=0xee1515)
                     await gameMsg.edit_original_response(embed=embedRes,
                                                          view=None)
-                    await gameMsg.channel.send(
+                    await ctx.followup.send(
                         f"Duel telah berakhir karena <@{str(player[0])}> kehabisan waktu!"
                     )
 

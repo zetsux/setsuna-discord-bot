@@ -6,6 +6,8 @@ from discord.ext import commands
 from discord import app_commands
 from discord.ui import Button, Modal, TextInput, View
 
+GUILDID = int(os.environ['GUILDID'])
+LOGCH = int(os.environ['LOGCHID'])
 MONGODB = os.environ['MONGODB']
 
 client = pymongo.MongoClient(MONGODB)
@@ -68,11 +70,24 @@ class Pokepartner(commands.Cog):
                         pokeIndex += 1
 
                     level = int(userFind["pokeLevel"][pokeIndex])
-                    newvalues = {"$set": {"pokemon": name, "pokemonlv": level}}
-                    mycol.update_one(tempFind, newvalues)
-                    tempResponse = requests.get(
-                        f'https://pokeapi.co/api/v2/pokemon/{name.lower()}')
-                    tempData = tempResponse.json()
+
+                    try:
+                        tempResponse = requests.get(
+                            f'https://pokeapi.co/api/v2/pokemon/{name.lower()}'
+                        )
+                        tempData = tempResponse.json()
+                        newvalues = {
+                            "$set": {
+                                "pokemon": name,
+                                "pokemonlv": level
+                            }
+                        }
+                        mycol.update_one(tempFind, newvalues)
+                    except:
+                        guild = self.bot.get_guild(GUILDID)
+                        channel = guild.get_channel(LOGCH)
+                        await channel.send(f"Pokemon not found in API : {name}"
+                                           )
 
                     eleTemp = ', '.join([
                         t['type']['name'].capitalize()
@@ -145,9 +160,14 @@ class Pokepartner(commands.Cog):
 
                 partIndex += 1
 
-            response = requests.get(
-                f'https://pokeapi.co/api/v2/pokemon/{partName.lower()}')
-            data = response.json()
+            try:
+                response = requests.get(
+                    f'https://pokeapi.co/api/v2/pokemon/{partName.lower()}')
+                data = response.json()
+            except:
+                guild = self.bot.get_guild(GUILDID)
+                channel = guild.get_channel(LOGCH)
+                await channel.send(f"Pokemon not found in API : {partName}")
 
             eleString = ', '.join(
                 [t['type']['name'].capitalize() for t in data['types']])

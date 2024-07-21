@@ -1,8 +1,10 @@
 discord-custom-help==0.0.7
 discord-py-interactions==4.2.1
 discord-py-slash-command==1.1.2
+numpy
 pymongo[srv]
 python-dotenv
+pytz
 requests==2.31.0
 virtualenv==20.10.0
 wavelink==1.3.1

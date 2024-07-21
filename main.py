@@ -8,6 +8,9 @@ from wavelink.ext import spotify
 import asyncio
 import events.song as song_events
 import events.error as error_events
+from dotenv import load_dotenv
+
+load_dotenv()
 
 TOKEN = os.environ["TOKEN"]
 ROLECLAIM = int(os.environ["ROLEMSGID"])

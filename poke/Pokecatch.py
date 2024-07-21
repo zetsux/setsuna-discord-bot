@@ -1,8 +1,7 @@
 import discord
 import pymongo
 import os
-import json
-import urllib.request as urllib2
+import requests
 from discord.ext import commands
 from discord import app_commands
 from discord.ui import Button, View
@@ -16,6 +15,17 @@ MONGODB = os.environ['MONGODB']
 client = pymongo.MongoClient(MONGODB)
 mydb = client["familiardb"]
 mycol = mydb["user"]
+
+
+def get_evolution_names(chain):
+    evo_name = chain['species']['name'].capitalize()
+    if evo_name.lower() == 'porygon-z':
+        evo_name = 'Porygon-Z'
+
+    evolution_names = [evo_name]
+    for evolution in chain['evolves_to']:
+        evolution_names.extend(get_evolution_names(evolution))
+    return evolution_names
 
 
 class Pokecatch(commands.Cog):
@@ -127,9 +137,10 @@ class Pokecatch(commands.Cog):
 
                         result = pokeArr[randomValue]
                         try:
-                            response = urllib2.urlopen(
-                                f'https://some-random-api.ml/pokemon/pokedex?pokemon={result.lower()}'
+                            response = requests.get(
+                                f'https://pokeapi.co/api/v2/pokemon/{result.lower()}'
                             )
+                            data = response.json()
                         except:
                             guild = self.bot.get_guild(GUILDID)
                             channel = guild.get_channel(LOGCH)
@@ -137,8 +148,8 @@ class Pokecatch(commands.Cog):
                                 f"Pokemon error : {result} | index : {randomValue}"
                             )
 
-                        data = json.loads(response.read())
-                        resultGif = data["sprites"]["animated"]
+                        resultGif = data['sprites']['other']['showdown'][
+                            'front_default']
                         userFind = mycol.find_one(
                             {"userid": str(interaction.user.id)})
                         pokeInven = userFind["pokeName"]
@@ -152,8 +163,24 @@ class Pokecatch(commands.Cog):
                                 pokeIndex += 1
 
                             nowLev = userFind["pokeLevel"][pokeIndex] + 1
-                            evoPath = data["family"]["evolutionLine"]
-                            evoPath = list(dict.fromkeys(evoPath))
+
+                            try:
+                                speciesResp = requests.get(
+                                    f'https://pokeapi.co/api/v2/pokemon-species/{result.lower()}'
+                                )
+                                speciesData = speciesResp.json()
+
+                                evoResp = requests.get(
+                                    speciesData['evolution_chain']['url'])
+                                evoData = evoResp.json()
+                            except:
+                                guild = self.bot.get_guild(GUILDID)
+                                channel = guild.get_channel(LOGCH)
+                                await channel.send(
+                                    f"Pokemon error : {result} | index : {randomValue}"
+                                )
+
+                            evoPath = get_evolution_names(evoData['chain'])
                             try:
                                 index = evoPath.index(result)
                             except:
@@ -194,17 +221,19 @@ class Pokecatch(commands.Cog):
                                             1,
                                             len(evoPath) - 1)]
                                         try:
-                                            response2 = urllib2.urlopen(
-                                                f'https://some-random-api.ml/pokemon/pokedex?pokemon={evolved.lower()}'
+                                            response2 = requests.get(
+                                                f'https://pokeapi.co/api/v2/pokemon/{evolved.lower()}'
                                             )
+                                            data2 = response2.json()
                                         except:
                                             guild = self.bot.get_guild(GUILDID)
                                             channel = guild.get_channel(LOGCH)
                                             await channel.send(
-                                                f"Pokemon error : {evolved}")
-                                        data2 = json.loads(response2.read())
-                                        evolvedGif = data2["sprites"][
-                                            "animated"]
+                                                f"Pokemon error : {result} | index : {randomValue}"
+                                            )
+
+                                        evolvedGif = data2['sprites']['other'][
+                                            'showdown']['front_default']
 
                                         nameIndex = "pokeName." + str(
                                             pokeIndex)
@@ -221,10 +250,30 @@ class Pokecatch(commands.Cog):
 
                                             evoLev = userFind["pokeLevel"][
                                                 evoIndex] + 1
-                                            nextPath = data2["family"][
-                                                "evolutionLine"]
-                                            nextPath = list(
-                                                dict.fromkeys(nextPath))
+
+                                            try:
+                                                speciesResp = requests.get(
+                                                    f'https://pokeapi.co/api/v2/pokemon-species/{evolved.lower()}'
+                                                )
+                                                speciesData = speciesResp.json(
+                                                )
+
+                                                evoResp = requests.get(
+                                                    speciesData[
+                                                        'evolution_chain']
+                                                    ['url'])
+                                                evoData = evoResp.json()
+                                            except:
+                                                guild = self.bot.get_guild(
+                                                    GUILDID)
+                                                channel = guild.get_channel(
+                                                    LOGCH)
+                                                await channel.send(
+                                                    f"Pokemon error : {result} | index : {randomValue}"
+                                                )
+
+                                            nextPath = get_evolution_names(
+                                                evoData['chain'])
                                             try:
                                                 nextIndex = nextPath.index(
                                                     evolved)
@@ -363,16 +412,19 @@ class Pokecatch(commands.Cog):
                                     mycol.update_one(userFind, newvalues)
 
                                 try:
-                                    response2 = urllib2.urlopen(
-                                        f'https://some-random-api.ml/pokemon/pokedex?pokemon={evolved.lower()}'
+                                    response2 = requests.get(
+                                        f'https://pokeapi.co/api/v2/pokemon/{evolved.lower()}'
                                     )
+                                    data2 = response2.json()
                                 except:
                                     guild = self.bot.get_guild(GUILDID)
                                     channel = guild.get_channel(LOGCH)
                                     await channel.send(
-                                        f"Pokemon error : {evolved}")
-                                data2 = json.loads(response2.read())
-                                evolvedGif = data2["sprites"]["animated"]
+                                        f"Pokemon error : {result} | index : {randomValue}"
+                                    )
+
+                                evolvedGif = data2['sprites']['other'][
+                                    'showdown']['front_default']
 
                                 nameIndex = "pokeName." + str(pokeIndex)
                                 levelIndex = "pokeLevel." + str(pokeIndex)
@@ -386,8 +438,25 @@ class Pokecatch(commands.Cog):
                                         evoIndex += 1
 
                                     evoLev = userFind["pokeLevel"][evoIndex] + 1
-                                    nextPath = data2["family"]["evolutionLine"]
-                                    nextPath = list(dict.fromkeys(nextPath))
+
+                                    try:
+                                        speciesResp = requests.get(
+                                            f'https://pokeapi.co/api/v2/pokemon-species/{evolved.lower()}'
+                                        )
+                                        speciesData = speciesResp.json()
+
+                                        evoResp = requests.get(
+                                            speciesData['evolution_chain']
+                                            ['url'])
+                                        evoData = evoResp.json()
+                                    except:
+                                        guild = self.bot.get_guild(GUILDID)
+                                        channel = guild.get_channel(LOGCH)
+                                        await channel.send(
+                                            f"Pokemon error : {result} | index : {randomValue}"
+                                        )
+                                    nextPath = get_evolution_names(
+                                        evoData['chain'])
                                     try:
                                         nextIndex = nextPath.index(evolved)
                                     except:
@@ -496,17 +565,19 @@ class Pokecatch(commands.Cog):
                                                 userFind, newvalues)
 
                                         try:
-                                            response3 = urllib2.urlopen(
-                                                f'https://some-random-api.ml/pokemon/pokedex?pokemon={nexted.lower()}'
+                                            response3 = requests.get(
+                                                f'https://pokeapi.co/api/v2/pokemon/{nexted.lower()}'
                                             )
+                                            data3 = response3.json()
                                         except:
                                             guild = self.bot.get_guild(GUILDID)
                                             channel = guild.get_channel(LOGCH)
                                             await channel.send(
-                                                f"Pokemon error : {nexted}")
-                                        data3 = json.loads(response3.read())
-                                        nextedGif = data3["sprites"][
-                                            "animated"]
+                                                f"Pokemon error : {result} | index : {randomValue}"
+                                            )
+
+                                        nextedGif = data3['sprites']['other'][
+                                            'showdown']['front_default']
 
                                         if nexted in pokeInven:
                                             nextedIndex = 0

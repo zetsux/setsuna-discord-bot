@@ -1,8 +1,7 @@
 import discord
 import pymongo
 import os
-import json
-import urllib.request as urllib2
+import requests
 from discord.ext import commands
 from discord import app_commands
 from discord.ui import Button, Modal, TextInput, View
@@ -71,11 +70,14 @@ class Pokepartner(commands.Cog):
                     level = int(userFind["pokeLevel"][pokeIndex])
                     newvalues = {"$set": {"pokemon": name, "pokemonlv": level}}
                     mycol.update_one(tempFind, newvalues)
-                    tempResponse = urllib2.urlopen(
-                        f'https://some-random-api.ml/pokemon/pokedex?pokemon={name.lower()}'
-                    )
-                    tempData = json.loads(tempResponse.read())
-                    eleTemp = ', '.join(tempData["type"])
+                    tempResponse = requests.get(
+                        f'https://pokeapi.co/api/v2/pokemon/{name.lower()}')
+                    tempData = tempResponse.json()
+
+                    eleTemp = ', '.join([
+                        t['type']['name'].capitalize()
+                        for t in tempData['types']
+                    ])
 
                     embedDit = discord.Embed(
                         title=f'[ Poke Partner ]',
@@ -83,21 +85,19 @@ class Pokepartner(commands.Cog):
                         f"Current : {name} Lv. {str(level)} ({eleTemp})",
                         color=0xee1515)
                     embedDit.add_field(
-                        name=f"[ Stats ]",
-                        value='```' +
-                        f'HP       : {str(int(int(tempData["stats"]["hp"])*((((level*2) - 1)+19)/20)))}\n'
-                        f'Atk      : {str(int(int(tempData["stats"]["attack"])*((((level*2) - 1)+19)/20)))}\n'
-                        +
-                        f'Sp. Atk  : {str(int(int(tempData["stats"]["sp_atk"])*((((level*2) - 1)+19)/20)))}\n'
-                        +
-                        f'Def      : {str(int(int(tempData["stats"]["defense"])*((((level*2) - 1)+19)/20)))}\n'
-                        +
-                        f'Sp. Def  : {str(int(int(tempData["stats"]["sp_def"])*((((level*2) - 1)+19)/20)))}\n'
-                        +
-                        f'Speed    : {str(int(int(tempData["stats"]["speed"])*((((level*2) - 1)+19)/20)))}\n'
-                        + '```',
+                        name="[ Stats ]",
+                        value='```'
+                        f'HP       : {str(int(int(tempData["stats"][0]["base_stat"]) * ((((level * 2) - 1) + 19) / 20)))}\n'
+                        f'Atk      : {str(int(int(tempData["stats"][1]["base_stat"]) * ((((level * 2) - 1) + 19) / 20)))}\n'
+                        f'Sp. Atk  : {str(int(int(tempData["stats"][3]["base_stat"]) * ((((level * 2) - 1) + 19) / 20)))}\n'
+                        f'Def      : {str(int(int(tempData["stats"][2]["base_stat"]) * ((((level * 2) - 1) + 19) / 20)))}\n'
+                        f'Sp. Def  : {str(int(int(tempData["stats"][4]["base_stat"]) * ((((level * 2) - 1) + 19) / 20)))}\n'
+                        f'Speed    : {str(int(int(tempData["stats"][5]["base_stat"]) * ((((level * 2) - 1) + 19) / 20)))}\n'
+                        '```',
                         inline=False)
-                    embedDit.set_thumbnail(url=tempData['sprites']['animated'])
+
+                    embedDit.set_thumbnail(url=tempData['sprites']['other']
+                                           ['showdown']['front_default'])
                     await minteraction.response.edit_message(embed=embedDit)
                     await minteraction.followup.send(
                         f'{name} berhasil dijadikan partner battle dari {minteraction.user.name}-nyan!',
@@ -109,7 +109,7 @@ class Pokepartner(commands.Cog):
                         ephemeral=True)
                     return
 
-            modaler.callback = pokecha_callback
+            modaler.on_submit = pokecha_callback
             await interaction.response.send_modal(modaler)
 
         async def confirm_callback(interaction):
@@ -145,32 +145,30 @@ class Pokepartner(commands.Cog):
 
                 partIndex += 1
 
-            response = urllib2.urlopen(
-                f'https://some-random-api.ml/pokemon/pokedex?pokemon={partName.lower()}'
-            )
-            data = json.loads(response.read())
-            eleString = ', '.join(data["type"])
+            response = requests.get(
+                f'https://pokeapi.co/api/v2/pokemon/{partName.lower()}')
+            data = response.json()
+
+            eleString = ', '.join(
+                [t['type']['name'].capitalize() for t in data['types']])
             embedVar = discord.Embed(
                 title=f'[ Poke Partner ]',
                 description=
                 f"Current : {partName} Lv. {str(partLevel)} ({eleString})",
                 color=0xee1515)
             embedVar.add_field(
-                name=f"[ Stats ]",
-                value='```' +
-                f'HP       : {str(int(int(data["stats"]["hp"])*((((partLevel*2) - 1)+19)/20)))}\n'
-                f'Atk      : {str(int(int(data["stats"]["attack"])*((((partLevel*2) - 1)+19)/20)))}\n'
-                +
-                f'Sp. Atk  : {str(int(int(data["stats"]["sp_atk"])*((((partLevel*2) - 1)+19)/20)))}\n'
-                +
-                f'Def      : {str(int(int(data["stats"]["defense"])*((((partLevel*2) - 1)+19)/20)))}\n'
-                +
-                f'Sp. Def  : {str(int(int(data["stats"]["sp_def"])*((((partLevel*2) - 1)+19)/20)))}\n'
-                +
-                f'Speed    : {str(int(int(data["stats"]["speed"])*((((partLevel*2) - 1)+19)/20)))}\n'
-                + '```',
+                name="[ Stats ]",
+                value='```'
+                f'HP       : {int(int(data["stats"][0]["base_stat"]) * ((((partLevel * 2) - 1) + 19) / 20))}\n'
+                f'Atk      : {int(int(data["stats"][1]["base_stat"]) * ((((partLevel * 2) - 1) + 19) / 20))}\n'
+                f'Sp. Atk  : {int(int(data["stats"][3]["base_stat"]) * ((((partLevel * 2) - 1) + 19) / 20))}\n'
+                f'Def      : {int(int(data["stats"][2]["base_stat"]) * ((((partLevel * 2) - 1) + 19) / 20))}\n'
+                f'Sp. Def  : {int(int(data["stats"][4]["base_stat"]) * ((((partLevel * 2) - 1) + 19) / 20))}\n'
+                f'Speed    : {int(int(data["stats"][5]["base_stat"]) * ((((partLevel * 2) - 1) + 19) / 20))}\n'
+                '```',
                 inline=False)
-            embedVar.set_thumbnail(url=data['sprites']['animated'])
+            embedVar.set_thumbnail(
+                url=data['sprites']['other']['showdown']['front_default'])
 
         else:
             embedVar = discord.Embed(

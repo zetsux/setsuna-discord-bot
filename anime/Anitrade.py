@@ -54,7 +54,8 @@ class Anitrade(commands.Cog):
     @app_commands.command(name='anitrade',
                           description='Trade with the chosen user')
     @app_commands.describe(member="The user to send trade request to")
-    async def anime_trading(self, ctx: discord.Interaction, member: discord.Member):
+    async def anime_trading(self, ctx: discord.Interaction,
+                            member: discord.Member):
         userFind = mycol.find_one({"userid": str(ctx.user.id)})
         if userFind == None:
             await ctx.response.send_message(
@@ -255,7 +256,7 @@ class Anitrade(commands.Cog):
                         f"Neee {minteraction.user.name}-nyan, anata halu ya? Ngga ada ah di inventory anata yang namanya '{aniName}'. Coba dicek lagi deh..",
                         ephemeral=True)
 
-            modaler.callback = addmod_callback
+            modaler.on_submit = addmod_callback
             await interaction.response.send_modal(modaler)
 
         async def remove_callback(interaction):
@@ -388,7 +389,7 @@ class Anitrade(commands.Cog):
                     f"{interaction.user.name} berhasil menghilangkan {str(modaler.children[1].value)} {aniName} dari sisi trading boardnya!"
                 )
 
-            modaler.callback = remmod_callback
+            modaler.on_submit = remmod_callback
             await interaction.response.send_modal(modaler)
 
         async def deal_callback(interaction):

@@ -1,5 +1,5 @@
 aiohttp==3.7.4.post0
-discord.py==2.0.0a4418+g87bc79e6
+discord.py==2.3.1
 Flask==2.1.2
 numpy==1.22.2
 pymongo==4.3.2

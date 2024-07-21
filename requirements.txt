@@ -1,6 +1,5 @@
 aiosignal==1.2.0
 asttokens==2.4.1
-async-timeout==3.0.1
 attrs==21.4.0
 backcall==0.2.0
 backports.entry-points-selectable==1.1.1
